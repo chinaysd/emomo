@@ -1,0 +1,8 @@
+".\obj\STARTUP.obj",
+".\obj\main.obj",
+".\obj\UART.obj",
+".\obj\INIT.obj",
+".\obj\S_TouchKeyCFG.obj",
+".\lib\SC93F8XXX_HighSensitive_Lib_T1_V0.0.2.LIB" 
+TO ".\obj\B26_ALL_2018.02.03" 
+PRINT(".\lst\B26_ALL_2018.02.m51") RAMSIZE(256) 

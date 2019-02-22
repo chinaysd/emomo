@@ -1,0 +1,412 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2018 15:30:31 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\obj\main.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE C\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND PRINT
+                    -(.\lst\main.lst) OBJECT(.\obj\main.obj)
+
+line level    source
+
+   1          #include "H/SC93F833X_C.H"
+   2          #include "lib/SensorMethod.h"
+   3          #include "h/UART.H"
+   4          #include "h/INIT.H"
+   5          
+   6          extern unsigned char count_level;
+   7          extern unsigned char count_250us_time;
+   8          extern unsigned int count_1ms_time;
+   9          
+  10          
+  11          //INT16U KeyDebunce;
+  12          unsigned long Key_Buf,get_key_data,KeyDebunce,MyKey_Buf_Data;
+  13          unsigned char key_press = 0,up_flag,down_flag,heat_red_flag,auto_close_heat,auto_close_mass,rev_flag = 0;
+  14          unsigned int motro_count0,motro_count1,auto_close_heat_cnt,auto_close_mass_cnt;
+  15          static unsigned char MOTRO_FLAG = 0;
+  16          unsigned int u16TimeLock = 0;
+  17          unsigned char Lock_Flag = 0,Flag = 0,RED_LIGHT = 0;
+  18          extern unsigned char lock;
+  19          
+  20          unsigned char auto_close_heat_flag = 0,auto_close_mass_flag = 0;
+  21          
+  22          
+  23          void UART_TX_byte(unsigned char DATA)
+  24          {
+  25   1         TI = 0;
+  26   1         SBUF = DATA;
+  27   1         while(!TI);
+  28   1      }
+  29          
+  30          void main()
+  31          {
+  32   1              uart_init();
+  33   1              GPIO_INIT();
+  34   1          Timer0_Init();
+  35   1      //  TIMER1_INIT();
+  36   1          TouchKeyInit(); // 触控按键初始化
+  37   1              EA = 1;
+  38   1              count_level = 15;       
+  39   1              while(1)
+  40   1              {
+  41   2                      WDTCON|=0x10;
+  42   2                      if(SOCAPI_TouchKeyStatus&0x80) // 重要步骤 2: 触摸键扫描一轮标志，是否调用 TouchKeyScan() 一定要根据此标
+             -志位置起后
+  43   2              {
+  44   3                              SOCAPI_TouchKeyStatus &= 0x7f;// 重要步骤 3:  清除标志位， 需要外部清除。
+  45   3                              get_key_data = TouchKeyScan();// 按键数据处理函数
+  46   3      
+  47   3                              TouchKeyRestart();// 启动下一轮转换
+  48   3                      }       
+  49   2      
+  50   2         if(get_key_data!=0)  //键按下
+  51   2         {
+  52   3                if(++KeyDebunce>2)                 //消抖
+  53   3                {
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2018 15:30:31 PAGE 2   
+
+  54   4                  KeyDebunce = 0;
+  55   4                      MyKey_Buf_Data = get_key_data;
+  56   4                      if(0X0008 == MyKey_Buf_Data)//   TK3,,,,,,,,,脚灯与杯灯
+  57   4                      {
+  58   5                        if(key_press)
+  59   5                        {
+  60   6                              key_press = 0;
+  61   6                              if(count_level == 15)
+  62   6                              {
+  63   7                                count_level = 100;
+  64   7                              }
+  65   6                              else if(count_level == 100)
+  66   6                              {
+  67   7                                count_level = 15; 
+  68   7                              }                       
+  69   6                              UART_TX_byte(0x11);          //发送0x01                 
+  70   6                        }
+  71   5                                       
+  72   5                      }
+  73   4                      else if(0X0010 == MyKey_Buf_Data)// TK4,,,,,,,,杯子升降
+  74   4                      {
+  75   5                        if(key_press)
+  76   5                        {
+  77   6                              key_press = 0;
+  78   6                              if(MOTRO_FLAG == 0)
+  79   6                              {
+  80   7                                MOTRO_FLAG = 1;
+  81   7                                P0 &= 0Xf9;
+  82   7                                //P0 |= 1 << 2;
+  83   7                                P0 |= 1 << 1;
+  84   7                                motro_count0 = 0;
+  85   7                                motro_count1 = 0;
+  86   7                                up_flag = 1;
+  87   7                                down_flag = 0;
+  88   7                              }
+  89   6                              else
+  90   6                              {
+  91   7                                MOTRO_FLAG = 0;
+  92   7                                P0 &= 0Xf9;
+  93   7                                //P0 |= 1 << 1;
+  94   7                                P0 |= 1 << 2;
+  95   7                                motro_count0 = 0;
+  96   7                                motro_count1 = 0;
+  97   7                                up_flag = 0;
+  98   7                                down_flag = 1;
+  99   7                              }                       
+ 100   6                        }
+ 101   5                       
+ 102   5                      }
+ 103   4                      else if(0X0020 == MyKey_Buf_Data)//TK5,,,,,,,,推杆B打开
+ 104   4                      {
+ 105   5                        if(key_press)
+ 106   5                        {
+ 107   6                              key_press = 0;
+ 108   6                              UART_TX_byte(0x17);           //发送0x17                        
+ 109   6                        }
+ 110   5                        
+ 111   5                      }
+ 112   4      /*******************************************************************************/
+ 113   4      /********************带锁键时需要关闭*******************************************/
+ 114   4      /*******************************************************************************/
+ 115   4      #if 1
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2018 15:30:31 PAGE 3   
+
+ 116   4                      else if(0X4000 == MyKey_Buf_Data)//TK14,,,,,,,,,发热布&锁键
+ 117   4                      {
+ 118   5                        if(key_press)
+ 119   5                        {                 
+ 120   6                              key_press = 0;
+ 121   6                              if(heat_red_flag == 0)
+ 122   6                              {
+ 123   7                                heat_red_flag = 1;
+ 124   7                                IO_RED_LIGHT_ON;
+ 125   7                                auto_close_heat = 1;
+ 126   7                                auto_close_heat_cnt = 0;
+ 127   7                              }
+ 128   6                              else
+ 129   6                              {
+ 130   7                                heat_red_flag = 0;
+ 131   7                                IO_RED_LIGHT_OFF;
+ 132   7                                auto_close_heat = 0;
+ 133   7                                auto_close_heat_cnt = 0;
+ 134   7                              }
+ 135   6                      UART_TX_byte(0x20);               //发送0x20                            
+ 136   6                        }
+ 137   5                        
+ 138   5                      }
+ 139   4      #endif
+ 140   4      /********************************************************************************/
+ 141   4                      else if(0X8000 == MyKey_Buf_Data)//TK15,,,,,,,,,,按摩马达
+ 142   4                      {
+ 143   5      
+ 144   5                        auto_close_mass_cnt = 0;
+ 145   5                        if(key_press)
+ 146   5                        {
+ 147   6                              key_press = 0;
+ 148   6                              #if 1
+ 149   6                              /***********30分钟后自动关闭按摩马达*********************************/
+ 150   6                              rev_flag = ~rev_flag;
+ 151   6                              if(rev_flag)
+ 152   6                              {
+ 153   7                                 auto_close_mass = 1;
+ 154   7                                 auto_close_mass_cnt = 0;             
+ 155   7                              }
+ 156   6                              else
+ 157   6                              {
+ 158   7                                 auto_close_mass = 0;
+ 159   7                                 auto_close_mass_cnt = 0;
+ 160   7                              }
+ 161   6                              /*******************************************************************/
+ 162   6                              #endif
+ 163   6                              
+ 164   6                              UART_TX_byte(0x21);                //发送0x21                   
+ 165   6                        }
+ 166   5                        
+ 167   5                      }
+ 168   4                      else if(0X0100 == MyKey_Buf_Data)//TK8,,,,,,,,,,,,推杆A收回
+ 169   4                      {
+ 170   5                        if(key_press)
+ 171   5                        {
+ 172   6                              key_press = 0;
+ 173   6                              UART_TX_byte(0x01);                //发送0x01                   
+ 174   6                        }
+ 175   5                        
+ 176   5                      }
+ 177   4                      else if(0X0200 == MyKey_Buf_Data)//TK9,,,,,,,,,,,,推杆A打开
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2018 15:30:31 PAGE 4   
+
+ 178   4                      {
+ 179   5                        if(key_press)
+ 180   5                        {
+ 181   6                              key_press = 0;
+ 182   6                              UART_TX_byte(0x12);                 //发送0x12                  
+ 183   6                        }
+ 184   5                        
+ 185   5                      }
+ 186   4                      else if(0X40000 == MyKey_Buf_Data)//TK18,,,,,,,,,,,,,
+ 187   4                      {
+ 188   5                        if(key_press)
+ 189   5                        {
+ 190   6                              key_press = 0;
+ 191   6                              UART_TX_byte(0x16);                  //发送0x16                 
+ 192   6                        }
+ 193   5                        
+ 194   5                      }
+ 195   4                      else if(0X80000 == MyKey_Buf_Data)//TK19,,,,,,,,推杆B收回
+ 196   4                      {
+ 197   5                        if(key_press)
+ 198   5                        {
+ 199   6                              key_press = 0;
+ 200   6                              UART_TX_byte(0x02);                 //发送0x02                  
+ 201   6                        }
+ 202   5                       
+ 203   5                      }
+ 204   4                      else if(0X1000 == MyKey_Buf_Data)//TK12,,,,,,,,,,,复位键
+ 205   4                      {
+ 206   5                        if(key_press)
+ 207   5                        {
+ 208   6                              key_press = 0;
+ 209   6                              UART_TX_byte(0x09);                 //发送0x09                  
+ 210   6                        }
+ 211   5                        
+ 212   5                      }
+ 213   4                      else if(0X2000 == MyKey_Buf_Data)//TK13,,,,,,,,,,,,
+ 214   4                      {
+ 215   5                        if(key_press)
+ 216   5                        {
+ 217   6                              key_press = 0;
+ 218   6                              //UART_TX_byte(0x51);                   
+ 219   6                        }               
+ 220   5                      }
+ 221   4                      else
+ 222   4                      {
+ 223   5                         //UART_TX_byte(0x55);
+ 224   5                      }
+ 225   4                }
+ 226   3         }
+ 227   2           else
+ 228   2              {
+ 229   3                key_press = 1;
+ 230   3                UART_TX_byte(0x55);
+ 231   3              }
+ 232   2         if(auto_close_heat_flag)
+ 233   2         {
+ 234   3            auto_close_heat_flag = 0;
+ 235   3                auto_close_heat_cnt = 0;
+ 236   3                IO_RED_LIGHT_OFF;
+ 237   3                heat_red_flag = 0;
+ 238   3            UART_TX_byte(0x20);
+ 239   3         }
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2018 15:30:31 PAGE 5   
+
+ 240   2         else if(auto_close_mass_flag)
+ 241   2         {
+ 242   3            auto_close_mass_flag = 0;
+ 243   3                auto_close_mass_cnt = 0;
+ 244   3                rev_flag = 0;
+ 245   3                UART_TX_byte(0x21);
+ 246   3         }
+ 247   2        }     
+ 248   1      }
+ 249          
+ 250          void timer0() interrupt 1
+ 251          {
+ 252   1          TL0 = (65536 - 605)%256;
+ 253   1              TH0 = (65536 - 605)/256;     //100us
+ 254   1      //      IO_LED_FOOT_LIGHT_PIN =~ IO_LED_FOOT_LIGHT_PIN;
+ 255   1          /*****************************锁键定时器************************/
+ 256   1          //if(u16TimeLock != 0x00)       u16TimeLock--;
+ 257   1      /*********************带有锁键功能的必须打开************************/
+ 258   1      #if 0
+                   if((0X4000 == MyKey_Buf_Data)&&(1 == lock))
+                       {
+                         MyKey_Buf_Data = 0x1111;
+                         if(u16TimeLock < 20000)
+                         {
+                            u16TimeLock++;
+                         }
+                         else
+                         {
+                            u16TimeLock = 0;
+                                IO_RED_LIGHT_ON;
+                                lock = 0;
+                         }
+                       }
+                       else if((0X4000 == MyKey_Buf_Data)&&(0 == lock))
+                       {
+                         MyKey_Buf_Data = 0x1111;
+                         if(u16TimeLock < 20000)
+                         {
+                            u16TimeLock++;
+                         }
+                         else
+                         {
+                            u16TimeLock = 0;
+                                IO_RED_LIGHT_OFF;
+                                lock = 1;
+                         }
+                       }
+                       else
+                       {
+                            //key_press = 1;
+                       }
+              #endif
+ 292   1      
+ 293   1              /***************************************************************/
+ 294   1          /********************PWM控制灯**********************************/
+ 295   1      #if 1
+ 296   1          count_250us_time++;
+ 297   1              if(count_250us_time > 100)
+ 298   1              {
+ 299   2                count_250us_time = 0;
+ 300   2              }
+ 301   1              if(count_250us_time >= count_level)
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2018 15:30:31 PAGE 6   
+
+ 302   1              {
+ 303   2                IO_LED_FOOT_LIGHT_OFF;
+ 304   2              }
+ 305   1              else
+ 306   1              {
+ 307   2                IO_LED_FOOT_LIGHT_ON;
+ 308   2              }
+ 309   1      #endif
+ 310   1          /***************************************************************/
+ 311   1          /********************控制升降马达*******************************/
+ 312   1          /***************************************************************/
+ 313   1      #if 1
+ 314   1              if(up_flag)
+ 315   1              {
+ 316   2                 motro_count0++;
+ 317   2                 if(motro_count0>6000)
+ 318   2                 {
+ 319   3                    motro_count0 = 0;
+ 320   3                        up_flag = 0;
+ 321   3                        down_flag = 1;
+ 322   3                        P0 &= 0Xf9;
+ 323   3                 }
+ 324   2              }
+ 325   1              if(down_flag)
+ 326   1              {
+ 327   2                 motro_count1++;
+ 328   2                 if(motro_count1>6000)
+ 329   2                 {
+ 330   3                   motro_count1 = 0;
+ 331   3                       up_flag = 1;
+ 332   3                       down_flag = 0;
+ 333   3                       P0 &= 0Xf9;
+ 334   3                 }
+ 335   2              }
+ 336   1      #endif
+ 337   1          /*****************************************************************/
+ 338   1          /*********************控制震动马达和发热布自动关闭的程序*********/
+ 339   1          /****************************************************************/
+ 340   1      #if 1
+ 341   1              if(count_1ms_time++ > 10530)
+ 342   1              {
+ 343   2                //1s time
+ 344   2                count_1ms_time = 0;
+ 345   2                if(auto_close_mass)
+ 346   2                {
+ 347   3                  if(auto_close_mass_cnt++ > auto_close_mass_time)//1800
+ 348   3                      {
+ 349   4                         auto_close_mass_cnt = 0;
+ 350   4                         auto_close_mass = 0;
+ 351   4                         //发送马达关闭指令
+ 352   4                         //UART_TX_byte(0x21); 
+ 353   4                         auto_close_mass_flag = 1;
+ 354   4                         //rev_flag = 0;
+ 355   4      
+ 356   4                      }
+ 357   3                }
+ 358   2                if(auto_close_heat)
+ 359   2                {
+ 360   3                  if(auto_close_heat_cnt++ > auto_close_heat_time)//3600
+ 361   3                      {
+ 362   4                         auto_close_heat_cnt = 0;
+ 363   4                         auto_close_heat = 0;
+C51 COMPILER V9.59.0.0   MAIN                                                              12/19/2018 15:30:31 PAGE 7   
+
+ 364   4                         //发送发热布关闭指令
+ 365   4                         IO_RED_LIGHT_OFF;
+ 366   4                         //UART_TX_byte(0x20);
+ 367   4                         auto_close_heat_flag = 1;
+ 368   4                      }
+ 369   3                }
+ 370   2      
+ 371   2              }
+ 372   1      #endif
+ 373   1          /****************************************************************/
+ 374   1      }
+ 375          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    876    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     39    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

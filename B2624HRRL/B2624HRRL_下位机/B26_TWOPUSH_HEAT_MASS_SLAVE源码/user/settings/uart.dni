@@ -1,0 +1,99 @@
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[Interrupts]
+Enabled=1
+[MemoryMap]
+Enabled=0
+Base=0
+UseAuto=0
+TypeViolation=1
+UnspecRange=1
+ActionState=1
+[TraceHelper]
+Enabled=0
+ShowSource=1
+[DebugChecksum]
+Checksum=494820368
+[DisAssemblyWindow]
+NumStates=_ 1
+State 1=_ 1
+[InstructionProfiling]
+Enabled=_ 0
+[CodeCoverage]
+Enabled=_ 0
+[StackPlugin]
+Enabled=1
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnHow=0
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[DataSample]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[Breakpoints]
+Bp0=_ "STD_CODE" "{}.78.21" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{}.78.21" 0 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{}.96.21" 0 0 0 0 "" 0 ""
+Count=3
+[Aliases]
+A0=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\drive\heat.c" ""
+A1=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\drive\key.c" ""
+A2=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\drive\led.c" ""
+A3=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\drive\push.c" ""
+A4=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\drive\uart.c" ""
+A5=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\lib\src\stm8s_clk.c" ""
+A6=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\lib\src\stm8s_gpio.c" ""
+A7=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\lib\src\stm8s_uart1.c" ""
+A8=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26S24HR_12.23）\下位机\user\stm8s_it.c" ""
+A9=_ "C:\Users\Administrator\Desktop\B26SRR\下位机（B26SRR）\下位机\drive\uart.c" ""
+A10=_ "C:\Users\Administrator\Desktop\B26SRR_fangshui\下位机（B26SRR）\下位机\drive\push.c" ""
+A11=_ "C:\Users\Administrator\Desktop\B26SRR_fangshui\下位机（B26SRR）\下位机\lib\src\stm8s_clk.c" ""
+A12=_ "C:\Users\Administrator\Desktop\B26SRR_fangshui\下位机（B26SRR）\下位机\lib\src\stm8s_gpio.c" ""
+A13=_ "C:\Users\Administrator\Desktop\B26SRR_fangshui\下位机（B26SRR）\下位机\lib\src\stm8s_tim1.c" ""
+A14=_ "C:\Users\Administrator\Desktop\B26_三推兼容两推2018.03.12\B26_三推兼容两推2018.03.12下位机\下位机\user\main.c" ""
+A15=_ "C:\Users\Administrator\Desktop\B26_三推兼容两推2018.03.12下位机\下位机\drive\push.c" ""
+A16=_ "C:\Users\Administrator\Desktop\QF-STM8光盘\青风工程代码\实验五：串口通信\实验五：串口通信\lib\src\stm8s_uart1.c" ""
+A17=_ "C:\Users\Administrator\Desktop\QF-STM8光盘\青风工程代码\实验五：串口通信\实验五：串口通信\user\main.c" ""
+A18=_ "C:\Users\Administrator\Desktop\实验八：串口接收中断\drive\led.c" ""
+A19=_ "C:\Users\Administrator\Desktop\实验八：串口接收中断\lib\src\stm8s_clk.c" ""
+A20=_ "C:\Users\Administrator\Desktop\实验八：串口接收中断\lib\src\stm8s_gpio.c" ""
+A21=_ "C:\Users\Administrator\Desktop\实验八：串口接收中断\lib\src\stm8s_uart1.c" ""
+A22=_ "C:\Users\Administrator\Desktop\下位机（B26S24HR）\下位机\user\main.c" ""
+A23=_ "E:\青风系列开发板\stm8开发板光盘\工程代码\实验代码\实验五：串口通信\user\main.c" "G:\青风系列开发板\stm8开发板光盘\工程代码\实验代码\实验五：串口通信\user\main.c"
+A24=_ "E:\青风系列开发板\stm8开发板光盘\工程代码\实验五：串口通信\lib\src\stm8s_clk.c" "G:\青风系列开发板\stm8开发板光盘\工程代码\实验代码\实验五：串口通信\lib\src\stm8s_clk.c"
+A25=_ "G:\2014年5月1号前\青风系列开发板\stm8开发板光盘\QF-STM8光盘V2\5.2青风工程代码（库函数版本）\实验五：串口通信\实验五：串口通信\drive\led.c" ""
+Count=26
+SuppressDialog=1
+[DebuggerSettings]
+DisableInterruptsWhenStepping=0

@@ -1,0 +1,104 @@
+C51 COMPILER V9.59.0.0   INIT                                                              12/19/2018 15:30:32 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE INIT
+OBJECT MODULE PLACED IN .\obj\INIT.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE C\INIT.C OPTIMIZE(8,SPEED) BROWSE INCDIR(.\H;.\lib) DEBUG OBJECTEXTEND PRINT
+                    -(.\lst\INIT.lst) OBJECT(.\obj\INIT.obj)
+
+line level    source
+
+   1          #include "h/INIT.H"
+   2          #include "h\UART.h"
+   3          #include "H/SC93F833X_C.H"
+   4          unsigned char count_250us_time,count_level;
+   5          unsigned char lock = 1;
+   6          unsigned int count_1ms_time;
+   7          extern unsigned int motro_count0,motro_count1,auto_close_heat_cnt,auto_close_mass_cnt;
+   8          extern unsigned char up_flag,down_flag,auto_close_heat,auto_close_mass;
+   9          extern unsigned int u16TimeLock;
+  10          extern unsigned char RED_LIGHT,Flag;
+  11          extern unsigned long MyKey_Buf_Data;
+  12          extern void UART_TX_byte(unsigned char DATA);
+  13          void GPIO_INIT(void)
+  14          {
+  15   1        P0CON |= 7 << 0;                         //设置P00,P01,P02为强推挽IO
+  16   1      //  P0PH  = 0x00;
+  17   1        P2CON |= 1 << 5;                     //设置P25为强推挽IO
+  18   1      //  P2PH  = 0x00;
+  19   1      
+  20   1        IO_LED_FOOT_LIGHT_OFF;             //脚灯关闭
+  21   1        IO_RED_LIGHT_OFF;           //红灯关闭
+  22   1        IO_MOTOR_ONE_OFF;                      //升降马达1关闭
+  23   1        IO_MOTOR_TWO_OFF;                      //升降马达2关闭
+  24   1      }
+  25          
+  26          void Timer0_Init(void)
+  27          { 
+  28   1              //TMCON = 0X07;    //------111 ;Timer0、Tiemr1和Tiemr2选择时钟Fsys
+  29   1              //T0设置
+  30   1              //TMOD = 0x44;     //0001 0001  ;Timer0和Timer1设置工作方式1
+  31   1              TL0 = (65536 - 605)%256;    //溢出时间：时钟为Fsys，则6000*（1/Fsys）=250us;
+  32   1              TH0 = (65536 - 605)/256;
+  33   1              TR0 = 0;
+  34   1              ET0 = 1;//定时器0允许
+  35   1              TR0 = 1;//打开定时器0
+  36   1              //T2设置
+  37   1              T2MOD=0x00;
+  38   1              T2CON=0x00;      //设置为16位重载寄存器
+  39   1              RCAP2H=(65536-1000)/256;     //溢出时间：时钟为Fsys，则12000*（1/Fsys）=0.5ms;
+  40   1              RCAP2L=(65536-1000)%256;
+  41   1              TR2 = 0;
+  42   1              ET2 = 1;//定时器2允许
+  43   1              TR2 = 1;//打开定时器2   
+  44   1      }
+  45          
+  46          void TIMER1_INIT(void)
+  47          {
+  48   1              //TMCON = 0X07;    //------111 ;Timer0、Tiemr1和Tiemr2选择时钟Fsys
+  49   1          //T1设置
+  50   1              //TMOD = 0x44;
+  51   1              TL1 = (65536 - 6060)%256;   //溢出时间：时钟为Fsys，则24000*（1/Fsys）=1ms;
+  52   1              TH1 = (65536 - 6060)/256;
+  53   1              TR1 = 0;
+  54   1              ET1 = 1;//定时器1允许
+C51 COMPILER V9.59.0.0   INIT                                                              12/19/2018 15:30:32 PAGE 2   
+
+  55   1              TR1 = 1;//打开定时器1
+  56   1          
+  57   1      }
+  58          
+  59          void timer1() interrupt 3
+  60          {
+  61   1          TL1 = (65536 - 6060)%256;
+  62   1              TH1 = (65536 - 6060)/256;
+  63   1              //P01 = ~P01;
+  64   1      //      IO_LED_FOOT_LIGHT_PIN =~ IO_LED_FOOT_LIGHT_PIN;
+  65   1              
+  66   1      
+  67   1      }
+  68          
+  69          
+  70          
+  71          void Timer2Int(void) interrupt 5
+  72          {               
+  73   1              TF2 = 0;   //溢出清零
+  74   1      //    P02=~P02;
+  75   1      //    P25 = ~P25;
+  76   1      }
+  77          
+  78          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     68    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

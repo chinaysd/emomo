@@ -1,0 +1,41 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\Administrator\Desktop\B26_TWOPUSH_HEAT_MASS\B26_TWOPUSH_HEAT_MASS_HOST\B26_HOST_源码\B26_ALL_2018.02.03.uvproj
+Project File Date:  02/03/2018
+
+<h2>Output:</h2>
+compiling main.c...
+C\main.c - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER1_INIT?INIT
+Program Size: data=81.3 xdata=157 code=4373
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+compiling UART.C...
+compiling INIT.C...
+compiling S_TouchKeyCFG.C...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?TIMER1_INIT?INIT
+Program Size: data=81.3 xdata=157 code=4373
+creating hex file from ".\obj\B26_ALL_2018.02.03"...
+".\obj\B26_ALL_2018.02.03" - 0 Error(s), 1 Warning(s).
+Load "C:\\Users\\Administrator\\Desktop\\B26_TWOPUSH_HEAT_MASS\\B26_TWOPUSH_HEAT_MASS_HOST\\B26_HOST_源码\\obj\\B26_ALL_2018.02.03" 
+仿真器已连接.
+MCU未连接或IC型号选择错误.
+Flash Write Done: 4374 bytes programmed.
+CheckSum = 0x318b
+MCU未连接或IC型号选择错误.
+Load "C:\\Users\\Administrator\\Desktop\\B26_TWOPUSH_HEAT_MASS\\B26_TWOPUSH_HEAT_MASS_HOST\\B26_HOST_源码\\obj\\B26_ALL_2018.02.03" 
+仿真器已连接.
+Flash Write Done: 4374 bytes programmed.
+CheckSum = 0x318b
+Flash Verify Done: 4376 bytes verified.

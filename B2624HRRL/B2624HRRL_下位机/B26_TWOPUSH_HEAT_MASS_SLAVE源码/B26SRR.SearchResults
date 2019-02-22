@@ -1,0 +1,13 @@
+---- share_time_flag Matches (12 in 2 files) ----
+Push.c (drive):unsigned char share_time_flag;
+Push.c (drive):  if(!share_time_flag)
+Push.c (drive):    share_time_flag = 1;
+Push.c (drive):   if(!share_time_flag)
+Push.c (drive):      share_time_flag = 1;
+Push.c (drive):  if(!share_time_flag)
+Push.c (drive):     share_time_flag = 1;
+Push.c (drive):   if(!share_time_flag)
+Push.c (drive):     share_time_flag = 1;
+Push.c (drive):  share_time_flag = 0;
+System.c (drive):extern unsigned char share_time_flag;
+System.c (drive):							   share_time_flag = 0;
