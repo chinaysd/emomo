@@ -1,1 +1,0 @@
-"..\bsp\voice_data.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..\user;..\bsp\key) DEBUG OBJECTEXTEND PRINT(.\Listings\voice_data.lst) OBJECT(.\Objects\voice_data.obj)
