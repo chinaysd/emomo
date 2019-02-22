@@ -1,0 +1,1 @@
+"c\time1.c" OPTIMIZE (8,SPEED) BROWSE NOINTPROMOTE INCDIR(.\h) DEBUG OBJECTEXTEND PRINT(.\list\time1.lst) OBJECT(.\output\time1.obj)

@@ -1,0 +1,57 @@
+C51 COMPILER V9.01   MEMORY                                                                04/28/2015 15:52:36 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MEMORY
+OBJECT MODULE PLACED IN .\obj\memory.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE memory.c BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\memory.lst) OBJECT(.\obj\mem
+                    -ory.obj)
+
+line level    source
+
+   1          #include        "h\SC91F831_C.h"
+   2          #include        "memory.h"
+   3          #include        "config.h"
+   4          #include    "intrins.h"
+   5          #include        "key.h"
+   6          
+   7          
+   8          INT8U  code * POINT ;
+   9          INT8U  Turn_Number1[4]={0x00,0x00,0x00,0x00};
+  10          INT8U  Turn_Number2[4]={0x00,0x00,0x00,0x00};
+  11          //INT8U  PowerDown_Number[8]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  12          
+  13          /********************IAP写入数据函数********************/
+  14          void  Byte_Write(INT8U DATA , INT8U ADD_OFFSET)
+  15          {
+  16   1        IAPDAT=DATA;               //送数据DATA到IAP数据寄存器
+  17   1        IAPADL=ADD_OFFSET;     //写入地址值
+  18   1        IAPKEY=0xF0;                   //此值可根据实际调整;保证本条指令执行后到对IAPCTL赋值前时间间隔小于240(0xf0)个系统时钟，
+             -否则IAP功能关闭
+  19   1        IAPCTL=0x0A;                   //执行IAP写入操作，同时CPU 8M Hold 1ms
+  20   1        _nop_();
+  21   1        _nop_();
+  22   1        _nop_();
+  23   1        _nop_();
+  24   1      }
+  25          
+  26          /********************IAP读取数据函数********************/
+  27          INT8U  Byte_Read(INT8U ADD_OFFSET)
+  28          {
+  29   1         POINT=ADD_BASE+ADD_OFFSET;
+  30   1         return (*POINT);
+  31   1      }
+  32          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     33    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

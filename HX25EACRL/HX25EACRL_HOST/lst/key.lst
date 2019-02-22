@@ -1,0 +1,230 @@
+C51 COMPILER V9.59.0.0   KEY                                                               12/25/2018 09:28:08 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN .\obj\key.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE key.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\key.lst) OBJEC
+                    -T(.\obj\key.obj)
+
+line level    source
+
+   1          #include        "h\SC91F831_C.h"
+   2          #include        "config.h"
+   3          #include        "key.h"
+   4          #include        "init.h"
+   5          #include    "intrins.h"
+   6          #include        "command.h"
+   7          
+   8          
+   9          INT8U      KeyDebunce=0;                                  //按键消抖
+  10          bit                KeystatusFlag=0;                           //按键状态标志
+  11          
+  12          bit              TouchKey_Flag = enable;          //上电初始化触摸按键有效
+  13          INT8U    u8LoadProgram = 0x0;
+  14          INT8U    keyStates[6]={0};
+  15          
+  16          bit      Start_Counttime_A;
+  17          bit      Start_Counttime_B;
+  18          INT8U    Start_Counttime_Cnt;
+  19          
+  20          INT8U key_press_flag,key_cnt_flag,heat_switch;
+  21          INT16U key_cnt,last_key,heat_switch_cnt;
+  22          INT8U  start_turnOnMassage,start_turnOnColdLight;
+  23          INT8U heat_cnt;
+  24          //TK4------     K4 -------推杆A降低                             0x0010
+  25          //TK6------     K5 -------马达震动(推杆B升高)   0x0040
+  26          //TK7------     K6 -------制冷(推杆B降低)       0x0080
+  27          //TK13-----     K2 -------Light                     0x2000
+  28          //TK14-----     K3 -------推杆A升高                 0x4000
+  29          //K1 ------ P4.0
+  30          unsigned char Key_String[4];
+  31          unsigned int Cnt;
+  32          unsigned char Temp_Cnt,Only_One_Flag;
+  33          
+  34          void Keyfunction(void)
+  35          {
+  36   1         static unsigned int MyKey_Data;
+  37   1      //第一，第二套程序，HX25程序
+  38   1                 if(Key_Buf!=0)       //键按下
+  39   1                 {
+  40   2                         if(++KeyDebunce>=2)                             //消抖
+  41   2                         {
+  42   3                            KeyDebunce=0;
+  43   3                            if(!KeystatusFlag)
+  44   3                                {
+  45   4                                       KeystatusFlag=1;
+  46   4                                       MyKey_Data=Key_Buf;                    //获取按键的值  
+  47   4                                       switch(MyKey_Data)
+  48   4                                       {
+  49   5                                              case 0x2000:    //TK13----- K2 -------Light        0x2000
+  50   5                                              {
+  51   6                                                 if(last_key != 0x2000){
+  52   7                                                              last_key = 0x2000;
+  53   7                                  switch(Cnt)
+  54   7                                  {
+C51 COMPILER V9.59.0.0   KEY                                                               12/25/2018 09:28:08 PAGE 2   
+
+  55   8                                      case 0x00:
+  56   8                                                turnOnBackLight();//0x01
+  57   8                                                Cnt = 1;
+  58   8                                                break;
+  59   8                                      case 0x01:
+  60   8                                                turnOffBackLight();//0x02
+  61   8                                                Cnt = 2;
+  62   8                                                break;
+  63   8                                      case 0x02:
+  64   8                                                turnOnColdLight();//0x04
+  65   8                                                Cnt = 0;
+  66   8                                                break;
+  67   8                                      default:
+  68   8                                                Cnt = 0x00;
+  69   8                                                break;
+  70   8                                  }
+  71   7                                                      }
+  72   6                                                 break;
+  73   6                                              }
+  74   5      
+  75   5                                              case  0x4000:    //TK14-----K3 -------推杆A升高   0x4000
+  76   5                                              {//推杆A升                                      
+  77   6                                                  //pushrodApushHigh();       //0X20
+  78   6                                                  turnOffColdLight();//0x08
+  79   6                                                      Start_Counttime_A = enable;
+  80   6                                                      break;                          
+  81   6                                              }
+  82   5                                       
+  83   5                                              case  0x0010:    //TK4------K4 -------推杆A降低   0x0010
+  84   5                                              {//推杆A降
+  85   6                                                      //pushrodApushLow();//0X40
+  86   6                                                      pushrodApushHigh();//0x10
+  87   6                                                      Start_Counttime_A = enable;
+  88   6                                                      break;
+  89   6                                              }
+  90   5      
+  91   5                                              case  0x0040:    //TK6------K5 -------马达震动(推杆B升高)       0x0040
+  92   5                                              {   
+  93   6                                                  #if 0
+                                                              pushrodBpushHigh();//0XA0
+                                                          Start_Counttime_B = enable;
+                                                          #endif
+  97   6                                                  break;                                      
+  98   6                                              }
+  99   5                                              case  0x0080:    //TK7------K6 -------制冷(推杆B降低)   0x0080
+ 100   5                                              {
+ 101   6                                                  //pushrodBpushLow();//0XC0
+ 102   6                                                  //Start_Counttime_B = enable;
+ 103   6                                                  #if 1
+ 104   6                                                  if(last_key != 0x0080)
+ 105   6                                                  {
+ 106   7                                                      last_key = 0x0080;
+ 107   7                                                      ++ Temp_Cnt;
+ 108   7                                                  if(Temp_Cnt & 0x01)
+ 109   7                                                  {
+ 110   8                                      pushrodApushLow();//0x20
+ 111   8                                      isColding = 1;
+ 112   8                                      u16Cnt4hours = 0;
+ 113   8                                                  }
+ 114   7                                                  else
+ 115   7                                                  {
+ 116   8                                                      pushrodAFinish();//0x40
+C51 COMPILER V9.59.0.0   KEY                                                               12/25/2018 09:28:08 PAGE 3   
+
+ 117   8                                                      isColding = 0;
+ 118   8                                      u16Cnt4hours = 0;
+ 119   8                                                  }
+ 120   7                                                  }
+ 121   6                                                  #endif
+ 122   6                                                      break;
+ 123   6                                          }                                    
+ 124   5                                              default:break;
+ 125   5                                       }                        
+ 126   4                                }                        
+ 127   3                         }       
+ 128   2                 }       
+ 129   1                 else //无按键                        
+ 130   1                 {
+ 131   2                        if(KeystatusFlag)              //松手
+ 132   2                        {
+ 133   3                               KeystatusFlag =0;
+ 134   3                               switch(MyKey_Data)         //单按键，松手有效
+ 135   3                               {
+ 136   4                                      case  0x2000:     //TK13----- K2 -------Light     0x2000
+ 137   4                                      {       
+ 138   5                          if(last_key == 0x2000)
+ 139   5                          {
+ 140   6                              last_key = 0;
+ 141   6                              
+ 142   6                          }
+ 143   5                                          break;
+ 144   5                                      }
+ 145   4      
+ 146   4                                      case  0x4000:     //TK14-----K3 -------推杆A升高  0x4000
+ 147   4                                      { 
+ 148   5                                          if(Start_Counttime_A == enable)
+ 149   5                                              {
+ 150   6                                                      Start_Counttime_A = disable;
+ 151   6                                                      Start_Counttime_Cnt =0;
+ 152   6                                                      pushrodBpushLow();                              
+ 153   6                                              }
+ 154   5                                          break;
+ 155   5                                      }
+ 156   4      
+ 157   4                                      case  0x0010:     //TK4------K4 -------推杆A降低  0x0010
+ 158   4                                      {
+ 159   5                                          if(Start_Counttime_A == enable)
+ 160   5                                              {
+ 161   6                                                  Start_Counttime_A = disable;
+ 162   6                                                  Start_Counttime_Cnt =0;
+ 163   6                                                  pushrodBpushLow();                          
+ 164   6                                              }
+ 165   5                                              break;                                    
+ 166   5                                      }                       
+ 167   4                                  case  0x0040:      //TK6------K5 -------马达震动(推杆B升高) 0x0040
+ 168   4                                      {      
+ 169   5                                             #if 0
+                                                         if(Start_Counttime_B == enable)
+                                                         {
+                                                                 Start_Counttime_B = disable;
+                                                                 pushrodBFinish();                                    
+                                                         }
+                                                         #endif
+ 176   5                                          break;
+ 177   5                                      }
+ 178   4                                      case  0x0080:      //TK7------K6 -------制冷(推杆B降低)   0x0080
+C51 COMPILER V9.59.0.0   KEY                                                               12/25/2018 09:28:08 PAGE 4   
+
+ 179   4                                      {
+ 180   5                                             #if 0
+                                                         if(Start_Counttime_B == enable)
+                                                         {
+                                                                 Start_Counttime_B = disable;
+                                                                 pushrodBFinish();                                    
+                                                         }
+                                                         #endif
+ 187   5                                                 if(last_key == 0x0080)
+ 188   5                                                 {
+ 189   6                                                    last_key = 0;
+ 190   6                                                 }
+ 191   5                                             break;
+ 192   5                                      }                                          
+ 193   4                          default:break;                                              
+ 194   4                               }      
+ 195   3                        }
+ 196   2                    KeyDebunce=0;
+ 197   2                 }
+ 198   1        }
+ 199          
+ 200          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    266    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     31    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      4    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

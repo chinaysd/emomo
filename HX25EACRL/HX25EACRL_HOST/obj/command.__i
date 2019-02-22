@@ -1,0 +1,1 @@
+"command.c" OPTIMIZE (8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\command.lst) OBJECT(.\obj\command.obj)

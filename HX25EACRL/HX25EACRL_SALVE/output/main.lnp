@@ -1,0 +1,14 @@
+".\output\STARTUP.obj",
+".\output\main.obj",
+".\output\system.obj",
+".\output\heat.obj",
+".\output\cool.obj",
+".\output\push.obj",
+".\output\light.obj",
+".\output\mass.obj",
+".\output\TimeOut.obj",
+".\output\time1.obj",
+".\output\ADC.obj" 
+TO ".\output\main" 
+PRINT(".\list\main.m51") RAMSIZE(256) 
+CODE( 0x100 )

@@ -1,0 +1,335 @@
+C51 COMPILER V9.01   UART                                                                  01/12/2015 15:00:11 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\obj\uart.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE sif\uart.c BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\uart.lst) OBJECT(.\obj\uar
+                    -t.obj)
+
+line level    source
+
+   1          
+   2          #define  __UART_SEND_DATA__               //annie                                       //用串口方式送数据
+   3          
+   4          
+   5          #ifdef __UART_SEND_DATA__
+   6          #include "..\sif\uart.h"
+   7          #include "..\sif\data_type.h"   
+   8          #include "..\sif\SC91F832_C.H"          
+   9          #include  "lib\SensorMethod.H"
+  10          
+  11          /************************************************************************/
+  12          /* 静态局部变量定义                                                              */
+  13          /************************************************************************/
+  14          
+  15          BOOL m_sys_1ms;                                         //系统1ms时基
+  16          
+  17          unsigned int g_100us_count;                     //100us计数
+  18          
+  19          #define  C_TX_OUTPUT            (BS(P1CFG1,4),BC(P1CFG1,5))    //p16
+  20          #define  C_RX_INPUT                     (BC(P3CFG1,6),BS(P3CFG1,7))     //p17
+  21          
+  22          #define UART_TXD                P16                     //发送口
+  23          #define UART_RXD                P17                             //接收数据口
+  24          
+  25          
+  26          BOOL g_sent_flag;               //发送标志
+  27          
+  28          
+  29          /************************************************************************/
+  30          /* 内部函数声明                                                         */
+  31          /************************************************************************/
+  32          
+  33          void Ini_Timer1(void);    //定时器1初始化
+  34          void Uart_sent_data(INT8U *t_data,INT8U t_data_length); //发送数据
+  35          
+  36          static void uart_sent_byte(INT8U t_byte);       //发送一个字节
+  37          static void Uart_sent_data_Real(void);     //发送数据实体
+  38          
+  39          void Uart_receive_data(void);
+  40          
+  41          
+  42          void InitUart(void)
+  43          {
+  44   1              C_TX_OUTPUT;
+  45   1              C_RX_INPUT;
+  46   1              Ini_Timer1(); 
+  47   1      }
+  48          
+  49          
+  50          //******************************************************************
+  51          // 函数名       ：void Ini_Timer1(void)  
+  52          // 作者         ：
+  53          // 功能         ：定时器1初始化
+  54          // 参数         ：无
+C51 COMPILER V9.01   UART                                                                  01/12/2015 15:00:11 PAGE 2   
+
+  55          // 返回值       ：无
+  56          // 调用全局变量：无
+  57          // 修改全局变量：
+  58          // 备注         ：
+  59          //******************************************************************
+  60          
+  61          #define         C_BAUD_BPS                      9600                    //波特率
+  62          #define         C_DELAY_TIME            (((10 * 1000) / C_BAUD_BPS) * 100)               // 延时时间 单位(us)           1s/波特率
+  63          #define     C_DELAY_TIME_COUNT   ((C_DELAY_TIME * C_SYS_FOSC) / C_FREQ_DIV) //+ (C_DELAY_TIME * C_SYS_FOSC)
+             - % C_FREQ_DIV)                //(晶振值 × 定时时间 ÷ 分频值)
+  64          #define         C_T1_COUNT_H            (65536 - C_DELAY_TIME_COUNT) / 256
+  65          #define         C_T1_COUNT_L            (65536 - C_DELAY_TIME_COUNT) % 256
+  66          
+  67          
+  68          void Ini_Timer1(void)    
+  69          {
+  70   1              TMOD    |=      C_T1_MODE_1;                    //T1 工作方式1
+  71   1              TMCON   |=  C_T1_CLK_4;                         //fsys=fosc/4设置为4分频率
+  72   1      
+  73   1              TH1     =       C_T1_COUNT_H;
+  74   1              TL1     =       C_T1_COUNT_L;
+  75   1              
+  76   1              ET1     =       disable;                                        //关闭定时器中断        
+  77   1              TR1     =       disable;                                        //关闭定时器
+  78   1      }
+  79          
+  80          
+  81          
+  82          void Time1(void) interrupt TIMER_1_INTERRUPT
+  83          {
+  84   1              TH1     =       C_T1_COUNT_H;
+  85   1              TL1     =       C_T1_COUNT_L;
+  86   1      
+  87   1              Uart_sent_data_Real();          //发送数据
+  88   1      }       
+  89          
+  90          //******************************************************************
+  91          // 函数名       ：void uart_sent_byte(INT8U t_byte)
+  92          // 作者         ：
+  93          // 功能         ：发送一个字节
+  94          // 参数         ：无
+  95          // 返回值       ：无
+  96          // 调用全局变量：无
+  97          // 修改全局变量：无
+  98          // 备注         ：
+  99          //******************************************************************
+ 100          
+ 101          INT8U uart_bit_count;                                   //发送位计数
+ 102          INT8U uart_sent_buff;                                   //发送缓存
+ 103          void uart_sent_byte(INT8U t_byte)
+ 104          {
+ 105   1              if(uart_bit_count == 0) 
+ 106   1              {
+ 107   2                      UART_TXD = 0;                   //先发起始位 0
+ 108   2                      uart_bit_count++;                               //计数
+ 109   2                      uart_sent_buff = t_byte;
+ 110   2              }
+ 111   1              else if(uart_bit_count < 9)
+ 112   1              {
+ 113   2                      UART_TXD = uart_sent_buff & 0x01;               //先发低位
+ 114   2                      uart_sent_buff >>= 1;
+ 115   2                      uart_bit_count++;                                               //计数
+C51 COMPILER V9.01   UART                                                                  01/12/2015 15:00:11 PAGE 3   
+
+ 116   2              }
+ 117   1              else
+ 118   1              {
+ 119   2                      UART_TXD = 1;                                           //发终止位1
+ 120   2                      uart_bit_count = 0;
+ 121   2              }       
+ 122   1      }
+ 123          //******************************************************************
+ 124          // 函数名       ：void Uart_sent_data(INT8U *t_data,INT8U t_data_length)
+ 125          // 作者         ：
+ 126          // 功能         ：发送数据
+ 127          // 参数         ：无
+ 128          // 返回值       ：无
+ 129          // 调用全局变量：无
+ 130          // 修改全局变量：无
+ 131          // 备注         ：      1ms发送一个字节
+ 132          //******************************************************************
+ 133          INT8U *g_sent_data;             // 要发送的数据
+ 134          INT8U g_data_length;    // 数据长度
+ 135          
+ 136          INT8U uart_byte_count;                          //发送字节计数
+ 137          
+ 138          void Uart_sent_data(INT8U *t_data,INT8U t_data_length)
+ 139          {
+ 140   1              ET1     =       enable;                                 //开中断        
+ 141   1              TR1     =       enable;                                 //开定时器
+ 142   1      
+ 143   1              g_sent_data = t_data;                     //数据
+ 144   1      
+ 145   1          g_data_length = t_data_length;       //数据长度
+ 146   1              
+ 147   1              uart_bit_count = 0;                      //清位计数
+ 148   1      
+ 149   1              uart_byte_count = 0;            // 清字节计数
+ 150   1      
+ 151   1              g_sent_flag = true;                     //置发送标志
+ 152   1      }
+ 153          
+ 154          //******************************************************************
+ 155          // 函数名       ：void Uart_sent_data_Real(void)
+ 156          // 作者         ：
+ 157          // 功能         ：发送数据实体
+ 158          // 参数         ：无
+ 159          // 返回值       ：无
+ 160          // 调用全局变量：无
+ 161          // 修改全局变量：无
+ 162          // 备注         ：
+ 163          //******************************************************************
+ 164          void Uart_sent_data_Real(void)
+ 165          {
+ 166   1              if(g_sent_flag)
+ 167   1              {
+ 168   2                      if(uart_byte_count < g_data_length)
+ 169   2                      {
+ 170   3                              uart_sent_byte(g_sent_data[uart_byte_count]);
+ 171   3                              if(uart_bit_count == 0)
+ 172   3                              {
+ 173   4                                      uart_byte_count++;
+ 174   4                              }
+ 175   3                      }
+ 176   2                      else
+ 177   2                      {
+C51 COMPILER V9.01   UART                                                                  01/12/2015 15:00:11 PAGE 4   
+
+ 178   3                              uart_byte_count = 0;
+ 179   3                              g_sent_flag = false;
+ 180   3      
+ 181   3                              ET1     =       disable;                                        //关闭定时器中断        
+ 182   3                              TR1     =       disable;                                        //关闭定时器
+ 183   3                      }       
+ 184   2              }       
+ 185   1      }
+ 186          
+ 187          unsigned char  Uart_Is_Send_Over(void)
+ 188          {
+ 189   1              if(g_sent_flag)
+ 190   1                              return 1;
+ 191   1              else 
+ 192   1                      return 0;
+ 193   1      }
+ 194          
+ 195          enum
+ 196                  {
+ 197                          UART_START,
+ 198                          UART_DATA_ONE,
+ 199                          UART_DATA,
+ 200                          UART_STOP
+ 201                  };
+ 202          
+ 203          
+ 204          
+ 205          ////////////////////////////////////////////////////////////////////////
+ 206          
+ 207          #ifdef __UART_SEND_DATA__
+ 208          char gUartSendChannel = 0; 
+ 209          
+ 210          unsigned char  xdata UartBuf[120]= {59,0x31,0x32,0x33,0x34,0x35,0X0D,0X0A};
+ 211          
+ 212          
+ 213          #define  BEGIN_CHANNEL_INDEX   0                //检测第几个有效的通道
+ 214          #define  OUTPUT_CHANNEL_COUNT   8               // 共输出几个通道数据， 大概每次4个， 大了UartBuf数组溢出
+ 215          
+ 216          char SetUartData(void)
+ 217          {
+ 218   1              char i;
+ 219   1              char index; 
+ 220   1              char result = 0; 
+ 221   1              i = 0; 
+ 222   1      
+ 223   1              index = 0; 
+ 224   1              
+ 225   1              
+ 226   1              gUartSendChannel = BEGIN_CHANNEL_INDEX; 
+ 227   1      
+ 228   1      ////// rawdata
+ 229   1      
+ 230   1      for(index = 0; index < OUTPUT_CHANNEL_COUNT; index++)
+ 231   1      {
+ 232   2              UartBuf[i++]  = 59;
+ 233   2              result = RawData[gUartSendChannel]/10000;       
+ 234   2              if(result != 0)
+ 235   2                              UartBuf[i++] = result+0x30; 
+ 236   2                                                      
+ 237   2              result = RawData[gUartSendChannel]%10000/1000; 
+ 238   2              UartBuf[i++] = result+0x30;
+ 239   2              
+C51 COMPILER V9.01   UART                                                                  01/12/2015 15:00:11 PAGE 5   
+
+ 240   2              result = RawData[gUartSendChannel]%1000/100;    
+ 241   2              UartBuf[i++] = result+0x30;
+ 242   2              
+ 243   2              result = RawData[gUartSendChannel]%100/10;      
+ 244   2              UartBuf[i++] = result+0x30;
+ 245   2              
+ 246   2              result = RawData[gUartSendChannel]%10;  
+ 247   2              UartBuf[i++] = result+0x30;
+ 248   2      
+ 249   2      //// baseline;
+ 250   2              UartBuf[i++] = 59;
+ 251   2      
+ 252   2              result = BaseLine[gUartSendChannel]/10000;      
+ 253   2              if(result != 0)
+ 254   2                                      UartBuf[i++] = result+0x30; 
+ 255   2                                                              
+ 256   2                      result = BaseLine[gUartSendChannel]%10000/1000; 
+ 257   2                      UartBuf[i++] = result+0x30;
+ 258   2                      
+ 259   2                      result = BaseLine[gUartSendChannel]%1000/100; 
+ 260   2                      UartBuf[i++] = result+0x30;
+ 261   2                      
+ 262   2                      result = BaseLine[gUartSendChannel]%100/10;     
+ 263   2                      UartBuf[i++] = result+0x30;
+ 264   2                      
+ 265   2                      result = BaseLine[gUartSendChannel]%10; 
+ 266   2                      UartBuf[i++] = result+0x30;
+ 267   2      
+ 268   2                      
+ 269   2                      UartBuf[i++] = 59;
+ 270   2                      
+ 271   2                      gUartSendChannel ++;
+ 272   2      }
+ 273   1      ////////////////////////////////////////////////////////////////////////////
+ 274   1              {
+ 275   2                      UartBuf[i++] = 0x0d;
+ 276   2                      UartBuf[i++] = 0x0a; 
+ 277   2                      gUartSendChannel = BEGIN_CHANNEL_INDEX; 
+ 278   2              }
+ 279   1      
+ 280   1              return i; 
+ 281   1      
+ 282   1      }
+ 283          
+ 284          void UartSendTkData(void)
+ 285          {
+ 286   1              if(Uart_Is_Send_Over() == 0)
+ 287   1              {
+ 288   2                  char i; 
+ 289   2                      i = SetUartData();      
+ 290   2                      Uart_sent_data(UartBuf,i);//i
+ 291   2              }
+ 292   1      }
+ 293          
+ 294          
+ 295          #endif 
+ 296          
+ 297          
+ 298          #endif 
+ 299          
+ 300          
+
+C51 COMPILER V9.01   UART                                                                  01/12/2015 15:00:11 PAGE 6   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1059    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    120    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

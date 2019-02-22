@@ -1,0 +1,12 @@
+".\obj\STARTUP.obj",
+".\obj\S_TouchKeyCFG.obj",
+".\lib\SC91F832_LIB_T1_V3.0.0.LIB",
+".\obj\main.obj",
+".\obj\pwm.obj",
+".\obj\key.obj",
+".\obj\init.obj",
+".\obj\display.obj",
+".\obj\memory.obj" 
+TO ".\obj\Remo2C1" 
+PRINT(".\lst\Remo2C1.m51") RAMSIZE(256) 
+CODE( 0x0100 )

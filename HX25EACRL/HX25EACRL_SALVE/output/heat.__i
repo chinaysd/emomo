@@ -1,0 +1,1 @@
+"c\heat.c" OPTIMIZE (8,SPEED) BROWSE NOINTPROMOTE INCDIR(.\h) DEBUG OBJECTEXTEND PRINT(.\list\heat.lst) OBJECT(.\output\heat.obj)

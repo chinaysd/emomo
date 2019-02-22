@@ -1,0 +1,299 @@
+C51 COMPILER V9.59.0.0   COMMAND                                                           12/25/2018 09:28:53 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE COMMAND
+OBJECT MODULE PLACED IN .\obj\command.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE command.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\command.ls
+                    -t) OBJECT(.\obj\command.obj)
+
+line level    source
+
+   1          #include        "h\SC91F831_C.h"
+   2          #include        "lib\SensorMethod.h"       //包含touchkey外部调用接口函数
+   3          #include        "config.h"
+   4          #include        "init.h"
+   5          #include    "intrins.h"
+   6          #include        "hex2bin.h"
+   7          #include        "command.h"
+   8          #include        "key.h"
+   9          
+  10          
+  11          INT8U   command = 0x0;
+  12          bit     switchState = 1;
+  13          
+  14          bit     isColding = false;
+  15          bit     isMassaging = false;
+  16          INT16U  u16Cnt15Minutes = 0x0;
+  17          INT16U  u16Cnt4hours = 0x0;
+  18          
+  19          INT8U   u8KeyValueTemp;
+  20          INT8U   compareTimes = 0;
+  21          INT8U   u8ProcessKeyCnt = 0;
+  22          bit     bProcessKey = false;
+  23          bit     bHasResult = false;
+  24          
+  25          bit     processSender = false;
+  26          INT8U   index = 8;
+  27          INT8U   u8Send0Cnt, u8Send1Cnt, u8SendHeaderCnt, u8SendEnderCnt, u8SenderCnt;
+  28          
+  29          extern unsigned int Cnt;
+  30          extern unsigned char Temp_Cnt;
+  31          
+  32          
+  33          //该状态已经由下位机控制，上位机只需把所有该发的信号位都发过去就可以，目的是脚灯由下位机控制，不能跟随背光
+             -灯的状态
+  34          //bool isBackLightOn = FALSE; 
+  35          //标记背光灯（双色灯蓝灯）亮，如果背光灯和制冷灯（双色灯绿灯）同时亮，以制冷灯为最高优先，即双色灯只亮绿灯
+             -，蓝灯熄灭，当关闭制冷时，再根据这个标记来恢复背光灯的状态
+  36          
+  37          
+  38          /*
+  39           * 打开Light(脚灯)
+  40           * 第3bit用1表示
+  41           * 只在带双色灯的HX25系列中生效
+  42           */
+  43          void turnOnBackLight(void) 
+  44          {
+  45   1              command = (INT8U) ((command & _b00000000) | _b00000001);//0X01
+  46   1      }
+  47          /*
+  48           * 关闭 打开Light(脚灯)
+  49           * 第3bit用0表示
+  50           * 只在带双色灯的HX25系列中生效
+  51           */
+  52          void turnOffBackLight(void) 
+C51 COMPILER V9.59.0.0   COMMAND                                                           12/25/2018 09:28:53 PAGE 2   
+
+  53          {
+  54   1              command = (INT8U) ((command & _b00000000) | _b00000010);//0X02
+  55   1      }
+  56          /*
+  57           * 打开B灯，绿灯（制冷指示灯）
+  58           * 第4bit用1表示
+  59           * 只在带双色灯的HX25系列中生效
+  60           */
+  61          void turnOnColdLight(void) 
+  62          {
+  63   1          command = (INT8U) ((command & _b00000000) | _b00000100);//0X04
+  64   1      }
+  65          /*
+  66           * 关闭B灯，绿灯（制冷指示灯）
+  67           * 第4bit用0表示
+  68           * 只在带双色灯的HX25系列中生效
+  69           */
+  70          void turnOffColdLight(void) 
+  71          {
+  72   1          command = (INT8U) ((command & _b00000000) | _b00001000);//0x08
+  73   1      }
+  74          
+  75          /*
+  76           * 推杆A升高
+  77           * 高三位用001表示
+  78           * 只在带双色灯的HX25系列中生效
+  79           */
+  80          void pushrodApushHigh(void) 
+  81          {
+  82   1              command = (INT8U) ((command & _b00000000) | _b00010000);//0X10
+  83   1      }
+  84          /*
+  85           * 推杆A降低
+  86           * 高三位用010表示
+  87           */
+  88          void pushrodApushLow(void) 
+  89          {
+  90   1              command = (INT8U) ((command & _b00000000) | _b00100000);//0X20
+  91   1      }
+  92          /*
+  93           * 推杆A动作完成
+  94           * 高三位用000表示
+  95           */
+  96          void pushrodAFinish(void) 
+  97          {
+  98   1              command = (INT8U) ((command & _b00000000) | _b01000000);//0x40
+  99   1      }
+ 100          /*
+ 101           * 推杆B升高
+ 102           * 高三位用101表示
+ 103           */
+ 104          void pushrodBpushHigh(void)
+ 105          {
+ 106   1              command = (INT8U) ((command & _b00000000) | _b10000000);//0X80
+ 107   1      }
+ 108          /*
+ 109           * 推杆B降低
+ 110           * 高三位用110表示
+ 111           */
+ 112          void pushrodBpushLow(void) 
+ 113          {
+ 114   1              command = (INT8U) ((command & _b00000000) | _b00000000);//0x00
+C51 COMPILER V9.59.0.0   COMMAND                                                           12/25/2018 09:28:53 PAGE 3   
+
+ 115   1      }
+ 116          /*
+ 117           * 推杆B动作完成
+ 118           * 高三位用000表示
+ 119           */
+ 120          void pushrodBFinish(void) 
+ 121          {
+ 122   1              command = (INT8U) ((command & _b00000000) | _b00000000);
+ 123   1      }
+ 124          /*
+ 125           * 马达震动
+ 126           * 第2bit用1表示
+ 127           */
+ 128          void turnOnMassage(void) 
+ 129          {
+ 130   1              command = (INT8U) ((command & _b11111011) | _b00000100);
+ 131   1              //isMassaging = true;
+ 132   1              //u16Cnt15Minutes = 0x0;
+ 133   1      }
+ 134          /*
+ 135           * 马达关闭
+ 136           * 第2bit用0表示
+ 137           */
+ 138          void turnOffMassage(void) 
+ 139          {
+ 140   1              command = (INT8U) ((command & _b11111011) | _b00000000);
+ 141   1              //isMassaging = false;
+ 142   1      }
+ 143          /*
+ 144           * 打开制冷
+ 145           * 第1bit用1表示
+ 146           */
+ 147          void turnOnCold(void) 
+ 148          {
+ 149   1              command = (INT8U) ((command & _b11110101) | _b00000010);
+ 150   1              //isColding = true;
+ 151   1              //u16Cnt4hours = 0x0;
+ 152   1      }
+ 153          /*
+ 154           * 关闭制冷
+ 155           * 第1bit用0表示
+ 156           */
+ 157          void turnOffCold(void) 
+ 158          {
+ 159   1              command = (INT8U) ((command & _b11111101) | _b00000000);
+ 160   1              //isColding = false;
+ 161   1      }
+ 162          
+ 163          void TurnOffCold_FootLight_CupLight(void)
+ 164          {
+ 165   1          command = (INT8U) ((command & _b00000000) | _b00010000);
+ 166   1      }
+ 167          /*
+ 168           *使所有的触摸按键失效
+ 169           *在用户按上总开关的时候，这个方法被调用
+ 170           */
+ 171          void disableAllTouchKey(void) 
+ 172          {
+ 173   1              keyStates[KEY_LOCKER] = (INT8U) ~keyStates[KEY_LOCKER];
+ 174   1              LED_SWITCH_ON;
+ 175   1              TouchKey_Flag = disable; 
+ 176   1              Key_Buf = 0x0000;
+C51 COMPILER V9.59.0.0   COMMAND                                                           12/25/2018 09:28:53 PAGE 4   
+
+ 177   1      }
+ 178          /*
+ 179           *使所有的触摸按键有效
+ 180           *在用户按上总开关的时候，这个方法被调用
+ 181           */
+ 182          void enableAllTouchKey(void)
+ 183          {
+ 184   1              keyStates[KEY_LOCKER] = (INT8U) ~keyStates[KEY_LOCKER];
+ 185   1              LED_SWITCH_OFF;
+ 186   1              TouchKey_Flag = enable; 
+ 187   1      }
+ 188          
+ 189          
+ 190          /*
+ 191           * 关闭机器
+ 192           * 所有数据全部重新初始化
+ 193           */
+ 194          void shutDown(void)
+ 195          {
+ 196   1              disableAllTouchKey();//关闭触摸按键
+ 197   1              command = (INT8U) 0x0;//清除命令,关闭所有东西
+ 198   1              pushrodAFinish();//0x40
+ 199   1      
+ 200   1              isMassaging = false;//清掉马达震动标记
+ 201   1              isColding = false;//清掉制冷标记
+ 202   1      
+ 203   1          u8SenderCnt = 0;
+ 204   1              u8Send1Cnt = 0;
+ 205   1              u8Send0Cnt = 0;
+ 206   1                      
+ 207   1              SENDER_WRITE_1;
+ 208   1          index = 8;
+ 209   1              processSender = false;
+ 210   1              u8SendHeaderCnt = 0;
+ 211   1          u8SendEnderCnt = 0;
+ 212   1          Cnt=0x00;
+ 213   1          Temp_Cnt = 0;
+ 214   1      
+ 215   1              keyStates[KEY_LIGHT] =0;
+ 216   1              keyStates[KEY_MASSAGE]=0;
+ 217   1              keyStates[KEY_COLD]=0;
+ 218   1              keyStates[KEY_LOCKER]=_b11111111;
+ 219   1      
+ 220   1              //第四套程序和第五套程序Cool的工作状态用Light的指示灯用来指示，关闭Cool时，Light的指示灯也关闭
+ 221   1              //
+ 222   1              if ((PROGRAM_D_HX36_WITH_A_PUSHROD == u8LoadProgram)|| (PROGRAM_E_HX36_WITH_TOW_PUSHROD == u8LoadProgram)
+             -) 
+ 223   1              {
+ 224   2                      LED_LIGHT_OFF;
+ 225   2              }
+ 226   1      
+ 227   1              //第三套程序Cool的工作状态用Cool的指示灯指示，关闭Cool时，Cool的指示灯也关闭
+ 228   1              if (PROGRAM_C_HX36_WITH_A_PUSHROD == u8LoadProgram)
+ 229   1              {
+ 230   2                      LED_COLD_OFF;
+ 231   2              }
+ 232   1      }
+ 233          
+ 234          void compareKeyValue(INT8U value)       //K1 ------ P4.0
+ 235          {
+ 236   1              if (!(value & _b00000001) == u8KeyValueTemp)     
+ 237   1              {
+C51 COMPILER V9.59.0.0   COMMAND                                                           12/25/2018 09:28:53 PAGE 5   
+
+ 238   2                      compareTimes++;
+ 239   2              } 
+ 240   1              else 
+ 241   1              {
+ 242   2                      compareTimes = 0x0;
+ 243   2              }
+ 244   1              u8KeyValueTemp = (INT8U)(!(value & _b00000001));
+ 245   1      
+ 246   1              if ((KEY_COMPARE_TIME == compareTimes)) 
+ 247   1              {//如果50次按键判断都一样，证明有按键动作
+ 248   2      
+ 249   2                      if (!keyStates[KEY_LOCKER]) 
+ 250   2                      {
+ 251   3                              disableAllTouchKey();//让所有触摸按键失效
+ 252   3                      } 
+ 253   2                      else 
+ 254   2                      {
+ 255   3                              enableAllTouchKey();//让所有触摸按键有效
+ 256   3                      }
+ 257   2      
+ 258   2                      u8KeyValueTemp = 0x0;
+ 259   2                      compareTimes = 0x0;
+ 260   2      
+ 261   2                      bProcessKey = false;
+ 262   2                      bHasResult = true;
+ 263   2              }
+ 264   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    217    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      6    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

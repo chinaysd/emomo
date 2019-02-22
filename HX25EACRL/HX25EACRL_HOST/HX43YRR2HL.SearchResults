@@ -1,0 +1,10 @@
+---- keyStates Matches (11 in 3 files) ----
+Command.c:	keyStates[KEY_LOCKER] = (INT8U) ~keyStates[KEY_LOCKER];
+Command.c:	keyStates[KEY_LOCKER] = (INT8U) ~keyStates[KEY_LOCKER];
+Command.c:	keyStates[KEY_LIGHT] =0;
+Command.c:	keyStates[KEY_MASSAGE]=0;
+Command.c:	keyStates[KEY_COLD]=0;
+Command.c:	keyStates[KEY_LOCKER]=_b11111111;
+Command.c:		if (!keyStates[KEY_LOCKER]) 
+Key.c:INT8U    keyStates[6]={0};
+Key.h:extern  INT8U   keyStates[6];

@@ -1,0 +1,1 @@
+"c\light.c" OPTIMIZE (8,SPEED) BROWSE NOINTPROMOTE INCDIR(.\h) DEBUG OBJECTEXTEND PRINT(.\list\light.lst) OBJECT(.\output\light.obj)

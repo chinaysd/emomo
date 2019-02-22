@@ -1,0 +1,1 @@
+"c\system.c" OPTIMIZE (8,SPEED) BROWSE NOINTPROMOTE INCDIR(.\h) DEBUG OBJECTEXTEND PRINT(.\list\system.lst) OBJECT(.\output\system.obj)

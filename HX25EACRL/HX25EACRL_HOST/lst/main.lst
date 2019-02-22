@@ -1,0 +1,278 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              12/25/2018 09:30:13 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\obj\main.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\main.lst) OBJ
+                    -ECT(.\obj\main.obj)
+
+line level    source
+
+   1          #include        "h\SC91F831_C.h"
+   2          #include        "lib\SensorMethod.h"       //包含touchkey外部调用接口函数
+   3          #include        "config.h"
+   4          #include        "key.h"
+   5          #include    "intrins.h"
+   6          #include        "init.h"
+   7          #include        "hex2bin.h"
+   8          #include        "command.h"
+   9          
+  10          //*****************************************************************
+  11          //#include    "sif\Sif_bus.h"        //调试文件，原厂提供 量产后可以取消(SIF通讯采集数据)
+  12          //*****************************************************************          
+  13          
+  14          INT8U  Timer5msCnt;                                        //5ms计数
+  15          bit    btimer5ms;                                          //5ms标志
+  16          
+  17          extern INT8U key_press_flag,key_cnt_flag;
+  18          extern INT16U key_cnt;
+  19          extern INT8U heat_switch;
+  20          extern INT16U heat_switch_cnt;
+  21          extern INT8U heat_cnt;
+  22          
+  23          
+  24          INT8U   commandTmp;
+  25          INT16U  u16Cnt1S;
+  26          
+  27          unsigned int Key_Buf;                              //保存TouchKeyScan()的返回值
+  28          
+  29          void main()
+  30          {
+  31   1              RSTCFG|=0x20;                                                   //设置P10的复位功能为普通IO功能
+  32   1              WDTCR = 0x90;                                   //1--1 -- 00    开WDT,WDT清0,WDT 262ms溢出;烧录时，可Code Option选择ENWDT
+  33   1              EA=1;                                                                   //总中断打开
+  34   1              GPIO_init();
+  35   1              TouchKeyInit();                                                 //触摸按键初始化 
+  36   1              Time1_init();                                                   //0.25ms定时
+  37   1          
+  38   1               LED_SWITCH_OFF;
+  39   1           //LED_SWITCH_ON;
+  40   1           LED_LIGHT_ON;
+  41   1               LED_PUSHRODA_L_ON;
+  42   1               LED_PUSHRODA_H_ON;
+  43   1               LED_MASSAGE_ON;
+  44   1           LED_COLD_ON;                                       
+  45   1      
+  46   1               while(1)
+  47   1               {      
+  48   2                      //Debug_SenddataRestart();          //调试数据需要用到的函数，量产后可以取消(SIF通讯采集数据)
+  49   2      
+  50   2                      if(SOCAPI_TouchKeyStatus&0x80)          // Bit7：一轮按键扫描是否完成
+  51   2                      {
+  52   3                         WDTCR = 0x90;                                    //1--1 -- 00    开WDT,WDT清0,WDT 262ms溢出;烧录时，可Code Option选择ENWDT
+  53   3                         WDTCR |= 0x10;                                       //清看门狗，Code Option选择ENWDT
+  54   3                         SOCAPI_TouchKeyStatus&=0x7f;     //清掉 Bit7：一轮扫描完成标志
+C51 COMPILER V9.59.0.0   MAIN                                                              12/25/2018 09:30:13 PAGE 2   
+
+  55   3                         Key_Buf=TouchKeyScan();                      //数据算法处理后，读取键值      
+  56   3                         TouchKeyRestart();                       //启动下一轮扫描
+  57   3                      }
+  58   2                                                              
+  59   2                      if(btimer5ms)                                           // 每5ms取一次Key_Buf处理
+  60   2                      {
+  61   3                         btimer5ms=0; 
+  62   3      
+  63   3                         if(TouchKey_Flag == disable)     //触摸按键失效
+  64   3                         {
+  65   4                                Key_Buf = 0x0000;
+  66   4                         }                        
+  67   3                         Keyfunction();                                       // Key_Buf处理
+  68   3                      }
+  69   2               }                              
+  70   1      }
+  71          
+  72          void Timer1()  interrupt        3       //0.25ms中断
+  73          {
+  74   1              TH1=(65535-1000)/256;
+  75   1              TL1=(65535-1000)%256;              //再次装入初值
+  76   1      
+  77   1          if(key_cnt_flag){
+  78   2                      key_cnt ++;
+  79   2              }
+  80   1              if(++Timer5msCnt>=20)              //5ms计数；
+  81   1              {
+  82   2                 Timer5msCnt=0;
+  83   2                 btimer5ms=1;                            //每5ms置1；
+  84   2              }
+  85   1      
+  86   1              ++u16Cnt1S;
+  87   1              if (4000 == u16Cnt1S) 
+  88   1              {//1S基础计时器
+  89   2                      u16Cnt1S = 0x0;
+  90   2                      if(heat_switch == 1)//定时30min自动关闭发热布
+  91   2                      {
+  92   3                         heat_switch_cnt++;
+  93   3                         if(heat_switch_cnt == 1800)//1800
+  94   3                         {
+  95   4                            heat_switch_cnt = 0;
+  96   4                                heat_switch = 0;
+  97   4                                heat_cnt = 0;
+  98   4                                turnOnColdLight();//0x01
+  99   4                         }
+ 100   3                      }
+ 101   2      
+ 102   2                      if(Start_Counttime_A == enable)
+ 103   2                      {
+ 104   3                              if(++Start_Counttime_Cnt > PRESS_PUSHROD_TIMEOUT)
+ 105   3                              {
+ 106   4                                  Start_Counttime_A = disable;
+ 107   4                                      Start_Counttime_Cnt =0;
+ 108   4                                  pushrodAFinish();                   
+ 109   4                              }               
+ 110   3                      }
+ 111   2      
+ 112   2                      if(Start_Counttime_B == enable)
+ 113   2                      {
+ 114   3                              if(++Start_Counttime_Cnt > PRESS_PUSHROD_TIMEOUT)
+ 115   3                              {
+ 116   4                                  Start_Counttime_B = disable;
+C51 COMPILER V9.59.0.0   MAIN                                                              12/25/2018 09:30:13 PAGE 3   
+
+ 117   4                                      Start_Counttime_Cnt =0;
+ 118   4                                  pushrodBFinish();                   
+ 119   4                              }               
+ 120   3                      }
+ 121   2      
+ 122   2                      if (isMassaging && (command & 0x4)) 
+ 123   2                      {//如果马达连续震动了15分钟，自动关闭马达
+ 124   3                              ++u16Cnt15Minutes;
+ 125   3                              if (900 == u16Cnt15Minutes) 
+ 126   3                              {//15分钟计时器         15 * 60 = 900s
+ 127   4                                      turnOffMassage();
+ 128   4                              }
+ 129   3                      }
+ 130   2      
+ 131   2                      if (isColding) 
+ 132   2                      {//如果连续制冷4小时，自动关闭机器
+ 133   3                              ++u16Cnt4hours;
+ 134   3                              if (14400 == u16Cnt4hours)
+ 135   3                              {//4小时计时器               4 * 60 * 60 = 14400s
+ 136   4                                      shutDown();
+ 137   4                              }
+ 138   3                      }
+ 139   2              }
+ 140   1      
+ 141   1              if (P4 & _b00000001) 
+ 142   1              {
+ 143   2                      bHasResult = false;
+ 144   2              }
+ 145   1              ++u8ProcessKeyCnt;
+ 146   1              if (20 == u8ProcessKeyCnt) 
+ 147   1              {
+ 148   2                      u8ProcessKeyCnt = 0;
+ 149   2                      if (!(P4 & _b00000001) && !bHasResult) 
+ 150   2                      {//有按键按下，并且还没有通过去抖动处理
+ 151   3                              bProcessKey = true;
+ 152   3                      }
+ 153   2                      if (bProcessKey) 
+ 154   2                      {
+ 155   3                              compareKeyValue(P4);
+ 156   3                      }
+ 157   2              }
+ 158   1      
+ 159   1              u8SenderCnt++;
+ 160   1      
+ 161   1              if (200 == u8SenderCnt) 
+ 162   1              {//每50ms之内发送一次数据 ，即 发送数据所需时间 + 发送间隔 = 50
+ 163   2                      u8SenderCnt = 0;
+ 164   2                      processSender = true;
+ 165   2                      commandTmp = command;
+ 166   2              }
+ 167   1              if (processSender) 
+ 168   1              {
+ 169   2      
+ 170   2                      //发送信息头
+ 171   2                      u8SendHeaderCnt++;
+ 172   2                      if (u8SendHeaderCnt < 20)        //输出19*0.25=4.75ms低电平
+ 173   2                      {
+ 174   3                              SENDER_WRITE_0;
+ 175   3                      } 
+ 176   2                      else 
+ 177   2                      {
+ 178   3                              if (index > 0) 
+C51 COMPILER V9.59.0.0   MAIN                                                              12/25/2018 09:30:13 PAGE 4   
+
+ 179   3                              {
+ 180   4                                      if (commandTmp & 0x80) 
+ 181   4                                      {//输出数据1
+ 182   5                                              u8Send1Cnt++;
+ 183   5                                              if (u8Send1Cnt < 9) 
+ 184   5                                              {
+ 185   6                                                      SENDER_WRITE_1;   //输出8*0.25=2ms高电平
+ 186   6                                              }
+ 187   5                                              else
+ 188   5                                              {
+ 189   6                                                      if (u8Send1Cnt < 10)   //输出2*0.25=0.5ms低电平
+ 190   6                                                      {
+ 191   7                                                              SENDER_WRITE_0;
+ 192   7                                                      } 
+ 193   6                                                      else
+ 194   6                                                      {//输出数据1操作完成
+ 195   7                                                              u8Send1Cnt = 0;
+ 196   7                                                              commandTmp <<= 1;
+ 197   7                                                              index--;
+ 198   7                                                      }
+ 199   6                                              }
+ 200   5                                      }
+ 201   4                                      else
+ 202   4                                      { //输出数据0
+ 203   5                                              u8Send0Cnt++;
+ 204   5                                              if (u8Send0Cnt < 5) 
+ 205   5                                              {//输出了1ms的高电平
+ 206   6                                                      SENDER_WRITE_1;
+ 207   6                                              } 
+ 208   5                                              else
+ 209   5                                              {
+ 210   6                                                      if (u8Send0Cnt < 10)  //输出4*0.25=1ms高电平
+ 211   6                                                      {
+ 212   7                                                              SENDER_WRITE_0;
+ 213   7                                                      } 
+ 214   6                                                      else 
+ 215   6                                                      { //输出数据0操作完成
+ 216   7                                                              u8Send0Cnt = 0;
+ 217   7                                                              u8Send0Cnt = 0;
+ 218   7                                                              commandTmp <<= 1;
+ 219   7                                                              index--;
+ 220   7                                                      }
+ 221   6                                              }
+ 222   5                                      }
+ 223   4                              } 
+ 224   3                              else 
+ 225   3                              {//送数完成，开始输出信息结束符
+ 226   4                                      u8SendEnderCnt++;
+ 227   4                                      SENDER_WRITE_0;//输出低电平
+ 228   4                                      if (24 == u8SendEnderCnt)          //输出23*0.25=5.75ms低电平后，接着输出高电平，一个byte的数发送完毕
+ 229   4                                      {
+ 230   5                                              SENDER_WRITE_1;
+ 231   5                                              index = 8;
+ 232   5                                              processSender = false;
+ 233   5                                              u8SendHeaderCnt = 0;
+ 234   5                                              u8SendEnderCnt = 0;
+ 235   5                                      }
+ 236   4                              }
+ 237   3                      }
+ 238   2              }
+ 239   1      
+ 240   1              return;
+C51 COMPILER V9.59.0.0   MAIN                                                              12/25/2018 09:30:13 PAGE 5   
+
+ 241   1      }
+ 242          
+ 243          
+ 244          
+ 245          
+ 246          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    519    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

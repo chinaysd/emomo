@@ -1,0 +1,9 @@
+---- isColding Matches (8 in 4 files) ----
+Command.c:bit     isColding = false;
+Command.c:	//isColding = true;
+Command.c:	//isColding = false;
+Command.c:	isColding = false;//清掉制冷标记
+Command.h:extern   bit     isColding;
+Key.c:                                isColding = 1;
+Key.c:    					        isColding = 0;
+Main.c:		if (isColding) 

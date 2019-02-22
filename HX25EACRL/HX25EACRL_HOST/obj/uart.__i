@@ -1,0 +1,1 @@
+"sif\uart.c" BROWSE DEBUG OBJECTEXTEND PRINT(.\lst\uart.lst) OBJECT(.\obj\uart.obj)

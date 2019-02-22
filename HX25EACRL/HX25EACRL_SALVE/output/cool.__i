@@ -1,0 +1,1 @@
+"c\cool.c" OPTIMIZE (8,SPEED) BROWSE NOINTPROMOTE INCDIR(.\h) DEBUG OBJECTEXTEND PRINT(.\list\cool.lst) OBJECT(.\output\cool.obj)
