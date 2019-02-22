@@ -1,0 +1,96 @@
+C51 COMPILER V9.59.0.0   BSP_VOICE                                                         02/14/2019 15:57:59 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_VOICE
+OBJECT MODULE PLACED IN .\Objects\bsp_voice.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_voice.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp\key;..\bsp;..\lib;
+                    -..\TimeOut;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_voice.lst) TABS(7) OBJECT(.\Objects\bsp_voice.obj)
+
+line level    source
+
+   1          #include "bsp_voice.h"
+   2          #include "string.h"
+   3          
+   4          extern unsigned char UartSendFlag;
+   5          
+   6          
+   7          static void Voice_Send_Byte(unsigned char voice_byte)
+   8          {
+   9   1           SBUF = voice_byte;
+  10   1           while(!UartSendFlag);
+  11   1           UartSendFlag = 0;
+  12   1      }
+  13          
+  14          
+  15          
+  16          static unsigned char Voice_Send_Data(VOICE_PROTOCOL *p)
+  17          {
+  18   1           static unsigned char i;
+  19   1           for(i = 0; i < VOICE_BUF_SIZE; i ++)
+  20   1           {
+  21   2               Voice_Send_Byte(p->VOICE_Buf[i]); 
+  22   2           }
+  23   1           return VOICE_SEND_SUCCESS;
+  24   1      }
+  25          
+  26          
+  27          
+  28          unsigned char Voice_Protocol_Send(unsigned char voice_addr,unsigned char voice_id,unsigned int voice_data)
+  29          {
+  30   1          VOICE_PROTOCOL voice_buf;
+  31   1          memset(&voice_buf,0,sizeof(voice_buf));
+  32   1          voice_buf.Voice_Data.VOICE_ADDR     = voice_addr;
+  33   1          voice_buf.Voice_Data.VOICE_ID       = voice_id;
+  34   1      
+  35   1          voice_buf.Voice_Data.VOICE_TEST     = 0x00;
+  36   1          voice_buf.Voice_Data.VOICE_DATA1    = VOICE_Hight(voice_data);
+  37   1          voice_buf.Voice_Data.VOICE_DATA2    = VOICE_Low(voice_data);
+  38   1      
+  39   1          voice_buf.Voice_Data.VOICE_CHECKSUM = (unsigned char)(voice_buf.Voice_Data.VOICE_ADDR + voice_buf.Voic
+             -e_Data.VOICE_ID + voice_buf.Voice_Data.VOICE_TEST + voice_buf.Voice_Data.VOICE_DATA1 + voice_buf.Voice_Data.VOICE_DATA2)
+             -;
+  40   1          voice_buf.Voice_Data.VOICE_STOP1    = 0xfb;
+  41   1      
+  42   1          return Voice_Send_Data(&voice_buf);
+  43   1      }
+  44          
+  45          
+  46          
+  47          
+  48          
+  49          
+  50          
+  51          
+  52          
+C51 COMPILER V9.59.0.0   BSP_VOICE                                                         02/14/2019 15:57:59 PAGE 2   
+
+  53          
+  54          
+  55          
+  56          
+  57          
+  58          
+  59          
+  60          
+  61          
+  62          
+  63          
+  64          
+  65          
+  66          
+  67          
+  68          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    120    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1      14
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

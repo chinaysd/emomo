@@ -1,0 +1,794 @@
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\system.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\user\system.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp\key;..\bsp;..\lib;..
+                    -\TimeOut;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\system.lst) TABS(7) OBJECT(.\Objects\system.obj)
+
+line level    source
+
+   1          #include "system.h"
+   2          
+   3          TIMEOUT_PARA TimeOut_Para[2];
+   4          FOOL_LED_PARA_t Fool_Led_Para;
+   5          MASS_PARA Mass_Para;
+   6          HEAT_FUNCTION_PARA_t Heat_Function_Para;
+   7          DOUBLE_CHANGE_MODE_t Double_Change_Mode;
+   8          AUTO_CLOSE_PUSH_PARA_t Auto_Close_Push_Para;
+   9          DEMO_PARA_t Demo_Para;
+  10          APP_PARA_t App_Para;
+  11          
+  12          
+  13          void Key_Handle(unsigned char Get_Key)
+  14          {      
+  15   1          if(TEST_PIN == 0)                                                      //µç×èR21Ã»ÓÐ½ÓÉÏÔòÎªÕâ¸ö³ÌÐò
+  16   1          {
+  17   2             if(Get_Key == MSG_KEY_NONE)
+  18   2              {
+  19   3                 Rev_Data_Handle();                                              //½ÓÊÕµÄÊý¾Ý´¦Àí
+  20   3                 if(!App_Para.App_Flag)                                          //Õâ¸ö±êÖ¾App_FlagÇø±ðÓÚÓïÒôÄ£×
+             -é(1)Óë°´¼ü(0)       
+  21   3                 {
+  22   4                    App_Para.App_Flag = 1;
+  23   4                    App_Para.Data = STOP; 
+  24   4                    App_Para.VOICE_DATA = 0;                                    //ÖØ¸´²¥±¨ºÍÓïÒôÇÐ»»Ö¸ÁîÇåÁãVOIC
+             -E_DATA
+  25   4                    App_Para.VOICE_DATA_STOP = 0;                               //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVO
+             -ICE_DATA_STOP
+  26   4                    if(App_Para.VOICE_DATA_STOP_END)                            //ÍÆ¸ËÍ£Ö¹Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾Ý
+             -VOICE_DATA_STOP_END
+  27   4                    {
+  28   5                       App_Para.VOICE_DATA_STOP_END = 0x0100;
+  29   5                       Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP_END);
+  30   5                       App_Para.VOICE_DATA_STOP_END = 0;                        //½ö·¢ËÍÒ»´Î£¬·¢ËÍÍêÇåÁã
+  31   5                    }
+  32   4                 }
+  33   3                 Heat_Function_Para.Heat_Flag     = 0;                                    //ËÉÊÖÊ±·¢ÈÈ²¼±êÖ¾Î»Çå
+             -Áã
+  34   3                 Fool_Led_Para.Foot_Led_Flag = 0;                                    //ËÉÊÖÊ±½ÅµÆ±êÖ¾Î»ÇåÁã
+  35   3                 Mass_Para.Mass_Flag = 0;
+  36   3              }
+  37   2              else if(Get_Key == MSG_KEY1_PRESS)//K7
+  38   2              {
+  39   3                 App_Para.App_Flag  = 0;
+  40   3                 if(Demo_Para.Demo_Flag)
+  41   3                 {
+  42   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+  43   4                 }
+  44   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                        //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOI
+             -CE_DATA_STOP
+  45   3                 {
+  46   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+  47   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+  48   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);   //½ö·¢ËÍÒ»´Î
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 2   
+
+  49   4                 }
+  50   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+  51   3                 App_Para.Data = HEAD_DOWN;        
+  52   3              }
+  53   2              else if(Get_Key == MSG_KEY2_PRESS)//K5
+  54   2              {
+  55   3                 App_Para.App_Flag  = 0;
+  56   3                 if(Demo_Para.Demo_Flag)
+  57   3                 {
+  58   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+  59   4                 }
+  60   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                      //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE
+             -_DATA_STOP
+  61   3                 {
+  62   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+  63   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+  64   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+  65   4                 }
+  66   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+  67   3                 App_Para.Data = HEAD_UP;     
+  68   3              }
+  69   2              else if(Get_Key == MSG_KEY3_PRESS)//K4
+  70   2              {
+  71   3                 App_Para.App_Flag  = 0;
+  72   3                 if(Demo_Para.Demo_Flag)
+  73   3                 {
+  74   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+  75   4                 }
+  76   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                     //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE_
+             -DATA_STOP
+  77   3                 {
+  78   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+  79   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+  80   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+  81   4                 }
+  82   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+  83   3                 App_Para.Data = OPEN;         
+  84   3              }
+  85   2              else if(Get_Key == MSG_KEY4_PRESS)//K6
+  86   2              {
+  87   3                 App_Para.App_Flag  = 0;
+  88   3                 if(Demo_Para.Demo_Flag)
+  89   3                 {
+  90   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+  91   4                 }
+  92   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                   //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE_DA
+             -TA_STOP
+  93   3                 {
+  94   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+  95   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+  96   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+  97   4                 }
+  98   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+  99   3                 App_Para.Data = CLOSE;               
+ 100   3              }
+ 101   2              else if(Get_Key == MSG_KEY5_LONGPRESS_HD)//K1
+ 102   2              {
+ 103   3                 App_Para.App_Flag  = 0;
+ 104   3                 Double_Change_Mode.Double_Push_Cnt = 0;
+ 105   3                 if(Demo_Para.Demo_Flag)
+ 106   3                 {
+ 107   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 3   
+
+ 108   4                 }
+ 109   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                  //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE_DAT
+             -A_STOP
+ 110   3                 {
+ 111   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+ 112   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+ 113   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+ 114   4                 }
+ 115   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 116   3                 App_Para.Data = HOME_POSITION;         
+ 117   3              }
+ 118   2              else if(Get_Key == MSG_KEY6_PRESS)//K2
+ 119   2              {
+ 120   3                 if(Demo_Para.Demo_Flag)
+ 121   3                 {
+ 122   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 123   4                 }
+ 124   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 125   3                 #if LARBUM_PUSH_FUNCTION_DISABLE
+                         App_Para.App_Flag  = 0;
+                         if(App_Para.VOICE_DATA_STOP != 0x0101)
+                         {
+                            App_Para.VOICE_DATA_STOP = 0x0101;
+                            App_Para.VOICE_DATA_STOP_END = 0x0100;
+                            Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+                         }
+                         App_Para.Data = LARBUM_DOWN;
+                         #endif
+ 135   3                 #if HEAT_FUNCTION_ENABLE
+ 136   3                 if(!Heat_Function_Para.Heat_Flag)//·¢ÈÈ²¼±êÖ¾Î»£¬½ö½øÀ´Ò»´Î
+ 137   3                 {
+ 138   4                     App_Para.App_Flag  = 1;
+ 139   4                     Heat_Function_Para.Heat_Flag = 1;
+ 140   4                     ++ Heat_Function_Para.Heat_Cnt;//ÇÐ»»±äÁ¿
+ 141   4                     if(Heat_Function_Para.Heat_Cnt & 0x01)
+ 142   4                     {
+ 143   5                       Heat_Function_Para.App_Heat_Cnt1s = 0; 
+ 144   5                       Heat_Function_Para.Heat_Cnt30Min  = 0;
+ 145   5                       Heat_Function_Para.Heat_Cnt30Min_Flag = True;
+ 146   5                       App_Para.Data = HEAT_ON;
+ 147   5                       LED1_SET(1);               
+ 148   5                     }
+ 149   4                     else
+ 150   4                     {
+ 151   5                       Heat_Function_Para.Heat_Cnt30Min_Flag = False;  
+ 152   5                       App_Para.Data = HEAT_OFF;
+ 153   5                       LED1_SET(0); 
+ 154   5                     }
+ 155   4                 }
+ 156   3                 #endif
+ 157   3              }
+ 158   2              else if(Get_Key == MSG_KEY7_PRESS)//K3
+ 159   2              {
+ 160   3                 if(Demo_Para.Demo_Flag)
+ 161   3                 {
+ 162   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 163   4                 }
+ 164   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 165   3                 //ÑüÍÆ¹¦ÄÜ
+ 166   3                 #if LARBUM_PUSH_FUNCTION_DISABLE
+                         App_Para.App_Flag  = 0;
+                         if(App_Para.VOICE_DATA_STOP != 0x0101)
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 4   
+
+                         {
+                            App_Para.VOICE_DATA_STOP = 0x0101;
+                            App_Para.VOICE_DATA_STOP_END = 0x0100;
+                            Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+                         }
+                         App_Para.Data = LARBUM_UP;
+                         #endif
+ 176   3                 //½ÅµÆ¹¦ÄÜ
+ 177   3                 #if FOOL_LED_FUNCTION_DISABLE
+                               if(!Fool_Led_Para.Foot_Led_Flag)//½ÅµÆ±êÖ¾Î»£¬½ö½øÀ´Ò»´Î
+                               {
+                                     App_Para.App_Flag  = 1;
+                                     Fool_Led_Para.Foot_Led_Flag = 1;
+                                     ++ Fool_Led_Para.Foot_Led_Cnt;//½ÅµÆÇÐ»»±äÁ¿
+                                     if(Fool_Led_Para.Foot_Led_Cnt & 0x01)
+                                     {
+                                           App_Para.Data = FOOT_LIGHT_OPEN; 
+                                     }
+                                     else
+                                     {
+                                           App_Para.Data = FOOT_LIGHT_CLOSE; 
+                                     }
+                               } 
+                         #endif
+ 193   3                       //Õð¶¯Âí´ïÊ¹ÄÜ
+ 194   3                 #if MASS_FUNCTION_ENABLE
+ 195   3                 if(!Mass_Para.Mass_Flag)//Õð¶¯Âí´ï±êÖ¾Î»£¬½ö½øÀ´Ò»´Î
+ 196   3                       {
+ 197   4                             App_Para.App_Flag  = 1;
+ 198   4                             Mass_Para.Mass_Flag = 1;
+ 199   4                             ++ Mass_Para.Mass_Cnt;//Õð¶¯Âí´ïÇÐ»»±äÁ¿
+ 200   4                             if(Mass_Para.Mass_Cnt & 0x01)
+ 201   4                             {
+ 202   5                                //¼ÆÊ±¶¨Ê±Æ÷ÇåÁã
+ 203   5                                Mass_Para.App_Mass_Cnt1s = 0;
+ 204   5                                Mass_Para.Mass_Cnt30Min = 0;
+ 205   5                                //Í£Ö¹¼ÆÊý²¢ÇÒ¹Ø±ÕÕð¶¯Âí´ï
+ 206   5                                Mass_Para.Mass_Cnt30Min_Flag = True;
+ 207   5                                   App_Para.Data = MASS_OPEN; 
+ 208   5                                   LED2_SET(1);
+ 209   5                             }
+ 210   4                             else
+ 211   4                             {
+ 212   5                                //¼ÆÊ±¶¨Ê±Æ÷ÇåÁã
+ 213   5                                Mass_Para.App_Mass_Cnt1s = 0;
+ 214   5                                Mass_Para.Mass_Cnt30Min = 0;
+ 215   5                                //Í£Ö¹¼ÆÊý²¢ÇÒ¹Ø±ÕÕð¶¯Âí´ï
+ 216   5                                Mass_Para.Mass_Cnt30Min_Flag = False;
+ 217   5                                   App_Para.Data = MASS_CLOSE; 
+ 218   5                                   LED2_SET(0);
+ 219   5                             }
+ 220   4                       }
+ 221   3                 #endif
+ 222   3              }
+ 223   2              else if(Get_Key == MSG_KEY5_SHORT_PRESS)//K1     MSG_KEY5_PRESS
+ 224   2              {
+ 225   3                 if(Demo_Para.Demo_Flag)
+ 226   3                 {
+ 227   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 228   4                 }
+ 229   3                 ++ Double_Change_Mode.Double_Push_Cnt;     //Ë«»÷¼ÆÊý±äÁ¿
+ 230   3                 Double_Change_Mode.Double_Push_Flag = 1;   //Ë«»÷¼ÆÊý±êÖ¾ÖÁ1£¬¿ªÊ¼¼ÆÊý
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 5   
+
+ 231   3                 if(2 == Double_Change_Mode.Double_Push_Cnt)
+ 232   3                 {
+ 233   4                     Double_Change_Mode.Double_Push_Cnt = 0;//Ë«»÷¼ÆÊý±äÁ¿ÇåÁã
+ 234   4                     Double_Change_Mode.Double_Push_Flag = 0;//Ë«»÷¼ÆÊý±êÖ¾ÇåÁã
+ 235   4                     Double_Change_Mode.Double_Push_Flag_Cnt = 0;
+ 236   4                     App_Para.App_Flag  = 1;
+ 237   4                     
+ 238   4                     Double_Change_Mode.Change_Time_Flag = 1;//³¬³ö20SÖØ¸´²¥±¨µÄ¼ÆÊý±êÖ¾Î»
+ 239   4                     Double_Change_Mode.Change_Time_Cnts = 0;//³¬³ö20SÖØ¸´²¥±¨µÄ¼ÆÊý±äÁ¿
+ 240   4      
+ 241   4                     if(Double_Change_Mode.Change_Temp_Cnts_Flag)//³¬³ö20SÖØ¸´²¥±¨µÄ±êÖ¾
+ 242   4                     {
+ 243   5                              if(App_Para.VOICE_DATA != 0x0300)//ÖØ¸´²¥±¨Ö¸Áî
+ 244   5                           {
+ 245   6                              App_Para.VOICE_DATA = 0x0300;
+ 246   6                              Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA);
+ 247   6                              App_Para.App_Flag  = 0;
+ 248   6      
+ 249   6                              Double_Change_Mode.Change_Time_Flag = 0;//¼ÆÊý±êÖ¾Î»
+ 250   6                           Double_Change_Mode.Change_Time_Cnts = 0;//¼ÆÊý±äÁ¿
+ 251   6      
+ 252   6                           Double_Change_Mode.Change_Temp_Cnts_Flag = 0;//³¬³ö20SµÄ±äÁ¿ÇåÁã
+ 253   6                           }
+ 254   5                     }
+ 255   4                     else
+ 256   4                     {
+ 257   5                         if(!Double_Change_Mode.Change_OnlyOne_Flag)//ÉÏµçµÚÒ»´ÎË«»÷·¢ËÍ²¥±¨Ö¸Áî
+ 258   5                         {
+ 259   6                            Double_Change_Mode.Change_OnlyOne_Flag = 1;
+ 260   6                            if(App_Para.VOICE_DATA != 0x0300)//ÖØ¸´²¥±¨Ö¸Áî
+ 261   6                                  {
+ 262   7                                     App_Para.VOICE_DATA = 0x0300;
+ 263   7                                     Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA);
+ 264   7                                     App_Para.App_Flag  = 0;
+ 265   7                                  }
+ 266   6                         }
+ 267   5                               else                    //20SÄÚË«»÷·¢ËÍÃû×ÖÇÐ»»Ö¸Áî
+ 268   5                               {
+ 269   6                                   if(App_Para.VOICE_DATA != 0x0200)//Ãû×ÖÇÐ»»Ö¸Áî
+ 270   6                                      {
+ 271   7                                         App_Para.VOICE_DATA = 0X0200;
+ 272   7                                         Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA);
+ 273   7                                         App_Para.App_Flag  = 0;
+ 274   7                                      }
+ 275   6                               }
+ 276   5                     }
+ 277   4                 }
+ 278   3              } 
+ 279   2          }        
+ 280   1          /*****************************************************************************************************
+             -*************************************/
+ 281   1          /**************************************************************µç×èR21½ÓµØÏÂÀ­ÔòÎªÒÔÏÂ³ÌÐò************
+             -****************************************/ 
+ 282   1          /*****************************************************************************************************
+             -*************************************/ 
+ 283   1          else
+ 284   1          {
+ 285   2              if(Get_Key == MSG_KEY_NONE)
+ 286   2              {
+ 287   3                 Rev_Data_Handle();                                     //½ÓÊÕµÄÊý¾Ý´¦Àí
+ 288   3                 if(!App_Para.App_Flag)                                          //Õâ¸ö±êÖ¾App_FlagÇø±ðÓÚÓïÒôÄ£×
+             -é(1)Óë°´¼ü(0)       
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 6   
+
+ 289   3                 {
+ 290   4                    App_Para.App_Flag = 1;
+ 291   4                    App_Para.Data = STOP; 
+ 292   4                    App_Para.VOICE_DATA = 0;                                    //ÖØ¸´²¥±¨ºÍÓïÒôÇÐ»»Ö¸ÁîÇåÁãVOIC
+             -E_DATA
+ 293   4                    App_Para.VOICE_DATA_STOP = 0;                               //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVO
+             -ICE_DATA_STOP
+ 294   4                    if(App_Para.VOICE_DATA_STOP_END)                            //ÍÆ¸ËÍ£Ö¹Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾Ý
+             -VOICE_DATA_STOP_END
+ 295   4                    {
+ 296   5                       App_Para.VOICE_DATA_STOP_END = 0x0100;
+ 297   5                       Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP_END);
+ 298   5                       App_Para.VOICE_DATA_STOP_END = 0;                        //½ö·¢ËÍÒ»´Î£¬·¢ËÍÍêÇåÁã
+ 299   5                    }
+ 300   4                 }
+ 301   3                 Heat_Function_Para.Heat_Flag     = 0;                                    //ËÉÊÖÊ±·¢ÈÈ²¼±êÖ¾Î»Çå
+             -Áã
+ 302   3                 Fool_Led_Para.Foot_Led_Flag = 0;                                    //ËÉÊÖÊ±½ÅµÆ±êÖ¾Î»ÇåÁã
+ 303   3                 Mass_Para.Mass_Flag = 0;
+ 304   3              }
+ 305   2              else if(Get_Key == MSG_KEY1_PRESS)//K7
+ 306   2              {
+ 307   3                 App_Para.App_Flag  = 0;
+ 308   3                 if(Demo_Para.Demo_Flag)
+ 309   3                 {
+ 310   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 311   4                 }
+ 312   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                        //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOI
+             -CE_DATA_STOP
+ 313   3                 {
+ 314   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+ 315   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+ 316   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);   //½ö·¢ËÍÒ»´Î
+ 317   4                 }
+ 318   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 319   3                 App_Para.Data = HEAD_UP;        
+ 320   3              }
+ 321   2              else if(Get_Key == MSG_KEY2_PRESS)//K5
+ 322   2              {
+ 323   3                 App_Para.App_Flag  = 0;
+ 324   3                 if(Demo_Para.Demo_Flag)
+ 325   3                 {
+ 326   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 327   4                 }
+ 328   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                      //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE
+             -_DATA_STOP
+ 329   3                 {
+ 330   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+ 331   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+ 332   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+ 333   4                 }
+ 334   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 335   3                 App_Para.Data = HEAD_DOWN;     
+ 336   3              }
+ 337   2              else if(Get_Key == MSG_KEY3_PRESS)//K4
+ 338   2              {
+ 339   3                 App_Para.App_Flag  = 0;
+ 340   3                 if(Demo_Para.Demo_Flag)
+ 341   3                 {
+ 342   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 343   4                 }
+ 344   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                     //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE_
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 7   
+
+             -DATA_STOP
+ 345   3                 {
+ 346   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+ 347   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+ 348   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+ 349   4                 }
+ 350   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 351   3                 App_Para.Data = CLOSE;         
+ 352   3              }
+ 353   2              else if(Get_Key == MSG_KEY4_PRESS)//K6
+ 354   2              {
+ 355   3                 App_Para.App_Flag  = 0;
+ 356   3                 if(Demo_Para.Demo_Flag)
+ 357   3                 {
+ 358   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 359   4                 }
+ 360   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                   //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE_DA
+             -TA_STOP
+ 361   3                 {
+ 362   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+ 363   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+ 364   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+ 365   4                 }
+ 366   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 367   3                 App_Para.Data = OPEN;               
+ 368   3              }
+ 369   2              else if(Get_Key == MSG_KEY5_LONGPRESS_HD)//K1
+ 370   2              {
+ 371   3                 App_Para.App_Flag  = 0;
+ 372   3                 Double_Change_Mode.Double_Push_Cnt = 0;
+ 373   3                 if(Demo_Para.Demo_Flag)
+ 374   3                 {
+ 375   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 376   4                 }
+ 377   3                 if(App_Para.VOICE_DATA_STOP != 0x0101)                  //ÍÆ¸Ë¶¯Ê±¸øÓïÒôÄ£×é·µ»ØµÄÊý¾ÝVOICE_DAT
+             -A_STOP
+ 378   3                 {
+ 379   4                    App_Para.VOICE_DATA_STOP = 0x0101;
+ 380   4                    App_Para.VOICE_DATA_STOP_END = 0x0100;
+ 381   4                    Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+ 382   4                 }
+ 383   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 384   3                 App_Para.Data = HOME_POSITION;         
+ 385   3              }
+ 386   2              else if(Get_Key == MSG_KEY6_PRESS)//K2
+ 387   2              {
+ 388   3                 if(Demo_Para.Demo_Flag)
+ 389   3                 {
+ 390   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 391   4                 }
+ 392   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 393   3                 //ÑüÍÆÊÕ»ØÊ§ÄÜ
+ 394   3                 #if LARBUM_PUSH_FUNCTION_DISABLE
+                         App_Para.App_Flag  = 0;
+                         if(App_Para.VOICE_DATA_STOP != 0x0101)
+                         {
+                            App_Para.VOICE_DATA_STOP = 0x0101;
+                            App_Para.VOICE_DATA_STOP_END = 0x0100;
+                            Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+                         }
+                         App_Para.Data = LARBUM_DOWN;
+                         #endif
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 8   
+
+ 404   3                 //½ÅµÆ¹¦ÄÜÊ§ÄÜ
+ 405   3                 #if FOOL_LED_FUNCTION_DISABLE
+                               if(!Fool_Led_Para.Foot_Led_Flag)//½ÅµÆ±êÖ¾Î»£¬½ö½øÀ´Ò»´Î
+                               {
+                                     App_Para.App_Flag  = 1;
+                                     Fool_Led_Para.Foot_Led_Flag = 1;
+                                     ++ Fool_Led_Para.Foot_Led_Cnt;//½ÅµÆÇÐ»»±äÁ¿
+                                     if(Fool_Led_Para.Foot_Led_Cnt & 0x01)
+                                     {
+                                           App_Para.Data = FOOT_LIGHT_OPEN; 
+                                     }
+                                     else
+                                     {
+                                           App_Para.Data = FOOT_LIGHT_CLOSE; 
+                                     }
+                               } 
+                         #endif
+ 421   3                 //Õð¶¯Âí´ïÊ¹ÄÜ
+ 422   3                 #if MASS_FUNCTION_ENABLE
+ 423   3                 if(!Mass_Para.Mass_Flag)//Õð¶¯Âí´ï±êÖ¾Î»£¬½ö½øÀ´Ò»´Î
+ 424   3                       {
+ 425   4                             App_Para.App_Flag  = 1;
+ 426   4                             Mass_Para.Mass_Flag = 1;
+ 427   4                             ++ Mass_Para.Mass_Cnt;//Õð¶¯Âí´ïÇÐ»»±äÁ¿
+ 428   4                             if(Mass_Para.Mass_Cnt & 0x01)
+ 429   4                             {
+ 430   5                                //¼ÆÊ±¶¨Ê±Æ÷ÇåÁã
+ 431   5                                Mass_Para.App_Mass_Cnt1s = 0;
+ 432   5                                Mass_Para.Mass_Cnt30Min = 0;
+ 433   5                                //Í£Ö¹¼ÆÊý²¢ÇÒ¹Ø±ÕÕð¶¯Âí´ï
+ 434   5                                Mass_Para.Mass_Cnt30Min_Flag = True;
+ 435   5                                   App_Para.Data = MASS_OPEN; 
+ 436   5                                   LED1_SET(1);
+ 437   5                             }
+ 438   4                             else
+ 439   4                             {
+ 440   5                                //¼ÆÊ±¶¨Ê±Æ÷ÇåÁã
+ 441   5                                Mass_Para.App_Mass_Cnt1s = 0;
+ 442   5                                Mass_Para.Mass_Cnt30Min = 0;
+ 443   5                                //Í£Ö¹¼ÆÊý²¢ÇÒ¹Ø±ÕÕð¶¯Âí´ï
+ 444   5                                Mass_Para.Mass_Cnt30Min_Flag = False;
+ 445   5                                   App_Para.Data = MASS_CLOSE; 
+ 446   5                                   LED1_SET(0);
+ 447   5                             }
+ 448   4                       }
+ 449   3                 #endif
+ 450   3              }
+ 451   2              else if(Get_Key == MSG_KEY7_PRESS)//K3
+ 452   2              {
+ 453   3                 if(Demo_Para.Demo_Flag)
+ 454   3                 {
+ 455   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 456   4                 }
+ 457   3                 Double_Change_Mode.Change_OnlyOne_Flag = 0;//µ±Ç°°´¼ü°´ÏÂÊ±£¬³õÊ¼»¯Ë«»÷¹¦ÄÜ
+ 458   3                 //ÑüÍÆ´ò¿ªÊ§ÄÜ
+ 459   3                 #if LARBUM_PUSH_FUNCTION_DISABLE
+                         App_Para.App_Flag  = 0;
+                         if(App_Para.VOICE_DATA_STOP != 0x0101)
+                         {
+                            App_Para.VOICE_DATA_STOP = 0x0101;
+                            App_Para.VOICE_DATA_STOP_END = 0x0100;
+                            Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA_STOP);
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 9   
+
+                         }
+                         App_Para.Data = LARBUM_UP;
+                         #endif
+ 469   3                 //·¢ÈÈ²¼´ò¿ªÊ¹ÄÜ
+ 470   3                 #if HEAT_FUNCTION_ENABLE
+ 471   3                 if(!Heat_Function_Para.Heat_Flag)//·¢ÈÈ²¼±êÖ¾Î»£¬½ö½øÀ´Ò»´Î
+ 472   3                 {
+ 473   4                     App_Para.App_Flag  = 1;
+ 474   4                     Heat_Function_Para.Heat_Flag = 1;
+ 475   4                     ++ Heat_Function_Para.Heat_Cnt;//ÇÐ»»±äÁ¿
+ 476   4                     if(Heat_Function_Para.Heat_Cnt & 0x01)
+ 477   4                     {
+ 478   5                       Heat_Function_Para.App_Heat_Cnt1s = 0; 
+ 479   5                       Heat_Function_Para.Heat_Cnt30Min  = 0;
+ 480   5                       Heat_Function_Para.Heat_Cnt30Min_Flag = True;
+ 481   5                       App_Para.Data = HEAT_ON;
+ 482   5                       LED2_SET(1);               
+ 483   5                     }
+ 484   4                     else
+ 485   4                     {
+ 486   5                       Heat_Function_Para.App_Heat_Cnt1s = 0; 
+ 487   5                       Heat_Function_Para.Heat_Cnt30Min  = 0;
+ 488   5                       Heat_Function_Para.Heat_Cnt30Min_Flag = False;  
+ 489   5                       App_Para.Data = HEAT_OFF;
+ 490   5                       LED2_SET(0); 
+ 491   5                     }
+ 492   4                 }
+ 493   3                 #endif
+ 494   3              }
+ 495   2              else if(Get_Key == MSG_KEY5_SHORT_PRESS)//K1    MSG_KEY5_PRESS
+ 496   2              {
+ 497   3                 if(Demo_Para.Demo_Flag)
+ 498   3                 {
+ 499   4                    Voice_Protocol_Send(0xA5,0XFA,0x0A00);
+ 500   4                 }
+ 501   3                 ++ Double_Change_Mode.Double_Push_Cnt;     //Ë«»÷¼ÆÊý±äÁ¿
+ 502   3                 Double_Change_Mode.Double_Push_Flag = 1;   //Ë«»÷¼ÆÊý±êÖ¾ÖÁ1£¬¿ªÊ¼¼ÆÊý
+ 503   3                 if(2 == Double_Change_Mode.Double_Push_Cnt)
+ 504   3                 {
+ 505   4                     Double_Change_Mode.Double_Push_Cnt = 0;//Ë«»÷¼ÆÊý±äÁ¿ÇåÁã
+ 506   4                     Double_Change_Mode.Double_Push_Flag = 0;//Ë«»÷¼ÆÊý±êÖ¾ÇåÁã
+ 507   4                     Double_Change_Mode.Double_Push_Flag_Cnt = 0;
+ 508   4                     App_Para.App_Flag  = 1;
+ 509   4                     
+ 510   4                     Double_Change_Mode.Change_Time_Flag = 1;//³¬³ö20SÖØ¸´²¥±¨µÄ¼ÆÊý±êÖ¾Î»
+ 511   4                     Double_Change_Mode.Change_Time_Cnts = 0;//³¬³ö20SÖØ¸´²¥±¨µÄ¼ÆÊý±äÁ¿
+ 512   4      
+ 513   4                     if(Double_Change_Mode.Change_Temp_Cnts_Flag)//³¬³ö20SÖØ¸´²¥±¨µÄ±êÖ¾
+ 514   4                     {
+ 515   5                              if(App_Para.VOICE_DATA != 0x0300)//ÖØ¸´²¥±¨Ö¸Áî
+ 516   5                           {
+ 517   6                              App_Para.VOICE_DATA = 0x0300;
+ 518   6                              Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA);
+ 519   6                              App_Para.App_Flag  = 0;
+ 520   6      
+ 521   6                              Double_Change_Mode.Change_Time_Flag = 0;//¼ÆÊý±êÖ¾Î»
+ 522   6                           Double_Change_Mode.Change_Time_Cnts = 0;//¼ÆÊý±äÁ¿
+ 523   6      
+ 524   6                           Double_Change_Mode.Change_Temp_Cnts_Flag = 0;//³¬³ö20SµÄ±äÁ¿ÇåÁã
+ 525   6                           }
+ 526   5                     }
+ 527   4                     else
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 10  
+
+ 528   4                     {
+ 529   5                         if(!Double_Change_Mode.Change_OnlyOne_Flag)//ÉÏµçµÚÒ»´ÎË«»÷·¢ËÍ²¥±¨Ö¸Áî
+ 530   5                         {
+ 531   6                            Double_Change_Mode.Change_OnlyOne_Flag = 1;
+ 532   6                            if(App_Para.VOICE_DATA != 0x0300)//ÖØ¸´²¥±¨Ö¸Áî
+ 533   6                                  {
+ 534   7                                     App_Para.VOICE_DATA = 0x0300;
+ 535   7                                     Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA);
+ 536   7                                     App_Para.App_Flag  = 0;
+ 537   7                                  }
+ 538   6                         }
+ 539   5                               else                    //20SÄÚË«»÷·¢ËÍÃû×ÖÇÐ»»Ö¸Áî
+ 540   5                               {
+ 541   6                                   if(App_Para.VOICE_DATA != 0x0200)//Ãû×ÖÇÐ»»Ö¸Áî
+ 542   6                                      {
+ 543   7                                         App_Para.VOICE_DATA = 0X0200;
+ 544   7                                         Voice_Protocol_Send(0xA5,0XFA,App_Para.VOICE_DATA);
+ 545   7                                         App_Para.App_Flag  = 0;
+ 546   7                                      }
+ 547   6                               }
+ 548   5                     }
+ 549   4                 }
+ 550   3              }
+ 551   2          }
+ 552   1      }
+ 553          
+ 554          
+ 555          void System_Init(void)
+ 556          {
+ 557   1        TimeOutDet_Init();       //¼ÆÊý±äÁ¿³õÊ¼»¯
+ 558   1        Timer_Init();            //¶¨Ê±Æ÷³õÊ¼»¯
+ 559   1        Uart_Init();         //´®¿Ú³õÊ¼»¯
+ 560   1        //Led_App_Handle(LED_NUM); //LED³õÊ¼»¯
+ 561   1        Led_Init();
+ 562   1        Test_Init();
+ 563   1        Key_Init();              //°´¼ü³õÊ¼»¯
+ 564   1        Key_Register(Key_Handle);//°´¼ü»Øµ÷
+ 565   1        WDTCON |= 0X40;          //¿ª¿´ÃÅ¹·
+ 566   1        EA = 1;                  //¿ª×ÜÖÕ¶Ë
+ 567   1      }
+ 568          
+ 569          void System_Handle(void)
+ 570          {
+ 571   1         WDTCON |= 0X40;//Î¹¹·
+ 572   1         Key_Poll();    //°´¼ü´¦Àíº¯Êý
+ 573   1         if(TimeOutDet_Check(&TimeOut_Para[0]))//20MS·¢ËÍÒ»´ÎµÄÅÐ¶ÏÓï¾ä
+ 574   1         {
+ 575   2            TimeOut_Record(&TimeOut_Para[0],OnLine_Time); 
+ 576   2            if(!App_Para.VOICE_DATA)
+ 577   2            {
+ 578   3               Protocol_Send(SEND_ADDR,SEND_ID,App_Para.Data);//È«¾Ö±äÁ¿Data
+ 579   3            }         
+ 580   2         }
+ 581   1         if(Auto_Close_Push_Para.Auto_Close_Push_Cnts  > Auto_Close_Time)//ÍÆ¸Ë¶¯ºó30S×Ô¶¯¹Ø±ÕµÄÅÐ¶ÏÓï¾ä
+ 582   1         {
+ 583   2             Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;              //ÍÆ¸Ë×Ô¶¯¹Ø±ÕµÄ¼ÆÊý±äÁ¿
+ 584   2             Auto_Close_Push_Para.Auto_Close_Push_Flag = 0;              //ÍÆ¸Ë×Ô¶¯¹Ø±ÕµÄ¼ÆÊý±êÖ¾
+ 585   2             Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 0;
+ 586   2             if(Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag) //½ö½øÀ´Ò»´Î
+ 587   2             {
+ 588   3                 Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 0;
+ 589   3                 Voice_Protocol_Send(0xA5,0XFA,Data_Stop_End);//·¢ËÍÍÆ¸ËÍ£Ö¹Ö¸Áî¸æËßÓïÒôÄ£×é:ÍÆ¸ËÍ£Ö¹ÁË
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 11  
+
+ 590   3             }
+ 591   2             App_Para.Data = STOP;//È»ºóÏòÏÂ·¢ËÍÍ£Ö¹Ö¸Áî
+ 592   2         }
+ 593   1         
+ 594   1      }
+ 595          
+ 596          /**************************************************
+ 597          *º¯ÊýÃû³Æ£ºvoid timer0/1/2() interrupt 1/3/5
+ 598          *º¯Êý¹¦ÄÜ£º¶¨Ê±Æ÷ÖÐ¶Ï²úÉú·½²¨
+ 599          *Èë¿Ú²ÎÊý£ºvoid
+ 600          *³ö¿Ú²ÎÊý£ºvoid
+ 601          **************************************************/
+ 602          void timer0() interrupt 1
+ 603          {
+ 604   1        TL0 = (65536 - 6000)%256;
+ 605   1        TH0 = (65536 - 6000)/256;
+ 606   1        TimeOutDet_DecHandle();
+ 607   1        if(Double_Change_Mode.Double_Push_Flag)
+ 608   1        {
+ 609   2           if(Double_Change_Mode.Double_Push_Flag_Cnt++ > 700)//500ms
+ 610   2           {
+ 611   3              Double_Change_Mode.Double_Push_Flag_Cnt = 0;//Ë«»÷¼ÆÊý±äÁ¿ÇåÁã
+ 612   3              Double_Change_Mode.Double_Push_Flag = 0;    //Ë«»÷¼ÆÊý±êÖ¾Î»ÇåÁã
+ 613   3              Double_Change_Mode.Double_Push_Cnt = 0;     //Ë«»÷¼ÆÊýÅÐ¶ÏÊÇ·ñÓÐÁ½´Î
+ 614   3      
+ 615   3              /********************µ¥´Î°´½ÅµÆ¿ªÆô*********************************/
+ 616   3                    if(!Fool_Led_Para.Foot_Led_Flag)//½ÅµÆ±êÖ¾Î»£¬½ö½øÀ´Ò»´Î
+ 617   3                    {
+ 618   4                       App_Para.App_Flag = 1;
+ 619   4                       Fool_Led_Para.Foot_Led_Flag = 1;
+ 620   4                       ++ Fool_Led_Para.Foot_Led_Cnt;//½ÅµÆÇÐ»»±äÁ¿
+ 621   4                       if(Fool_Led_Para.Foot_Led_Cnt & 0x01)
+ 622   4                       {
+ 623   5                             App_Para.Data = FOOT_LIGHT_OPEN; 
+ 624   5                       }
+ 625   4                       else
+ 626   4                       {
+ 627   5                             App_Para.Data = FOOT_LIGHT_CLOSE; 
+ 628   5                       }
+ 629   4                    }  
+ 630   3                    /*****************************************************************/
+ 631   3           }
+ 632   2        }
+ 633   1        if(Auto_Close_Push_Para.Auto_Close_Push_Flag)       //×Ô¶¯¹Ø±ÕÍÆ¸Ë±êÖ¾
+ 634   1        {
+ 635   2           Auto_Close_Push_Para.Auto_Close_Push_Cnts ++;    //×Ô¶¯¹Ø±ÕÍÆ¸Ë¼ÆÊý±äÁ¿
+ 636   2        }
+ 637   1        if(Double_Change_Mode.Change_Time_Flag)           //Ë«»÷ÇÐ»»»òÕß²¥±¨µÄ±êÖ¾
+ 638   1        {
+ 639   2           if(Double_Change_Mode.Change_Time_Cnts++ > Change_Time_Cnt20s)//20S
+ 640   2           {
+ 641   3              Double_Change_Mode.Change_Time_Flag = 0;    //Ë«»÷ÇÐ»»»òÕß²¥±¨µÄ±êÖ¾ÇåÁã
+ 642   3              Double_Change_Mode.Change_Time_Cnts = 0;    //Ë«»÷ÇÐ»»»òÕß²¥±¨µÄ±äÁ¿ÇåÁã
+ 643   3              Double_Change_Mode.Change_Temp_Cnts_Flag = 1;//ÊÇ²¥±¨ÄØ»¹ÊÇÇÐ»»ÓÉÕâ¸ö±êÖ¾¾ö¶¨
+ 644   3           }
+ 645   2        }
+ 646   1        /*********************************************************************************************/
+ 647   1        /**************************************** ·¢ÈÈ²¼×Ô¶¯¹Ø±ÕÊ±¼ä**********************************/
+ 648   1        /*********************************************************************************************/
+ 649   1        if(Heat_Function_Para.Heat_Cnt30Min_Flag)
+ 650   1        {
+ 651   2           Heat_Function_Para.App_Heat_Cnt1s ++;
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 12  
+
+ 652   2        }
+ 653   1        if(Heat_Function_Para.App_Heat_Cnt1s > 2000)//1ÃëµÄÊ±¼ä¶Î
+ 654   1        {
+ 655   2           Heat_Function_Para.App_Heat_Cnt1s = 0;
+ 656   2           Heat_Function_Para.Heat_Cnt30Min ++;
+ 657   2        }
+ 658   1        if(Heat_Function_Para.Heat_Cnt30Min > 1800)//30·ÖÖÓ×Ô¶¯¹Ø±Õ·¢ÈÈ²¼1800
+ 659   1        {
+ 660   2           //¼ÆÊ±¶¨Ê±Æ÷ÇåÁã
+ 661   2           Heat_Function_Para.App_Heat_Cnt1s = 0;
+ 662   2           Heat_Function_Para.Heat_Cnt30Min  = 0;
+ 663   2           //Í£Ö¹¼ÆÊý²¢ÇÒ¹Ø±Õ·¢ÈÈ²¼
+ 664   2           Heat_Function_Para.Heat_Cnt30Min_Flag = False;  
+ 665   2           App_Para.Data = HEAT_OFF;
+ 666   2           //·¢ÈÈÇÐ»»±äÁ¿ÇåÁã
+ 667   2           Heat_Function_Para.Heat_Cnt = 0;
+ 668   2           if(TEST_PIN == 0)
+ 669   2           {
+ 670   3              LED1_SET(0); 
+ 671   3           }
+ 672   2           else
+ 673   2           {
+ 674   3              LED2_SET(0);
+ 675   3           }
+ 676   2        }
+ 677   1        /*********************************************************************************************/
+ 678   1        /******************************************Õð¶¯Âí´ï×Ô¶¯¹Ø±ÕÊ±¼ä*******************************/
+ 679   1        /*********************************************************************************************/
+ 680   1        #if 1
+ 681   1        if(Mass_Para.Mass_Cnt30Min_Flag)
+ 682   1        {
+ 683   2           Mass_Para.App_Mass_Cnt1s ++;
+ 684   2        }
+ 685   1        if(Mass_Para.App_Mass_Cnt1s > 2000)//1ÃëµÄÊ±¼ä¶Î
+ 686   1        {
+ 687   2           Mass_Para.App_Mass_Cnt1s = 0;
+ 688   2           Mass_Para.Mass_Cnt30Min ++;
+ 689   2        }
+ 690   1        if(Mass_Para.Mass_Cnt30Min > 1800)    //30·ÖÖÓ×Ô¶¯¹Ø±ÕÕð¶¯Âí´ï1800
+ 691   1        {
+ 692   2           //¼ÆÊ±¶¨Ê±Æ÷ÇåÁã
+ 693   2           Mass_Para.App_Mass_Cnt1s = 0;
+ 694   2           Mass_Para.Mass_Cnt30Min = 0;
+ 695   2           //Í£Ö¹¼ÆÊý²¢ÇÒ¹Ø±ÕÕð¶¯Âí´ï
+ 696   2           Mass_Para.Mass_Cnt30Min_Flag = False;
+ 697   2           App_Para.Data = MASS_CLOSE; 
+ 698   2           //Âí´ïÇÐ»»±äÁ¿ÇåÁã
+ 699   2           Mass_Para.Mass_Cnt = 0x00;
+ 700   2           if(TEST_PIN == 0)
+ 701   2           {
+ 702   3              LED2_SET(0);
+ 703   3           }
+ 704   2           else
+ 705   2           {
+ 706   3              LED1_SET(0);
+ 707   3           }
+ 708   2        }
+ 709   1        #endif
+ 710   1      }
+ 711          
+ 712          void timer1() interrupt 3
+ 713          {
+C51 COMPILER V9.59.0.0   SYSTEM                                                            02/14/2019 15:57:58 PAGE 13  
+
+ 714   1      
+ 715   1      }
+ 716          
+ 717          void Timer2Int(void) interrupt 5
+ 718          {             
+ 719   1             TF2 = 0;   //Òç³öÇåÁã
+ 720   1       
+ 721   1      }
+ 722          
+ 723          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1828    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     59       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

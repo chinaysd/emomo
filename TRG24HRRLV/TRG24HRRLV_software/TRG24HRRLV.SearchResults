@@ -1,0 +1,4 @@
+---- TABLE_DISABLE Matches (3 in 2 files) ----
+bsp_uart.h (bsp)://#define  TABLE_DISABLE
+bsp_usrt.c (bsp):                              #ifdef  TABLE_DISABLE
+bsp_usrt.c (bsp):                              #ifdef TABLE_DISABLE

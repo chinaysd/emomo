@@ -1,0 +1,79 @@
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Thu Dec 06 10:25:31 2018
+
+
+*PART*
+J6 CON3
+
+*DELPART*
+J6 CON3
+*END*
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Thu Dec 06 10:26:01 2018
+
+*END*
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Mon Dec 10 12:23:09 2018
+
+
+*DELPIN*
+J1.1    $$$20596
+J1.2    GND
+R18.1    DATA
+J1.3    DATA
+
+*DELPART*
+J1 CON3
+*END*
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Mon Dec 10 13:40:36 2018
+
+
+*DELPIN*
+J2.1    $$$29065
+U1.31    $$$29065
+J2.2    $$$29063
+U1.32    $$$29063
+
+*DELPART*
+J2 CON_2.54_2P_2
+*END*
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Mon Dec 10 13:46:20 2018
+
+*END*
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Mon Dec 10 13:48:47 2018
+
+*END*
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Thu Dec 13 14:10:31 2018
+
+
+*DELPIN*
+J1.1    $$$20596
+J1.2    GND
+R18.1    DATA
+J1.3    DATA
+
+*DELPART*
+J1 CON3
+*END*
+*PADS-ECO-V10.0-METRIC*
+
+*REMARK* -- default1.pcb -- Fri Dec 21 10:12:09 2018
+
+
+*PART*
+J6 MASK
+J7 MASK
+J8 MASK
+J9 MASK
+*END*

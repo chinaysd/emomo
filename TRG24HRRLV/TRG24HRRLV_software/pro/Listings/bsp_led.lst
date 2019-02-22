@@ -1,0 +1,105 @@
+C51 COMPILER V9.59.0.0   BSP_LED                                                           02/14/2019 15:57:58 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_LED
+OBJECT MODULE PLACED IN .\Objects\bsp_led.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_led.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp\key;..\bsp;..\lib;..
+                    -\TimeOut;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_led.lst) TABS(7) OBJECT(.\Objects\bsp_led.obj)
+
+line level    source
+
+   1          #include "bsp_led.h"
+   2          
+   3          
+   4          //LED_PARA_T Led_Para[LED_NUM];
+   5          
+   6          #if 0
+              unsigned char Led_Init(unsigned char id)
+              {
+                  if(id > LED_NUM)
+                      return LED_ERROR;
+                  if(id == 0)
+                  {
+                      P1CON |= 0X80;
+                      P1PH  &= ~0X80;
+                      //LED1_SET(1);
+                      return LED_SUCCESS;
+                  }
+                  else if(id == 1)
+                  {
+                      P1CON |= 0X01;
+                      P1PH  &= ~0X01;
+                      //LED3_SET(1);
+                      return LED_SUCCESS;
+                  }
+                  else if(id == 2)
+                  {
+                      P2CON |= 0X08;
+                      P2PH  &= ~0X08;
+                      //LED2_SET(1);
+                      return LED_SUCCESS;
+                  }
+                  return LED_ERROR;
+              }
+              #else
+  35          void Led_Init(void)
+  36          {
+  37   1          P1CON |= 0X81;
+  38   1          P1PH  &= ~0X81;
+  39   1          P2CON |= 0X08;
+  40   1          P2PH  &= ~0X08;
+  41   1      }
+  42          #endif
+  43          
+  44          
+  45          #if 0
+              
+              unsigned char Led_App_Init(LED_PARA_T *P)
+              {
+                 unsigned char Led_Init(unsigned char ID);
+                 return Led_Init(P->ID);    
+              }
+              
+              unsigned char Led_App_Handle(unsigned char sum)
+              {
+C51 COMPILER V9.59.0.0   BSP_LED                                                           02/14/2019 15:57:58 PAGE 2   
+
+                  static unsigned char i;
+                  if(sum > LED_NUM)
+                  {
+                      return LED_ERROR;
+                  }
+                  for(i = 0 ; i < sum; i ++)
+                  {
+                      Led_Para[i].ID = i;
+                      Led_App_Init(&Led_Para[i]);
+                  }
+                  if(i != sum)
+                  {
+                      return LED_ERROR;
+                  }
+                  else 
+                  {
+                      return LED_SUCCESS;
+                  }
+              }
+              
+              #endif
+  76          
+  77          
+  78          
+  79          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     13    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

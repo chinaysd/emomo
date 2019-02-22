@@ -1,0 +1,483 @@
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_USRT
+OBJECT MODULE PLACED IN .\Objects\bsp_usrt.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_usrt.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp\key;..\bsp;..\lib;.
+                    -.\TimeOut;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_usrt.lst) TABS(7) OBJECT(.\Objects\bsp_usrt.obj)
+
+line level    source
+
+   1          #include "system.h"
+   2          
+   3          extern AUTO_CLOSE_PUSH_PARA_t Auto_Close_Push_Para;
+   4          extern DEMO_PARA_t Demo_Para;
+   5          extern APP_PARA_t App_Para;
+   6          extern HEAT_FUNCTION_PARA_t Heat_Function_Para;
+   7          extern MASS_PARA Mass_Para;
+   8          unsigned char UartSendFlag;
+   9          unsigned char UartReceiveFlag;
+  10          
+  11          
+  12          /*****************************************接收数据变量定义**********************************************/
+  13          unsigned char Res,Rev_Num,Rev_Sum,Rev_String[REV_BUF_SIZE];
+  14          unsigned int Temp;
+  15          /*****************************************************************************************************/
+  16          
+  17          void Uart_Init(void)
+  18          {
+  19   1          SCON=0x50;
+  20   1             PCON|=0x80;
+  21   1             T2CON&=~0x30;
+  22   1             TMCON|=0x02;
+  23   1             TMOD&=0x0f;
+  24   1             TMOD|=0x20;
+  25   1             TH1=256 - Freq/9600/16/2*2;
+  26   1             TR1=0;
+  27   1             TR1=1;
+  28   1             EUART=1; 
+  29   1      }
+  30          
+  31          void Send_Byte(unsigned char TX_BUF)
+  32          {
+  33   1          SBUF = TX_BUF;
+  34   1          while(!UartSendFlag);
+  35   1          UartSendFlag = 0;
+  36   1      }
+  37          
+  38          unsigned char Send_Data(PROTOCOL_TX *p)
+  39          {
+  40   1          static unsigned char i;
+  41   1          for(i = 0; i < BUF_SIZE; i ++)
+  42   1          {
+  43   2             Send_Byte(p->Buf[i]);
+  44   2          }
+  45   1          return 0;
+  46   1      }
+  47          
+  48          unsigned char Protocol_Send(unsigned char addr,unsigned char id,unsigned char TX_DATA)
+  49          {
+  50   1          PROTOCOL_TX buf;
+  51   1          memset(&buf,0,sizeof(buf));
+  52   1          buf.Buf_Para.ADDR = addr;
+  53   1          buf.Buf_Para.ID   = id;
+  54   1          buf.Buf_Para.DATA = TX_DATA;
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 2   
+
+  55   1          buf.Buf_Para.CHECKSUM = (unsigned char)(buf.Buf_Para.ADDR + buf.Buf_Para.ID + buf.Buf_Para.DATA);
+  56   1          return Send_Data(&buf);
+  57   1      }
+  58          
+  59          /*****************************************************接收子函数******************************************
+             -/
+  60          
+  61          unsigned char Rev_Data(void)
+  62          {
+  63   1          static unsigned char SSDAT;
+  64   1          while(!UartReceiveFlag);
+  65   1          UartReceiveFlag = 0;
+  66   1          SSDAT = SBUF;
+  67   1          return SSDAT;
+  68   1      }
+  69          
+  70          unsigned char IF_Rev_Data(void)
+  71          {
+  72   1          if(Rev_Num & 0x80)
+  73   1          {
+  74   2             Rev_Num &= 0x00;
+  75   2             return 1;        
+  76   2          }
+  77   1          else 
+  78   1          {
+  79   2              return 0;
+  80   2          }
+  81   1      }
+  82          
+  83          void Serial_Rev_Data(void)
+  84          {
+  85   1          Res = Rev_Data();
+  86   1          if((Rev_Num & 0x80) == 0)
+  87   1          {
+  88   2              if(Rev_Num & 0x40)
+  89   2              {
+  90   3                  if(Res == 0xfb)
+  91   3                  {
+  92   4                     Rev_Num |= 0x80; 
+  93   4                  }
+  94   3                  else 
+  95   3                  {
+  96   4                     Rev_Num &= 0x00; 
+  97   4                  }
+  98   3              }
+  99   2              else 
+ 100   2              {
+ 101   3                  if(Rev_Num == 5)
+ 102   3                  {
+ 103   4                      if(Res == Rev_Sum)
+ 104   4                      {
+ 105   5                         Rev_Num |= 0x40; 
+ 106   5                      }
+ 107   4                      else
+ 108   4                      {
+ 109   5                         Rev_Num &= 0x00;  
+ 110   5                      }
+ 111   4                  }
+ 112   3                  else
+ 113   3                  {
+ 114   4                      Rev_String[Rev_Num] = Res;
+ 115   4                      Rev_Num ++;
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 3   
+
+ 116   4                      Rev_Sum = (unsigned char)(Rev_String[0]+Rev_String[1]+Rev_String[2]+Rev_String[3]+Rev_Stri
+             -ng[4]);
+ 117   4                      if(Rev_String[0] != 0xA5)
+ 118   4                      {
+ 119   5                         Rev_Num &= 0X00; 
+ 120   5                      }
+ 121   4                  }
+ 122   3              }
+ 123   2          }
+ 124   1      }
+ 125          
+ 126          void Send_Three_Data(void)
+ 127          {
+ 128   1             unsigned char i;
+ 129   1             extern APP_PARA_t App_Para;
+ 130   1             App_Para.Data = STOP;
+ 131   1             for(i = 0 ; i < TEN_STOP_DATA; i ++)
+ 132   1             {
+ 133   2                    Protocol_Send(SEND_ADDR,SEND_ID,App_Para.Data);//全局变量Data
+ 134   2             }
+ 135   1      }
+ 136          
+ 137          void Rev_Data_Handle(void)
+ 138          {
+ 139   1          if(IF_Rev_Data())
+ 140   1          {
+ 141   2              Temp = (unsigned int)Get_32Bit(Rev_String[3],Rev_String[4]);
+ 142   2              memset(&Rev_String,0,sizeof(Rev_String));
+ 143   2              switch (Temp)
+ 144   2              {
+ 145   3                  case COCO_Stop:                         //停止
+ 146   3                                    if(Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag)
+ 147   3                                    {
+ 148   4                                        Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 0;
+ 149   4                                        Voice_Protocol_Send(0xA5,0XFA,Data_Stop_End);
+ 150   4                                    }
+ 151   3                                    App_Para.Data = STOP;
+ 152   3                                    App_Para.App_Flag = 1;
+ 153   3                                    Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 0;
+ 154   3                                    break;         
+ 155   3                  case COCO_Recline:                        //座椅打开
+ 156   3                                    
+ 157   3                                    App_Para.App_Flag = 1;
+ 158   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 159   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 160   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 161   3                                    {
+ 162   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 163   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 164   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 165   4                                    }
+ 166   3                                      Send_Three_Data();               
+ 167   3                                    App_Para.Data = OPEN;
+ 168   3                                    break;
+ 169   3                  case COCO_Close:                         //座椅收回
+ 170   3                                    App_Para.App_Flag = 1;
+ 171   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 172   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 173   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 174   3                                    {
+ 175   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 176   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 4   
+
+ 177   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 178   4                                    }
+ 179   3                                     Send_Three_Data();                       
+ 180   3                                    App_Para.Data = CLOSE;
+ 181   3                                    break;
+ 182   3                  case COCO_Head_Up:                       //头枕打开
+ 183   3                                    #ifdef  TABLE_DISABLE
+ 184   3                                    App_Para.App_Flag = 1;
+ 185   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 186   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 187   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 188   3                                    {
+ 189   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 190   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 191   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 192   4                                    }
+ 193   3                                    App_Para.Data = HEAD_UP;
+ 194   3                                    #endif
+ 195   3                                    break;
+ 196   3                  case COCO_Head_Down:                     //头枕收回
+ 197   3                                    #ifdef TABLE_DISABLE
+ 198   3                                    App_Para.App_Flag = 1;
+ 199   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 200   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 201   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 202   3                                    {
+ 203   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 204   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 205   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 206   4                                    }
+ 207   3                                    App_Para.Data = HEAD_DOWN;
+ 208   3                                    #endif
+ 209   3                                    break;
+ 210   3                  case COCO_Lumbar_Up:                     //腰部打开
+ 211   3                                    App_Para.App_Flag = 1;   
+ 212   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 213   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 214   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 215   3                                    {
+ 216   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 217   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 218   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 219   4                                    }
+ 220   3                                    App_Para.Data = LARBUM_UP;
+ 221   3                                             
+ 222   3                                    break;
+ 223   3                  case COCO_Lumbar_Down:                   //腰部收回
+ 224   3                                    App_Para.App_Flag = 1;
+ 225   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 226   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 227   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 228   3                                    {
+ 229   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 230   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 231   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 232   4                                    }
+ 233   3                                    App_Para.Data = LARBUM_DOWN; 
+ 234   3                                    
+ 235   3                                    break;
+ 236   3                  case COCO_Home_Position:                 //复位
+ 237   3                                    App_Para.App_Flag = 1;
+ 238   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 5   
+
+ 239   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 240   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 241   3                                    {
+ 242   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 243   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 244   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 245   4                                    }
+ 246   3                                    App_Para.Data = HOME_POSITION; 
+ 247   3                                    break;
+ 248   3                  case COCO_Sleep_Position:                //睡眠位置
+ 249   3                                    App_Para.App_Flag = 1;
+ 250   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 251   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 252   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 253   3                                    {
+ 254   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 255   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 256   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 257   4                                    }
+ 258   3                                    App_Para.Data = SLEEP_POSITION; 
+ 259   3                                    
+ 260   3                                    break;
+ 261   3                  case COCO_TV_Position:                   //看电视位置
+ 262   3                                    App_Para.App_Flag = 1;
+ 263   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 264   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 265   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 266   3                                    {
+ 267   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 268   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 269   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 270   4                                    }
+ 271   3                                    App_Para.Data = WATCH_TV_POSITION; 
+ 272   3                                    
+ 273   3                                    break;
+ 274   3                  case COCO_Reading_Position:              //阅读位置 
+ 275   3                                    App_Para.App_Flag = 1;
+ 276   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 277   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 278   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 279   3                                    {
+ 280   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 281   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 282   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 283   4                                    }
+ 284   3                                    App_Para.Data = READING_POSITION;
+ 285   3                                    
+ 286   3                                    break;
+ 287   3                  case COCO_Set_Sleep_Position:            //设置睡眠位置
+ 288   3                                    App_Para.Data = SET_SLEEP_POSITION;
+ 289   3                                    App_Para.App_Flag = 1;
+ 290   3                                    break;
+ 291   3                  case COCO_Set_TV_Position:               //设置看电视位置
+ 292   3                                    App_Para.Data = SET_WATCH_TV_POSITION;
+ 293   3                                    App_Para.App_Flag = 1;
+ 294   3                                    break;
+ 295   3                  case COCO_Set_Reading_Position:          //设置阅读位置
+ 296   3                                    App_Para.Data = SET_READING_POSITION;
+ 297   3                                    App_Para.App_Flag = 1;
+ 298   3                                    break;
+ 299   3                  case COCO_Light_On:                      //打开脚灯
+ 300   3                                    App_Para.Data = FOOT_LIGHT_OPEN;
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 6   
+
+ 301   3                                    App_Para.App_Flag = 1;
+ 302   3                                    break;
+ 303   3                  case COCO_Light_Off:                     //关闭脚灯
+ 304   3                                    App_Para.Data = FOOT_LIGHT_CLOSE;
+ 305   3                                    App_Para.App_Flag = 1;
+ 306   3                                    break;
+ 307   3                  case COCO_Heat_On:                       //发热布加热
+ 308   3                                    App_Para.App_Flag = 1;
+ 309   3                                    Heat_Function_Para.Heat_Cnt = 0x01;
+ 310   3                                    Heat_Function_Para.App_Heat_Cnt1s = 0; 
+ 311   3                                     Heat_Function_Para.Heat_Cnt30Min  = 0;
+ 312   3                                     Heat_Function_Para.Heat_Cnt30Min_Flag = True;
+ 313   3                                     App_Para.Data = HEAT_ON;
+ 314   3                                    if(TEST_PIN == 0)
+ 315   3                                    {
+ 316   4                                        LED1_SET(1);
+ 317   4                                    }
+ 318   3                                    else
+ 319   3                                    {
+ 320   4                                        LED2_SET(1);
+ 321   4                                    }
+ 322   3                                    break;
+ 323   3                  case COCO_Heat_Off:                      //发热布关闭
+ 324   3                                    App_Para.App_Flag = 1;
+ 325   3                                    Heat_Function_Para.Heat_Cnt = 0x00;
+ 326   3                                    Heat_Function_Para.App_Heat_Cnt1s = 0; 
+ 327   3                                     Heat_Function_Para.Heat_Cnt30Min  = 0;
+ 328   3                                     Heat_Function_Para.Heat_Cnt30Min_Flag = False;
+ 329   3                                     App_Para.Data = HEAT_OFF;
+ 330   3                                    if(TEST_PIN == 0)
+ 331   3                                    {
+ 332   4                                       LED1_SET(0); 
+ 333   4                                    }
+ 334   3                                    else
+ 335   3                                    {
+ 336   4                                       LED2_SET(0);
+ 337   4                                    }
+ 338   3                                    break;
+ 339   3                  case COCO_Massage_Start:                 //马达开启
+ 340   3                                    App_Para.App_Flag = 1;
+ 341   3                                    Mass_Para.Mass_Cnt = 0x01;
+ 342   3                                    //计时定时器清零
+ 343   3                                     Mass_Para.App_Mass_Cnt1s = 0;
+ 344   3                                     Mass_Para.Mass_Cnt30Min = 0;
+ 345   3                                     //停止计数并且关闭震动马达
+ 346   3                                     Mass_Para.Mass_Cnt30Min_Flag = True;
+ 347   3                                    App_Para.Data = MASS_OPEN;
+ 348   3                                    if(TEST_PIN == 0)
+ 349   3                                    {
+ 350   4                                       LED2_SET(1);
+ 351   4                                    }
+ 352   3                                    else
+ 353   3                                    {
+ 354   4                                       LED1_SET(1);
+ 355   4                                    }
+ 356   3                                    break;
+ 357   3                  case COCO_Massage_Stop:                  //马达关闭
+ 358   3                                    App_Para.App_Flag = 1;
+ 359   3                                     Mass_Para.Mass_Cnt = 0x00;
+ 360   3                                       //计时定时器清零
+ 361   3                                     Mass_Para.App_Mass_Cnt1s = 0;
+ 362   3                                     Mass_Para.Mass_Cnt30Min = 0;
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 7   
+
+ 363   3                                     //停止计数并且关闭震动马达
+ 364   3                                     Mass_Para.Mass_Cnt30Min_Flag = False;
+ 365   3                                    App_Para.Data = MASS_CLOSE;
+ 366   3                                       if(TEST_PIN == 0)
+ 367   3                                       {
+ 368   4                                          LED2_SET(0);
+ 369   4                                       }
+ 370   3                                       else
+ 371   3                                       {
+ 372   4                                          LED1_SET(0);
+ 373   4                                       }
+ 374   3                                    break;
+ 375   3                  case Demo_Hello_Bella:
+ 376   3                                    Demo_Para.Demo_Flag = 1;
+ 377   3                                    App_Para.Data = HOME_POSITION; 
+ 378   3                                    App_Para.App_Flag = 1;
+ 379   3                                    break;
+ 380   3                  case Thanks:
+ 381   3                                    Demo_Para.Demo_Flag = 0;
+ 382   3                                    //App_Flag = 1;
+ 383   3                                    break;
+ 384   3                  case COCO_TABLE_OPEN:
+ 385   3                                     #ifdef TABLE_ENABLE
+ 386   3                                      App_Para.App_Flag = 1;
+ 387   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 388   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 389   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 390   3                                    {
+ 391   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 392   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 393   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 394   4                                    }
+ 395   3                                     Send_Three_Data();                       
+ 396   3                                    App_Para.Data = HEAD_UP; 
+ 397   3                                     #endif
+ 398   3                                     break;
+ 399   3                  case     COCO_TABLE_CLOSE:
+ 400   3                                     #ifdef TABLE_ENABLE
+ 401   3                                     App_Para.App_Flag = 1;
+ 402   3                                    Auto_Close_Push_Para.Auto_Close_Push_Flag = 1;
+ 403   3                                    Auto_Close_Push_Para.Auto_Close_Push_Cnts = 0;
+ 404   3                                    if(!Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag)
+ 405   3                                    {
+ 406   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneFlag = 1;
+ 407   4                                       Auto_Close_Push_Para.Voice_AutoClosePush_OnlyOneEndFlag = 1;
+ 408   4                                       Voice_Protocol_Send(0xA5,0XFA,Data_Stop);
+ 409   4                                    }
+ 410   3                                     Send_Three_Data();                
+ 411   3                                    App_Para.Data = HEAD_DOWN;
+ 412   3                                     #endif
+ 413   3                                      break;
+ 414   3                                  
+ 415   3                  default:
+ 416   3                                    //Data = STOP;
+ 417   3                                    break;
+ 418   3              } 
+ 419   2          }
+ 420   1          
+ 421   1      }
+ 422          
+ 423          /*****************************************************
+ 424          *函数名称：void UartInt(void) interrupt 4
+C51 COMPILER V9.59.0.0   BSP_USRT                                                          02/14/2019 15:57:58 PAGE 8   
+
+ 425          *函数功能：Uart0中断函数
+ 426          *入口参数：void
+ 427          *出口参数：void
+ 428          *****************************************************/
+ 429          void UartInt(void) interrupt 4
+ 430          {
+ 431   1             if(TI)
+ 432   1             {
+ 433   2                    TI = 0;       
+ 434   2                    UartSendFlag = 1;           
+ 435   2             }
+ 436   1             if(RI)
+ 437   1             {
+ 438   2                    RI = 0;       
+ 439   2                    UartReceiveFlag = 1;
+ 440   2                    Serial_Rev_Data();   
+ 441   2             }
+ 442   1        
+ 443   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1067    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
