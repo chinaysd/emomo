@@ -1,0 +1,1 @@
+"..\Time_Out\TimeOut.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\lib;..\user;..\bsp;..\Time_Out) DEBUG OBJECTEXTEND PRINT(.\Listings\TimeOut.lst) TABS (2) OBJECT(.\Objects\TimeOut.obj)

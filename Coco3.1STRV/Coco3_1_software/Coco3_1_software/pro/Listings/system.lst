@@ -1,0 +1,538 @@
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\system.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\user\system.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..
+                    -\user;..\bsp\key) DEBUG OBJECTEXTEND PRINT(.\Listings\system.lst) TABS(7) OBJECT(.\Objects\system.obj)
+
+line level    source
+
+   1          #include "system.h"
+   2          
+   3          TIMEOUT_PARA TimeOut_Para[2];
+   4          PUSH_STATUS_PARA_t Push_Status_Para;
+   5          DEMO_STATUS_PARA_t Demo_Status_Para;
+   6          
+   7          unsigned char Data;
+   8          
+   9          extern unsigned char Uart1SendFlag,Uart1ReceiveFlag;
+  10          
+  11          char rev_cmp_flag = 0;
+  12          extern char Rev_Flag;
+  13          
+  14          unsigned char Get_Key;
+  15          
+  16          
+  17          /***********推杆停止时所发送的数据******************/
+  18          void Push_Stop_Send_Data(void)
+  19          {
+  20   1          if(!Push_Status_Para.Key_Push_Stop_Flag){
+  21   2          Push_Status_Para.Key_Push_Stop_Flag = 1;
+  22   2          Push_Status_Para.Key_Push_Start_Flag = 0;
+  23   2          Voice_Protocol_Send(0xA5, 0xFA,0X0100);
+  24   2          }
+  25   1      }
+  26          /*****************************************************************/
+  27          
+  28          /**********推杆运行时所发送的数据*******************/
+  29          void Push_Start_Send_Data(void)
+  30          {
+  31   1          if(!Push_Status_Para.Key_Push_Start_Flag){
+  32   2          Push_Status_Para.Key_Push_Start_Flag = 1;
+  33   2          Push_Status_Para.Key_Push_Stop_Flag = 0;
+  34   2          Voice_Protocol_Send(0xA5, 0xFA,0X0101);
+  35   2          }
+  36   1      }
+  37          /****************************************************************/
+  38          
+  39          /*********开始演示时所发送的数据********************/
+  40          #if 0
+              void Demo_Start_Send_Data(void)
+              {
+                 if(!Demo_Status_Para.Demo_Start_Flag)
+                 {
+                     Demo_Status_Para.Demo_Start_Flag = 1;
+                     Demo_Status_Para.Demo_Stop_Flag = 0;
+                     Voice_Protocol_Send(0xA5, 0xFA,0X0A01);
+                 }
+              }
+              #endif
+  51          /****************************************************************/
+  52          
+  53          /*********停止演示时所发送的数据********************/
+  54          void Demo_Stop_Send_Data(void)
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 2   
+
+  55          {
+  56   1           if(Demo_Status_Para.Demo_Flag)
+  57   1           {
+  58   2              Demo_Status_Para.Demo_Flag = 0;
+  59   2              if(!Demo_Status_Para.Demo_Stop_Flag)
+  60   2              {
+  61   3                      Demo_Status_Para.Demo_Stop_Flag = 1;
+  62   3                      Demo_Status_Para.Demo_Start_Flag = 0;
+  63   3                      Voice_Protocol_Send(0xA5, 0xFA,0X0A00);
+  64   3              }
+  65   2           }
+  66   1      }
+  67          /****************************************************************/
+  68          
+  69          /***********************座椅打开控制**********************/
+  70          void SeatOpen_Control(void)
+  71          {
+  72   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+  73   1             {
+  74   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+  75   2                    Data =  OPEN;
+  76   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+  77   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+  78   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+  79   2             }
+  80   1      }
+  81          /****************************************************************/
+  82          
+  83          /***********************座椅收回控制*********************/
+  84          void SeatClose_Control(void)
+  85          {
+  86   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+  87   1             {
+  88   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+  89   2                    Data =  CLOSE;
+  90   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+  91   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+  92   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0; 
+  93   2             }
+  94   1      }
+  95          /****************************************************************/
+  96          
+  97          /***********************头枕打开控制**********************/
+  98          void HeadUp_Control(void)
+  99          {
+ 100   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 101   1             {
+ 102   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 103   2                    Data =  HEAD_UP;
+ 104   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 105   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 106   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 107   2             }
+ 108   1      }
+ 109          /****************************************************************/
+ 110          
+ 111          /***********************头枕收回控制*********************/
+ 112          void HeadDown_Control(void)
+ 113          {
+ 114   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 115   1             {
+ 116   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 3   
+
+ 117   2                    Data =  HEAD_DOWN; 
+ 118   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 119   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 120   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 121   2             }
+ 122   1      }
+ 123          /****************************************************************/
+ 124          
+ 125          /***********************腰推打开控制**********************/
+ 126          void LumberUp_Control(void)
+ 127          {
+ 128   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 129   1             {
+ 130   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 131   2                    Data =  LARBUM_UP; 
+ 132   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 133   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 134   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 135   2             }
+ 136   1      }
+ 137          /****************************************************************/
+ 138          
+ 139          /***********************腰推收回控制*********************/
+ 140          void LumberDown_Control(void)
+ 141          {
+ 142   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 143   1             {
+ 144   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 145   2                    Data =  LARBUM_DOWN;
+ 146   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 147   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 148   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 149   2             }
+ 150   1      }
+ 151          /****************************************************************/
+ 152          
+ 153          /***********************腿部打开控制**********************/
+ 154          void LegUp_Control(void)
+ 155          {
+ 156   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 157   1             {
+ 158   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 159   2                    Data =  FOOT_UP;
+ 160   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 161   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 162   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 163   2             }
+ 164   1      }
+ 165          /****************************************************************/
+ 166          
+ 167          /***********************腿部收回控制*********************/
+ 168          void LegDown_Control(void)
+ 169          {
+ 170   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 171   1             {
+ 172   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 173   2                    Data =  FOOT_DOWN; 
+ 174   2                   Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 175   2                   Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 176   2                   Push_Status_Para.Push_Auto_Close_Cnts   = 0; 
+ 177   2             }
+ 178   1            
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 4   
+
+ 179   1      }
+ 180          /****************************************************************/
+ 181          
+ 182          /*********************复位控制******************************/
+ 183          void HomePosition_Control(void)
+ 184          {
+ 185   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 186   1             {
+ 187   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 188   2                    Data =  HOME_POSITION; 
+ 189   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 190   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 191   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 192   2             }
+ 193   1      }
+ 194          /****************************************************************/
+ 195          
+ 196          /********************* 推杆停止控制***********************/
+ 197          void Push_Stop_Control(void)
+ 198          {
+ 199   1             if(Push_Status_Para.PushOnlyOne_Flag)
+ 200   1             {
+ 201   2                    Push_Status_Para.PushOnlyOne_Flag = 0;
+ 202   2                    Data =  0; 
+ 203   2                   Push_Status_Para.Push_Auto_Close_Flag = 0;
+ 204   2                   Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 205   2                   Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 206   2             }
+ 207   1      }
+ 208          /****************************************************************/
+ 209          
+ 210          /*********************睡觉位置控制************************/
+ 211          void Sleep_Position_Control(void)
+ 212          {
+ 213   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 214   1             {
+ 215   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 216   2                    Data =  SLEEP_POSITION; 
+ 217   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 218   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 219   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 220   2             }
+ 221   1      }
+ 222          /****************************************************************/
+ 223          
+ 224          /*********************看电视位置控制************************/
+ 225          void WatchTV_Position_Control(void)
+ 226          {
+ 227   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 228   1             {
+ 229   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 230   2                    Data =  WATCH_TV_POSITION; 
+ 231   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 232   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 233   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 234   2             }
+ 235   1      }
+ 236          /****************************************************************/
+ 237          
+ 238          /*********************阅读位置位置控制************************/
+ 239          void Read_Position_Control(void)
+ 240          {
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 5   
+
+ 241   1             if(!Push_Status_Para.PushOnlyOne_Flag)
+ 242   1             {
+ 243   2                    Push_Status_Para.PushOnlyOne_Flag = 1;
+ 244   2                    Data =  READING_POSITION; 
+ 245   2                    Push_Status_Para.Push_Auto_Close_Flag = 1;
+ 246   2                    Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 247   2                    Push_Status_Para.Push_Auto_Close_Cnts   = 0;
+ 248   2             }
+ 249   1      }
+ 250          /****************************************************************/
+ 251          
+ 252          
+ 253          
+ 254          void Key_Handle(unsigned char Key)
+ 255          {
+ 256   1          Get_Key = Key;
+ 257   1             if(PUSH_TEMP_DIRECTION_PIN == 0)
+ 258   1             {
+ 259   2                 if(Get_Key == MSG_KEY_NONE)
+ 260   2                 {
+ 261   3                   Rev_Data_Handle();  
+ 262   3                   if(!Rev_Flag)
+ 263   3                   {
+ 264   4                      Push_Stop_Send_Data();
+ 265   4                      Push_Stop_Control();
+ 266   4                   }           
+ 267   3                 }
+ 268   2                 else if(Get_Key == MSG_KEY1_LONGPRESS)
+ 269   2                 {
+ 270   3                   Demo_Stop_Send_Data();
+ 271   3                   Push_Start_Send_Data();
+ 272   3                   HeadUp_Control();
+ 273   3                   Rev_Flag = 0;
+ 274   3                 }
+ 275   2                    else if(Get_Key == MSG_KEY3_LONGPRESS)
+ 276   2                 {
+ 277   3                   Demo_Stop_Send_Data();
+ 278   3                   Push_Start_Send_Data();
+ 279   3                    HeadDown_Control();
+ 280   3                   Rev_Flag = 0;        
+ 281   3                 }
+ 282   2                 else if(Get_Key == MSG_KEY2_LONGPRESS)
+ 283   2                 {
+ 284   3                    Demo_Stop_Send_Data();
+ 285   3                   Push_Start_Send_Data();
+ 286   3                   HomePosition_Control();
+ 287   3                   Rev_Flag = 0;        
+ 288   3                 }
+ 289   2                 else if(Get_Key == MSG_KEY4_LONGPRESS)   
+ 290   2                 {
+ 291   3                    Demo_Stop_Send_Data();
+ 292   3                   Push_Start_Send_Data();
+ 293   3                    LegUp_Control();
+ 294   3                   Rev_Flag = 0;        
+ 295   3                 }
+ 296   2                 else if(Get_Key == MSG_KEY5_LONGPRESS)
+ 297   2                 {
+ 298   3                    Demo_Stop_Send_Data();
+ 299   3                   Push_Start_Send_Data();
+ 300   3                    LumberUp_Control();
+ 301   3                   Rev_Flag = 0;        
+ 302   3                 }
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 6   
+
+ 303   2                 else if(Get_Key == MSG_KEY6_LONGPRESS)
+ 304   2                 {
+ 305   3                    Demo_Stop_Send_Data();
+ 306   3                   Push_Start_Send_Data();
+ 307   3                   SeatOpen_Control();
+ 308   3                   Rev_Flag = 0;        
+ 309   3                 }
+ 310   2                 else if(Get_Key == MSG_KEY7_LONGPRESS)
+ 311   2                 {
+ 312   3                    Demo_Stop_Send_Data();
+ 313   3                   Push_Start_Send_Data();
+ 314   3                    SeatClose_Control();
+ 315   3                   Rev_Flag = 0;        
+ 316   3                 }
+ 317   2                 else if(Get_Key == MSG_KEY8_LONGPRESS)//
+ 318   2                 {
+ 319   3                    Demo_Stop_Send_Data();
+ 320   3                   Push_Start_Send_Data();
+ 321   3                   LED_SET(1);
+ 322   3                   LumberDown_Control();
+ 323   3                   Rev_Flag = 0;        
+ 324   3                 }
+ 325   2                 else if(Get_Key == MSG_KEY9_LONGPRESS)//
+ 326   2                 {
+ 327   3                    Demo_Stop_Send_Data();
+ 328   3                   Push_Start_Send_Data();
+ 329   3                   LED_SET(1);
+ 330   3                   LegDown_Control(); 
+ 331   3                   Rev_Flag = 0;        
+ 332   3                 }
+ 333   2             }
+ 334   1             else
+ 335   1             {
+ 336   2                 if(Get_Key == MSG_KEY_NONE)
+ 337   2                 {
+ 338   3                   Rev_Data_Handle();  
+ 339   3                   if(!Rev_Flag)
+ 340   3                   {
+ 341   4                      Push_Stop_Send_Data();
+ 342   4                      Push_Stop_Control();
+ 343   4                   }           
+ 344   3                 }
+ 345   2                 else if(Get_Key == MSG_KEY1_LONGPRESS)
+ 346   2                 {
+ 347   3                   Demo_Stop_Send_Data();
+ 348   3                   Push_Start_Send_Data();
+ 349   3                   HeadUp_Control();
+ 350   3                   Rev_Flag = 0;
+ 351   3                 }
+ 352   2                    else if(Get_Key == MSG_KEY3_LONGPRESS)
+ 353   2                 {
+ 354   3                   Demo_Stop_Send_Data();
+ 355   3                   Push_Start_Send_Data();
+ 356   3                   HeadDown_Control();
+ 357   3                   Rev_Flag = 0;        
+ 358   3                 }
+ 359   2                 else if(Get_Key == MSG_KEY2_LONGPRESS)
+ 360   2                 {
+ 361   3                    Demo_Stop_Send_Data();
+ 362   3                   Push_Start_Send_Data();
+ 363   3                   HomePosition_Control();
+ 364   3                   Rev_Flag = 0;        
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 7   
+
+ 365   3                 }
+ 366   2                 else if(Get_Key == MSG_KEY4_LONGPRESS)   
+ 367   2                 {
+ 368   3                    Demo_Stop_Send_Data();
+ 369   3                   Push_Start_Send_Data();
+ 370   3                    LumberUp_Control();
+ 371   3                   Rev_Flag = 0;        
+ 372   3                 }
+ 373   2                 else if(Get_Key == MSG_KEY5_LONGPRESS)
+ 374   2                 {
+ 375   3                    Demo_Stop_Send_Data();
+ 376   3                   Push_Start_Send_Data();
+ 377   3                    LumberDown_Control();
+ 378   3                   Rev_Flag = 0;        
+ 379   3                 }
+ 380   2                 else if(Get_Key == MSG_KEY6_LONGPRESS)
+ 381   2                 {
+ 382   3                    Demo_Stop_Send_Data();
+ 383   3                   Push_Start_Send_Data();
+ 384   3                   SeatClose_Control();
+ 385   3                   Rev_Flag = 0;        
+ 386   3                 }
+ 387   2                 else if(Get_Key == MSG_KEY7_LONGPRESS)
+ 388   2                 {
+ 389   3                    Demo_Stop_Send_Data();
+ 390   3                   Push_Start_Send_Data();
+ 391   3                   SeatOpen_Control();
+ 392   3                   Rev_Flag = 0;        
+ 393   3                 }
+ 394   2                 else if(Get_Key == MSG_KEY8_LONGPRESS)//
+ 395   2                 {
+ 396   3                    Demo_Stop_Send_Data();
+ 397   3                   Push_Start_Send_Data();
+ 398   3                   LED_SET(1);
+ 399   3                   LegDown_Control(); 
+ 400   3                   Rev_Flag = 0;        
+ 401   3                 }
+ 402   2                 else if(Get_Key == MSG_KEY9_LONGPRESS)//
+ 403   2                 {
+ 404   3                    Demo_Stop_Send_Data();
+ 405   3                   Push_Start_Send_Data();
+ 406   3                   LED_SET(1);
+ 407   3                   LegUp_Control();
+ 408   3                   Rev_Flag = 0;        
+ 409   3                 }
+ 410   2             }
+ 411   1      }
+ 412          
+ 413          void System_Init(void)
+ 414          {
+ 415   1         TimeOutDet_Init();
+ 416   1         Timer_Init();
+ 417   1         Led_App_Handle(LED_NUM);
+ 418   1         Push_Temp_Direction();
+ 419   1         Key_Init();
+ 420   1         Key_Register(Key_Handle);
+ 421   1         Uart_Init(12,9600);
+ 422   1         #ifdef WATCH_DOG_ENABLE
+ 423   1         WDTCON |= 0X01; 
+ 424   1         #endif
+ 425   1         EA = 1; 
+ 426   1      }
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 8   
+
+ 427          
+ 428          void System_Handle(void)
+ 429          {
+ 430   1         #ifdef WATCH_DOG_CLEAR
+ 431   1         WDTCON |= 0X10; 
+ 432   1         #endif
+ 433   1         Key_Poll();   
+ 434   1         P00 = 1;
+ 435   1         if(TimeOutDet_Check(&TimeOut_Para[0]))
+ 436   1         {
+ 437   2             TimeOut_Record(&TimeOut_Para[0],40);
+ 438   2             Protocol_Send(IC_ADDR,IC_ID,Data);
+ 439   2         } 
+ 440   1         if(Push_Status_Para.Push_Auto_Close_Cnts > Push_Auto_Close_Time)//30秒后推杆自动关闭
+ 441   1        {
+ 442   2             Push_Stop_Send_Data();
+ 443   2             Push_Stop_Control();
+ 444   2        }
+ 445   1      }
+ 446          
+ 447          
+ 448          /**************************************************
+ 449          *函数名称：void timer0/1/2() interrupt 1/3/5
+ 450          *函数功能：定时器中断产生方波
+ 451          *入口参数：void
+ 452          *出口参数：void
+ 453          **************************************************/
+ 454          void timer0() interrupt 1
+ 455          {
+ 456   1        TL0 = (65536 - 5900)%256;
+ 457   1        TH0 = (65536 - 5900)/256; 
+ 458   1        TimeOutDet_DecHandle();  
+ 459   1        if(Push_Status_Para.Push_Auto_Close_Flag)
+ 460   1        {
+ 461   2             Push_Status_Para.Push_Auto_Close_Cnt1s ++;
+ 462   2        }
+ 463   1        if(Push_Status_Para.Push_Auto_Close_Cnt1s > Auto_Close_Time1s)//一秒的时间段
+ 464   1        {
+ 465   2             Push_Status_Para.Push_Auto_Close_Cnt1s = 0;
+ 466   2             Push_Status_Para.Push_Auto_Close_Cnts ++;
+ 467   2        }
+ 468   1      }
+ 469          
+ 470          void timer1() interrupt 3
+ 471          {
+ 472   1      
+ 473   1      }
+ 474          
+ 475          void Timer2Int(void) interrupt 5
+ 476          {             
+ 477   1             TF2 = 0;   //溢出清零
+ 478   1      
+ 479   1      }
+ 480          
+ 481          void Uart1_Int() interrupt 7   //Uart1中断函数
+ 482          {
+ 483   1      
+ 484   1             if(SSCON0&0x02)    //发送标志位判断
+ 485   1             {
+ 486   2                    SSCON0 &= 0xFD;
+ 487   2                    Uart1SendFlag = 1;
+ 488   2             }
+C51 COMPILER V9.59.0.0   SYSTEM                                                            01/23/2019 19:37:58 PAGE 9   
+
+ 489   1             if((SSCON0&0x01))//接收标志位判断
+ 490   1             {
+ 491   2                    SSCON0 &= 0xFE;
+ 492   2                    Uart1ReceiveFlag = 1;
+ 493   2                   Serial_Rev_IQH();
+ 494   2             }
+ 495   1          
+ 496   1      }
+ 497          
+ 498          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    940    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     30    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

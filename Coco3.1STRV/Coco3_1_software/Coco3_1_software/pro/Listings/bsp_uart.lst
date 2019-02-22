@@ -1,0 +1,360 @@
+C51 COMPILER V9.59.0.0   BSP_UART                                                          01/23/2019 19:37:59 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_UART
+OBJECT MODULE PLACED IN .\Objects\bsp_uart.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_uart.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;.
+                    -.\user;..\bsp\key) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_uart.lst) TABS(7) OBJECT(.\Objects\bsp_uart.obj)
+
+line level    source
+
+   1          #include "bsp_uart.h"
+   2          #include "string.h"
+   3          #include "system.h"
+   4          
+   5          unsigned char Uart1SendFlag,Uart1ReceiveFlag;
+   6          unsigned char Rev_String[REV_BUF_SIZE];
+   7          
+   8          char Rev_Flag;
+   9          /***************************************************接收数据的变量定义************************************
+             -****/
+  10          unsigned char Rev_Num,Rev_Sum;
+  11          unsigned int Temp;
+  12          
+  13          extern void Read_Position_Control(void);
+  14          extern void WatchTV_Position_Control(void);
+  15          extern void Sleep_Position_Control(void);
+  16          extern void SeatOpen_Control(void);
+  17          extern void SeatClose_Control(void);
+  18          extern void HeadUp_Control(void);
+  19          extern void HeadDown_Control(void);
+  20          extern void LumberUp_Control(void);
+  21          extern void LumberDown_Control(void);
+  22          extern void LegUp_Control(void);
+  23          extern void LegDown_Control(void);
+  24          extern void HomePosition_Control(void);
+  25          extern void Push_Stop_Control(void);
+  26          extern void Push_Stop_Send_Data(void);
+  27          extern void Push_Start_Send_Data(void);
+  28          extern void Demo_Stop_Send_Data(void);
+  29          extern DEMO_STATUS_PARA_t Demo_Status_Para;
+  30          extern PUSH_STATUS_PARA_t Push_Status_Para;
+  31          extern unsigned char Data;
+  32          extern char rev_cmp_flag;
+  33          
+  34          
+  35          void Uart_Init(unsigned char Freq,unsigned int baud)
+  36          {
+  37   1          P1CON &= 0xF5;                     //TX设置为强推挽输出高，RX设置为输入带上拉
+  38   1             P1PH  |= 0x0A;
+  39   1             
+  40   1             OTCON = 0xC0;                      //串行接口SSI选择Uart1通信
+  41   1             SSCON0 = 0x50;                     //设置通信方式为模式一，允许接收
+  42   1             SSCON1 = Freq*1000000/baud;        //波特率低位控制
+  43   1             SSCON2 = (Freq*1000000/baud)>>8;   //波特率高位控制
+  44   1             IE1 = 0x01;                        //开启SSI中断     
+  45   1      }
+  46          
+  47          
+  48          
+  49          /*************************************发送数据子函数*****************************************/
+  50          
+  51          void Uart1_Buf_TX(unsigned char DATA)
+  52          {
+  53   1             SSDAT = DATA;
+C51 COMPILER V9.59.0.0   BSP_UART                                                          01/23/2019 19:37:59 PAGE 2   
+
+  54   1             while(!Uart1SendFlag);
+  55   1             Uart1SendFlag = 0;
+  56   1      }
+  57          
+  58          unsigned char Send_Data(PROTOCOL_TX *p)
+  59          {
+  60   1          unsigned char i;
+  61   1          for(i = 0; i < BUF_SIZE; i++)
+  62   1          {
+  63   2            Uart1_Buf_TX(p->Buf[i]);
+  64   2          }
+  65   1          return 0;
+  66   1      }    
+  67          
+  68          unsigned char Protocol_Send(unsigned char id,unsigned char addr,unsigned char TX_DATA)
+  69          {
+  70   1        PROTOCOL_TX buf;
+  71   1        memset(&buf,0,sizeof(buf));
+  72   1        buf.Buf_Format.ID        = id;
+  73   1        buf.Buf_Format.ADDR      = addr;
+  74   1        buf.Buf_Format.DATA1     = TX_DATA;
+  75   1        buf.Buf_Format.CHECKSUM  = (unsigned char)(buf.Buf_Format.ID + buf.Buf_Format.ADDR + buf.Buf_Format.DATA
+             -1);   
+  76   1        return Send_Data(&buf);    
+  77   1      }
+  78          
+  79          /******************************************接收子函数********************************************/
+  80          
+  81          unsigned char Rev_Byte(void)
+  82          {
+  83   1          return SSDAT;
+  84   1      }
+  85          
+  86          unsigned char IF_REV_STRING(void)
+  87          {
+  88   1        if(Rev_Num & 0x80)
+  89   1        {
+  90   2            Rev_Num = 0x00;
+  91   2            return 1;
+  92   2        }
+  93   1        else 
+  94   1        {
+  95   2            return 0;
+  96   2        }
+  97   1      }
+  98          
+  99          void Serial_Rev_IQH(void)
+ 100          {
+ 101   1      
+ 102   1             volatile unsigned char Res;
+ 103   1          Res = Rev_Byte();
+ 104   1             #if 0
+                     rev_buf[rev_num_] = Res;
+                     
+                     rev_num_ ++;
+                     
+                     if(rev_num_ ++ >= REV_BUF_SIZE-1){
+                            rev_num_ = 0;
+                            rev_cmp_flag = 1;
+                     }
+                     if(rev_num_ > 1){
+                            if(rev_buf[0] != 0xa5){
+C51 COMPILER V9.59.0.0   BSP_UART                                                          01/23/2019 19:37:59 PAGE 3   
+
+                                   rev_num_ = 0;
+                            }
+                     }
+                  #else
+ 119   1          if((Rev_Num & 0X80) == 0)
+ 120   1          {
+ 121   2              if(Rev_Num &0x40)
+ 122   2              {
+ 123   3              
+ 124   3                  if(Res == 0xfb)
+ 125   3                  {
+ 126   4                     Rev_Num |= 0x80; 
+ 127   4                      rev_cmp_flag = 1;
+ 128   4                  }
+ 129   3                  else
+ 130   3                  {
+ 131   4                     Rev_Num &= 0x00;
+ 132   4                  }
+ 133   3              }
+ 134   2              else
+ 135   2              {
+ 136   3                    if(Rev_Num == 5){
+ 137   4                         if(Res == Rev_Sum)
+ 138   4                         {
+ 139   5                             Rev_Num |= 0x40;
+ 140   5                         }else{
+ 141   5                                         Rev_Num = 0;
+ 142   5                                  }
+ 143   4                    }
+ 144   3                  Rev_String[Rev_Num] = Res;
+ 145   3                  Rev_Num ++;
+ 146   3                  Rev_Sum = (unsigned char)(Rev_String[0] + Rev_String[1] + Rev_String[2] + Rev_String[3] + Rev_
+             -String[4]); 
+ 147   3                           if(Rev_String[0] != 0xA5)
+ 148   3                  {
+ 149   4                    Rev_Num = 0x00; 
+ 150   4                    Rev_Sum = 0;
+ 151   4                  }
+ 152   3              }
+ 153   2          }
+ 154   1             #endif
+ 155   1      }
+ 156          
+ 157          void Rev_Data_Handle(void)
+ 158          {
+ 159   1         if(IF_REV_STRING())
+ 160   1         {
+ 161   2             Temp = (unsigned int)Get_32Bit(Rev_String[3],Rev_String[4]);     
+ 162   2             memset(&Rev_String,0,sizeof(Rev_String));
+ 163   2             switch (Temp)
+ 164   2             {
+ 165   3                 case COCO_Stop://推杆停止
+ 166   3                            Demo_Stop_Send_Data();
+ 167   3                             Push_Stop_Send_Data();
+ 168   3                            Push_Stop_Control();
+ 169   3                            Rev_Flag = 1;
+ 170   3                            break;
+ 171   3                 case COCO_Recline://座椅推杆打开
+ 172   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 173   3                            Demo_Stop_Send_Data();
+ 174   3                             Push_Start_Send_Data();
+ 175   3                            SeatOpen_Control();
+C51 COMPILER V9.59.0.0   BSP_UART                                                          01/23/2019 19:37:59 PAGE 4   
+
+ 176   3                            Rev_Flag = 1;
+ 177   3                            break;
+ 178   3                 case COCO_Close://座椅关闭
+ 179   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 180   3                            Demo_Stop_Send_Data();
+ 181   3                             Push_Start_Send_Data();
+ 182   3                            SeatClose_Control();
+ 183   3                            Rev_Flag = 1;
+ 184   3                            break;
+ 185   3                 case COCO_Lift:
+ 186   3                             Demo_Stop_Send_Data();
+ 187   3                             Push_Start_Send_Data();
+ 188   3                            //Data = OPEN;
+ 189   3                            Rev_Flag = 1;
+ 190   3                            break;
+ 191   3                 case COCO_Home_Position://复位
+ 192   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 193   3                            Demo_Stop_Send_Data();
+ 194   3                             Push_Start_Send_Data();
+ 195   3                            HomePosition_Control();
+ 196   3                            Rev_Flag = 1;
+ 197   3                            break;
+ 198   3                 case COCO_Sleep_Position:  //睡觉位置
+ 199   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 200   3                            Demo_Stop_Send_Data();
+ 201   3                             Push_Start_Send_Data();
+ 202   3                            Sleep_Position_Control();
+ 203   3                            Rev_Flag = 1;
+ 204   3                            break;
+ 205   3                 case COCO_TV_Position://看电视位置
+ 206   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 207   3                            Demo_Stop_Send_Data();
+ 208   3                             Push_Start_Send_Data();
+ 209   3                            WatchTV_Position_Control();
+ 210   3                            Rev_Flag = 1;
+ 211   3                            break;
+ 212   3                 case COCO_Reading_Position://阅读位置
+ 213   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 214   3                            Demo_Stop_Send_Data();
+ 215   3                             Push_Start_Send_Data();
+ 216   3                            Read_Position_Control();
+ 217   3                            Rev_Flag = 1;
+ 218   3                            break;
+ 219   3                 case COCO_Set_Sleep_Position://设置睡觉位置
+ 220   3                            Demo_Stop_Send_Data();
+ 221   3                            Data = SET_SLEEP_POSITION;
+ 222   3                            Rev_Flag = 1;
+ 223   3                            break;
+ 224   3                 case COCO_Set_TV_Position://设置看电视位置
+ 225   3                            Demo_Stop_Send_Data();
+ 226   3                            Data = SET_WATCH_TV_POSITION;
+ 227   3                            Rev_Flag = 1;
+ 228   3                            break;
+ 229   3                 case COCO_Set_Reading_Position://设置阅读位置
+ 230   3                            Demo_Stop_Send_Data();
+ 231   3                            Data = SET_READING_POSITION;
+ 232   3                            Rev_Flag = 1;
+ 233   3                            break;
+ 234   3                 case COCO_Head_Up://头枕打开
+ 235   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 236   3                            Demo_Stop_Send_Data();
+ 237   3                             Push_Start_Send_Data();
+C51 COMPILER V9.59.0.0   BSP_UART                                                          01/23/2019 19:37:59 PAGE 5   
+
+ 238   3                             HeadUp_Control();
+ 239   3                            Rev_Flag = 1;
+ 240   3                            break;
+ 241   3                 case COCO_Head_Down://头枕收回
+ 242   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 243   3                            Demo_Stop_Send_Data();
+ 244   3                             Push_Start_Send_Data();
+ 245   3                             HeadDown_Control();
+ 246   3                            Rev_Flag = 1;
+ 247   3                            break;
+ 248   3                 case COCO_Lumbar_Up://腰部打开
+ 249   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 250   3                            Demo_Stop_Send_Data();
+ 251   3                             Push_Start_Send_Data();
+ 252   3                             LumberUp_Control();
+ 253   3                            Rev_Flag = 1;
+ 254   3                            break;
+ 255   3                 case COCO_Lumbar_Down://腰部收回
+ 256   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 257   3                            Demo_Stop_Send_Data();
+ 258   3                             Push_Start_Send_Data();
+ 259   3                             LumberDown_Control();
+ 260   3                            Rev_Flag = 1;
+ 261   3                            break;
+ 262   3                 case COCO_Foot_Up://腿部打开
+ 263   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 264   3                             Demo_Stop_Send_Data();
+ 265   3                             Push_Start_Send_Data();
+ 266   3                             LegUp_Control();
+ 267   3                             Rev_Flag = 1;
+ 268   3                             break;
+ 269   3                 case COCO_Foot_Down://腿部收回
+ 270   3                            Push_Status_Para.PushOnlyOne_Flag = 0;
+ 271   3                             Demo_Stop_Send_Data();
+ 272   3                             Push_Start_Send_Data();
+ 273   3                             LegDown_Control();
+ 274   3                             Rev_Flag = 1;
+ 275   3                             break;
+ 276   3                 case COCO_Light_On://脚灯打开
+ 277   3                            Demo_Stop_Send_Data();
+ 278   3                            Data = FOOT_LIGHT_OPEN;
+ 279   3                            Rev_Flag = 1;
+ 280   3                            break;
+ 281   3                 case COCO_Light_Off://脚灯关闭
+ 282   3                            Demo_Stop_Send_Data();
+ 283   3                            Data = FOOT_LIGHT_CLOSE;
+ 284   3                            Rev_Flag = 1;
+ 285   3                            break;
+ 286   3                 case COCO_Massage_Start://震动马达打开
+ 287   3                            Demo_Stop_Send_Data();
+ 288   3                            Data = MASS_OPEN;
+ 289   3                            Rev_Flag = 1;
+ 290   3                            break;
+ 291   3                 case COCO_Massage_Stop://震动马达关闭
+ 292   3                            Demo_Stop_Send_Data();
+ 293   3                            Data = MASS_CLOSE;
+ 294   3                            Rev_Flag = 1;
+ 295   3                            break;
+ 296   3                 case COCO_Heat_On://发热布打开
+ 297   3                            Demo_Stop_Send_Data();
+ 298   3                            Data = HEAT_ON;
+ 299   3                            Rev_Flag = 1;
+C51 COMPILER V9.59.0.0   BSP_UART                                                          01/23/2019 19:37:59 PAGE 6   
+
+ 300   3                            break;
+ 301   3                 case COCO_Heat_Off://发热布关闭
+ 302   3                            Demo_Stop_Send_Data();
+ 303   3                            Data = HEAT_OFF;
+ 304   3                            Rev_Flag = 1;
+ 305   3                            break;
+ 306   3                 case Demo_Hello_Bella:
+ 307   3                             Demo_Status_Para.Demo_Flag = 1;
+ 308   3                             break;
+ 309   3                 case Thanks:
+ 310   3                             Demo_Status_Para.Demo_Flag = 0;
+ 311   3                             break;
+ 312   3                 default:
+ 313   3                            Data = 0x00;
+ 314   3                            break;
+ 315   3             }
+ 316   2         }       
+ 317   1      }
+ 318          
+ 319          
+ 320          
+ 321          
+ 322          
+ 323          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    738    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14      14
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

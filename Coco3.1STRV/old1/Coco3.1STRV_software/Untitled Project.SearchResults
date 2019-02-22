@@ -1,0 +1,5 @@
+---- rev_num Matches (3 in 1 files) ----
+
+Bsp_uart.c (bsp):unsigned char rev_num = 0;
+Bsp_uart.c (bsp):	if(rev_num ++ > 7){
+Bsp_uart.c (bsp):		rev_num = 0;

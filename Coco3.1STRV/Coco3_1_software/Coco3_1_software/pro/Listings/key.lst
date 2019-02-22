@@ -1,0 +1,204 @@
+C51 COMPILER V9.59.0.0   KEY                                                               01/23/2019 18:44:23 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN .\Objects\key.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\key\key.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..
+                    -\user;..\bsp\key) DEBUG OBJECTEXTEND PRINT(.\Listings\key.lst) TABS(7) OBJECT(.\Objects\key.obj)
+
+line level    source
+
+   1          #include "key.h"
+   2          #include "timeout.h"
+   3          
+   4          typedef enum {
+   5              KEY_STATE_IDLE,
+   6              KEY_STATE_JITTER,
+   7              KEY_STATE_PRESS_DOWN,
+   8              KEY_STATE_CP
+   9          } KEY_STATE;
+  10          
+  11          
+  12          static TIMEOUT_PARA Key_Scan_Timer,Key_Wait_Timer;
+  13          static KEY_STATE     KeyState;
+  14          static t_KEY_MSG Key_Msg;
+  15          static unsigned char PreKeyIndex = MSG_INVALID;
+  16          static void (*GetValueCb)(unsigned char);
+  17          
+  18          
+  19          /**
+  20                 @function: 按键事件，更多按键时，对应增加按键按键
+  21                 
+  22          */
+  23          static xdata unsigned char KeyEvent[10][5]=
+  24          {
+  25                 //按键开始(按下)                   短按                                                    长按                               长按保持                                         长按松开
+  26                 {MSG_KEY_NONE,                                   MSG_KEY_NONE,                                    MSG_KEY_NONE,               MSG_KEY_NONE,                                    MSG_KEY_NONE},                     // 空，无用
+  27                 {MSG_KEY1_PRESS,                          MSG_KEY1_SHORT_PRESS,                            MSG_KEY1_LONGPRESS,  MSG_KEY1_LONGPRESS_HD,                           MSG_KEY1_LONGP
+             -RESS_RE},                                                 // key1
+  28                 {MSG_KEY2_PRESS,                          MSG_KEY2_SHORT_PRESS,                            MSG_KEY2_LONGPRESS,  MSG_KEY2_LONGPRESS_HD,                           MSG_KEY2_LONGP
+             -RESS_RE},                                                 // key2
+  29                 {MSG_KEY3_PRESS,                          MSG_KEY3_SHORT_PRESS,                            MSG_KEY3_LONGPRESS,  MSG_KEY3_LONGPRESS_HD,                           MSG_KEY3_LON
+             -GPRESS_RE},                                                 // key3       
+  30                 {MSG_KEY4_PRESS,                          MSG_KEY4_SHORT_PRESS,                            MSG_KEY4_LONGPRESS,  MSG_KEY4_LONGPRESS_HD,                           MSG_KEY4_LON
+             -GPRESS_RE},                                                 // key4       
+  31                 {MSG_KEY5_PRESS,                          MSG_KEY5_SHORT_PRESS,                            MSG_KEY5_LONGPRESS,  MSG_KEY5_LONGPRESS_HD,                           MSG_KEY5_LON
+             -GPRESS_RE},                                                 // key5
+  32                 {MSG_KEY6_PRESS,                          MSG_KEY6_SHORT_PRESS,                            MSG_KEY6_LONGPRESS,  MSG_KEY6_LONGPRESS_HD,                           MSG_KEY6_LON
+             -GPRESS_RE},                                                 // key6
+  33                 {MSG_KEY7_PRESS,                          MSG_KEY7_SHORT_PRESS,                            MSG_KEY7_LONGPRESS,  MSG_KEY7_LONGPRESS_HD,                           MSG_KEY7_LON
+             -GPRESS_RE},                                                 // key7
+  34                 {MSG_KEY8_PRESS,                          MSG_KEY8_SHORT_PRESS,                            MSG_KEY8_LONGPRESS,  MSG_KEY8_LONGPRESS_HD,                           MSG_KEY8_LON
+             -GPRESS_RE},                                                 // key8
+  35                 {MSG_KEY9_PRESS,                          MSG_KEY9_SHORT_PRESS,                            MSG_KEY9_LONGPRESS,  MSG_KEY9_LONGPRESS_HD,                           MSG_KEY9_LON
+             -GPRESS_RE},                                                 // key9
+  36          };
+  37          
+  38          /**
+  39                 @function:    获取按键索引值
+  40                 根据按键的个数，需要做相应的修改
+  41          */
+  42          static unsigned char GetKeyIndex(void)
+  43          {
+  44   1             extern unsigned char Key_Port_Read(unsigned char num);
+  45   1             unsigned char value = 0,cnt = 0;
+C51 COMPILER V9.59.0.0   KEY                                                               01/23/2019 18:44:23 PAGE 2   
+
+  46   1             if(!Key_Port_Read(1))
+  47   1                    cnt ++,value = 1;
+  48   1             if(!Key_Port_Read(2))
+  49   1                    cnt ++,value = 2;
+  50   1             if(!Key_Port_Read(3))
+  51   1                    cnt ++,value = 3;
+  52   1             if(!Key_Port_Read(4))
+  53   1                    cnt ++,value = 4;
+  54   1             if(!Key_Port_Read(5))
+  55   1                    cnt ++,value = 5;
+  56   1             if(!Key_Port_Read(6))
+  57   1                    cnt ++,value = 6;
+  58   1             if(!Key_Port_Read(7))
+  59   1                    cnt ++,value = 7;
+  60   1          if(!Key_Port_Read(8))
+  61   1                    cnt ++,value = 8;
+  62   1          if(!Key_Port_Read(9))
+  63   1                    cnt ++,value = 9;
+  64   1             if(cnt > 1)
+  65   1                    value = MSG_INVALID;
+  66   1             return value; 
+  67   1      }
+  68          
+  69          /**
+  70                 @function:IO 和按键扫描状态的初始化
+  71          */
+  72          void Key_Init(void){
+  73   1             extern unsigned char Key_Port_Init(void);
+  74   1             
+  75   1             Key_Port_Init();
+  76   1             KeyState=KEY_STATE_IDLE;
+  77   1             TimeOut_Record(&Key_Scan_Timer,0);
+  78   1      }
+  79          
+  80          /**
+  81                 @function:按键的扫描
+  82                 @return :t_KEY_MSG 类型的消息，消息集在t_KEY_MSG中定义
+  83          */
+  84          t_KEY_MSG Key_Scan(void){
+  85   1             unsigned char KeyIndex;
+  86   1             
+  87   1             if(!(TimeOutDet_Check(&Key_Scan_Timer))){
+  88   2                    return MSG_INVALID;
+  89   2             }
+  90   1             
+  91   1             TimeOut_Record(&Key_Scan_Timer,KEY_SCAN_TIME);
+  92   1             
+  93   1             KeyIndex=GetKeyIndex();
+  94   1             if(KeyIndex == MSG_INVALID)
+  95   1                    return MSG_INVALID;
+  96   1      
+  97   1             switch(KeyState){
+  98   2                    case KEY_STATE_IDLE:{
+  99   3                           if(!KeyIndex){
+ 100   4                                  return MSG_KEY_NONE;
+ 101   4                           }
+ 102   3                           
+ 103   3                           PreKeyIndex = KeyIndex;
+ 104   3                           TimeOut_Record(&Key_Wait_Timer,KEY_JITTER_TIME);
+ 105   3                           KeyState = KEY_STATE_JITTER;
+ 106   3                           break;
+ 107   3                    }
+C51 COMPILER V9.59.0.0   KEY                                                               01/23/2019 18:44:23 PAGE 3   
+
+ 108   2                    
+ 109   2                    case KEY_STATE_JITTER:{
+ 110   3                           if(PreKeyIndex != KeyIndex){
+ 111   4                                  KeyState = KEY_STATE_IDLE;
+ 112   4                           }else if(TimeOutDet_Check(&Key_Wait_Timer)){
+ 113   4                                  TimeOut_Record(&Key_Wait_Timer,KEY_CP_TIME);
+ 114   4                                  KeyState = KEY_STATE_PRESS_DOWN;
+ 115   4                                  return KeyEvent[PreKeyIndex][0];
+ 116   4                           }
+ 117   3                           break;
+ 118   3                    }
+ 119   2      
+ 120   2                    case KEY_STATE_PRESS_DOWN:{
+ 121   3                           if(PreKeyIndex != KeyIndex){
+ 122   4                                  KeyState = KEY_STATE_IDLE;
+ 123   4                                  return KeyEvent[PreKeyIndex][1];
+ 124   4                           }else if(TimeOutDet_Check(&Key_Wait_Timer)){
+ 125   4                                  TimeOut_Record(&Key_Wait_Timer,KEY_CPH_TIME);
+ 126   4                                  KeyState = KEY_STATE_CP;
+ 127   4                                  return KeyEvent[PreKeyIndex][2];
+ 128   4                           }
+ 129   3                           break;
+ 130   3                    }
+ 131   2                    
+ 132   2                    case KEY_STATE_CP:{
+ 133   3                           if(PreKeyIndex != KeyIndex){
+ 134   4                                  KeyState = KEY_STATE_IDLE;
+ 135   4                                  return KeyEvent[PreKeyIndex][4];
+ 136   4                           }else if(TimeOutDet_Check(&Key_Wait_Timer)){
+ 137   4                                  TimeOut_Record(&Key_Wait_Timer,KEY_CPH_TIME);
+ 138   4                                  return KeyEvent[PreKeyIndex][3];
+ 139   4                           }
+ 140   3                           break;
+ 141   3                    }
+ 142   2                    
+ 143   2                    default:{
+ 144   3                           KeyState = KEY_STATE_IDLE;
+ 145   3                           break;
+ 146   3                    }
+ 147   2             }
+ 148   1             return MSG_INVALID;
+ 149   1      }
+ 150          
+ 151          void Key_Register(void (*cb)(unsigned char))
+ 152          {
+ 153   1             if(cb){
+ 154   2                    GetValueCb = cb;
+ 155   2             }
+ 156   1      }
+ 157          
+ 158          void Key_Poll(void)
+ 159          {
+ 160   1             Key_Msg = Key_Scan();
+ 161   1             if(GetValueCb){
+ 162   2                    GetValueCb(Key_Msg);
+ 163   2             }
+ 164   1      }
+ 165          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    509    ----
+C51 COMPILER V9.59.0.0   KEY                                                               01/23/2019 18:44:23 PAGE 4   
+
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     50    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     22       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

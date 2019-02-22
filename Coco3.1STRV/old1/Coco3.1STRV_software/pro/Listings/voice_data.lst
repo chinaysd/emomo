@@ -1,0 +1,66 @@
+C51 COMPILER V9.59.0.0   VOICE_DATA                                                        12/29/2018 08:43:14 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE VOICE_DATA
+OBJECT MODULE PLACED IN .\Objects\voice_data.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\voice_data.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut
+                    -;..\user;..\bsp\key) DEBUG OBJECTEXTEND PRINT(.\Listings\voice_data.lst) OBJECT(.\Objects\voice_data.obj)
+
+line level    source
+
+   1          #include "voice_data.h"
+   2          #include "string.h"
+   3          
+   4          extern unsigned char Uart1SendFlag,Uart1ReceiveFlag;
+   5          
+   6          void Voice_Send_Byte(unsigned char voice_byte)
+   7          {
+   8   1          SSDAT = voice_byte;
+   9   1          while(!Uart1SendFlag);
+  10   1              Uart1SendFlag = 0;
+  11   1      }
+  12          
+  13          
+  14          unsigned char Voice_Send_Data(VOICE_PROTOCOL_TX *p)
+  15          {
+  16   1          static unsigned char i;
+  17   1          for(i = 0 ; i < VOICE_BUF_SIZE; i ++)
+  18   1          {
+  19   2             Voice_Send_Byte(p->Voice_Buf[i]); 
+  20   2          }
+  21   1          return 0;
+  22   1      }
+  23          
+  24          
+  25          unsigned char Voice_Protocol_Send(unsigned char id,unsigned char addr,unsigned int voice_data_t)
+  26          {
+  27   1          VOICE_PROTOCOL_TX voice_buf;
+  28   1          memset(&voice_buf,0,sizeof(voice_buf));
+  29   1          voice_buf.Voice_Data_Format.ID         =    id;
+  30   1          voice_buf.Voice_Data_Format.ADDR       =    addr;
+  31   1          voice_buf.Voice_Data_Format.ID_ADDR    =    0x00;
+  32   1          voice_buf.Voice_Data_Format.DATA1      =    Hight(voice_data_t);
+  33   1          voice_buf.Voice_Data_Format.DATA2      =    Low(voice_data_t);
+  34   1          voice_buf.Voice_Data_Format.CHECKSUM   =    (unsigned char)(voice_buf.Voice_Data_Format.ID+voice_buf.V
+             -oice_Data_Format.ADDR+voice_buf.Voice_Data_Format.ID_ADDR+voice_buf.Voice_Data_Format.DATA1+voice_buf.Voice_Data_Format.
+             -DATA2);
+  35   1          voice_buf.Voice_Data_Format.STOP1      =    0xfb;
+  36   1          return  Voice_Send_Data(&voice_buf);
+  37   1      }
+  38          
+  39          
+  40          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    119    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1      14
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

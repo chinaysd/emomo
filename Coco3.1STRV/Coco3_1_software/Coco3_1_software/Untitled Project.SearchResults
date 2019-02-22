@@ -1,0 +1,4 @@
+---- P00 Matches (3 in 3 files) ----
+bsp_led.c (bsp):	 P00 = 0;
+SC92F837X_C.H (lib):sbit 	P00	= P0^0;
+system.c (user):   P00 = 1;

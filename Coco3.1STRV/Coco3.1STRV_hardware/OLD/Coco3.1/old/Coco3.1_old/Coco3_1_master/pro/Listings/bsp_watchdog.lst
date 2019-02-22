@@ -1,0 +1,35 @@
+C51 COMPILER V9.59.0.0   BSP_WATCHDOG                                                      09/25/2018 16:09:37 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_WATCHDOG
+OBJECT MODULE PLACED IN .\Objects\bsp_watchdog.obj
+COMPILER INVOKED BY: D:\keil4\C51\BIN\C51.EXE ..\bsp\bsp_watchdog.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\lib;..\user;..\bs
+                    -p;..\Time_Out) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_watchdog.lst) TABS(2) OBJECT(.\Objects\bsp_watchdog.obj)
+
+line level    source
+
+   1          #include "bsp_watchdog.h"
+   2          
+   3          void WatchDog(void)
+   4          {
+   5   1        WATCHDOG_OPEN;
+   6   1      }
+   7          
+   8          void WatchDog_Clear(void)
+   9          {
+  10   1        WATCHDOG_CLEAR;
+  11   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      8    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

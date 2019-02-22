@@ -1,0 +1,218 @@
+C51 COMPILER V9.59.0.0   SYSTEM                                                            09/26/2018 11:26:47 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\system.obj
+COMPILER INVOKED BY: D:\keil4\C51\BIN\C51.EXE ..\user\system.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\lib;..\user;..\bsp;..\
+                    -Time_Out) DEBUG OBJECTEXTEND PRINT(.\Listings\system.lst) TABS(2) OBJECT(.\Objects\system.obj)
+
+line level    source
+
+   1          #include "system.h"
+   2          static unsigned char Cnt;
+   3          unsigned char Uart1SendFlag,Uart1ReceiveFlag;
+   4          
+   5          TIMEOUT_PARA TimeOut_Para[2],Key_Para[2];
+   6          KEY_PARA_TX KEY_Para_tx;
+   7          
+   8          void System_Init(void)
+   9          {
+  10   1        TimeOutDet_Init();
+  11   1        BackCall_Key(Key_Init);
+  12   1        Led_Init();
+  13   1        Timer_Init();
+  14   1        BackCall_Uart1(12,Uart1_Init);
+  15   1        WatchDog();
+  16   1        Interrupt_Init();
+  17   1      }
+  18          
+  19          void System_Handle(void)
+  20          {
+  21   1        WatchDog_Clear();
+  22   1        if(TimeOutDet_Check(&TimeOut_Para[0]))
+  23   1        {
+  24   2          TimeOut_Record(&TimeOut_Para[0],OnLine_Time);
+  25   2          switch (KEY_Para_tx.KEY_VALUE)
+  26   2          {
+  27   3            case KEY_LOOP_NUM0:
+  28   3                                if(RESET_KEY1_DOWN)//复位开关按键
+  29   3                                {
+  30   4                                  if(!KEY_Para_tx.RESET_KEY1_FLAG)
+  31   4                                  {
+  32   5                                    KEY_Para_tx.RESET_KEY1_FLAG = True;
+  33   5                                    TimeOut_Record(&Key_Para[0],Shakes_Time);
+  34   5                                  }
+  35   4                                  if((TimeOutDet_Check(&Key_Para[0]))&&(RESET_KEY1_DOWN))
+  36   4                                  {
+  37   5                                    Protocol_tx(IC_ADDR,IC_ADDR,KEY1_VALUE);
+  38   5                                  } 
+  39   4                                }
+  40   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM1;
+  41   3                                break;
+  42   3            case KEY_LOOP_NUM1:
+  43   3                                if(LEFT_KEY2_DOWN)//左拨动开关按键
+  44   3                                {
+  45   4                                  if(!KEY_Para_tx.RESET_KEY1_FLAG)
+  46   4                                  {
+  47   5                                    KEY_Para_tx.RESET_KEY1_FLAG = True;
+  48   5                                    TimeOut_Record(&Key_Para[0],Shakes_Time);
+  49   5                                  }
+  50   4                                  if((TimeOutDet_Check(&Key_Para[0]))&&(LEFT_KEY2_DOWN))
+  51   4                                  {
+  52   5                                    Protocol_tx(IC_ADDR,IC_ADDR,KEY2_VALUE);
+  53   5                                  } 
+  54   4                                }
+C51 COMPILER V9.59.0.0   SYSTEM                                                            09/26/2018 11:26:47 PAGE 2   
+
+  55   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM2;
+  56   3                                break;
+  57   3            case KEY_LOOP_NUM2:
+  58   3                                if(RIGHT_KEY3_DOWN)//右拨动开关按键
+  59   3                                {
+  60   4                                  if(!KEY_Para_tx.RESET_KEY1_FLAG)
+  61   4                                  {
+  62   5                                    KEY_Para_tx.RESET_KEY1_FLAG = True;
+  63   5                                    TimeOut_Record(&Key_Para[0],Shakes_Time);
+  64   5                                  }
+  65   4                                  if((TimeOutDet_Check(&Key_Para[0]))&&(RIGHT_KEY3_DOWN))
+  66   4                                  {
+  67   5                                    Protocol_tx(IC_ADDR,IC_ADDR,KEY3_VALUE);
+  68   5                                  } 
+  69   4                                }
+  70   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM3;
+  71   3                                break;
+  72   3            case KEY_LOOP_NUM3:
+  73   3                                if(FOUR_LEFT_KEY4_DOWN)//四向向左拨动接触点向右开关按键
+  74   3                                {
+  75   4                                  if(!KEY_Para_tx.RESET_KEY1_FLAG)
+  76   4                                  {
+  77   5                                    KEY_Para_tx.RESET_KEY1_FLAG = True;
+  78   5                                    TimeOut_Record(&Key_Para[0],Shakes_Time);
+  79   5                                  }
+  80   4                                  if((TimeOutDet_Check(&Key_Para[0]))&&(FOUR_LEFT_KEY4_DOWN))
+  81   4                                  {
+  82   5                                    Protocol_tx(IC_ADDR,IC_ADDR,KEY4_VALUE);
+  83   5                                  } 
+  84   4                                }
+  85   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM4;
+  86   3                                break;
+  87   3            case KEY_LOOP_NUM4:
+  88   3                                if(FOUR_RIGHT_KEY5_DOWN)//四向向右拨动接触点向左开关按键
+  89   3                                {
+  90   4                                  if(!KEY_Para_tx.RESET_KEY1_FLAG)
+  91   4                                  {
+  92   5                                    KEY_Para_tx.RESET_KEY1_FLAG = True;
+  93   5                                    TimeOut_Record(&Key_Para[0],Shakes_Time);
+  94   5                                  }
+  95   4                                  if((TimeOutDet_Check(&Key_Para[0]))&&(FOUR_RIGHT_KEY5_DOWN))
+  96   4                                  {
+  97   5                                    Protocol_tx(IC_ADDR,IC_ADDR,KEY5_VALUE);
+  98   5                                  } 
+  99   4                                }
+ 100   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM5;
+ 101   3                                break;
+ 102   3            case KEY_LOOP_NUM5:
+ 103   3                                if(FOUR_GETUP_KEY6_DOWN)//四向向上拨动接触点向下开关按键
+ 104   3                                {
+ 105   4                                  if(!KEY_Para_tx.RESET_KEY1_FLAG)
+ 106   4                                  {
+ 107   5                                    KEY_Para_tx.RESET_KEY1_FLAG = True;
+ 108   5                                    TimeOut_Record(&Key_Para[0],Shakes_Time);
+ 109   5                                  }
+ 110   4                                  if((TimeOutDet_Check(&Key_Para[0]))&&(FOUR_GETUP_KEY6_DOWN))
+ 111   4                                  {
+ 112   5                                    Protocol_tx(IC_ADDR,IC_ADDR,KEY6_VALUE);
+ 113   5                                  } 
+ 114   4                                }
+ 115   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM6;
+ 116   3                                break;
+C51 COMPILER V9.59.0.0   SYSTEM                                                            09/26/2018 11:26:47 PAGE 3   
+
+ 117   3            case KEY_LOOP_NUM6:
+ 118   3                                if(FOUR_GETDOWN_KEY7_DOWN)//四向向下拨动接触点向上开关按键
+ 119   3                                {
+ 120   4                                  if(!KEY_Para_tx.RESET_KEY1_FLAG)
+ 121   4                                  {
+ 122   5                                    KEY_Para_tx.RESET_KEY1_FLAG = True;
+ 123   5                                    TimeOut_Record(&Key_Para[0],Shakes_Time);
+ 124   5                                  }
+ 125   4                                  if((TimeOutDet_Check(&Key_Para[0]))&&(FOUR_GETDOWN_KEY7_DOWN))
+ 126   4                                  {
+ 127   5                                    Protocol_tx(IC_ADDR,IC_ADDR,KEY7_VALUE);
+ 128   5                                  } 
+ 129   4                                }
+ 130   3                                if(RESET_KEY1_UP && LEFT_KEY2_UP && RIGHT_KEY3_UP && FOUR_LEFT_KEY4_UP && FOUR_RIGHT_KEY5_UP 
+             -&& FOUR_GETUP_KEY6_UP && FOUR_GETDOWN_KEY7_UP)
+ 131   3                                {
+ 132   4                                  KEY_Para_tx.RESET_KEY1_FLAG = False;
+ 133   4                                  Protocol_tx(IC_ADDR,IC_ADDR,UNDATA);
+ 134   4                                }
+ 135   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM0;
+ 136   3                                break;
+ 137   3            default:
+ 138   3                                KEY_Para_tx.KEY_VALUE = KEY_LOOP_NUM0;
+ 139   3                                break;
+ 140   3              
+ 141   3          }
+ 142   2          
+ 143   2        }
+ 144   1      }
+ 145          
+ 146          /**************************************************
+ 147          *函数名称：void timer0/1/2() interrupt 1/3/5
+ 148          *函数功能：定时器中断产生方波
+ 149          *入口参数：void
+ 150          *出口参数：void
+ 151          **************************************************/
+ 152          void timer0() interrupt 1
+ 153          {
+ 154   1        TL0 = (65536 - 5900)%256;
+ 155   1        TH0 = (65536 - 5900)/256; 
+ 156   1        TimeOutDet_DecHandle();
+ 157   1      
+ 158   1      }
+ 159          
+ 160          void timer1() interrupt 3
+ 161          {
+ 162   1      
+ 163   1      }
+ 164          
+ 165          void Timer2Int(void) interrupt 5
+ 166          {   
+ 167   1        TF2 = 0;   //溢出清零
+ 168   1      
+ 169   1      }
+ 170          
+ 171          void Uart1_Int() interrupt 7   //Uart1中断函数
+ 172          {
+ 173   1        if(SSCON0&0x02)    //发送标志位判断
+ 174   1        {
+ 175   2          SSCON0 &= 0xFD;
+ 176   2          Uart1SendFlag = 1;
+ 177   2        }
+C51 COMPILER V9.59.0.0   SYSTEM                                                            09/26/2018 11:26:47 PAGE 4   
+
+ 178   1        if((SSCON0&0x01))  //接收标志位判断
+ 179   1        {
+ 180   2          SSCON0 &= 0xFE;
+ 181   2          Uart1ReceiveFlag = 1;
+ 182   2        } 
+ 183   1      }
+ 184          
+ 185          
+ 186          
+ 187          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    622    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     43    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

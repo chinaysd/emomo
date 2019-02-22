@@ -1,0 +1,13 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\system.obj",
+".\Objects\bsp_led.obj",
+".\Objects\bsp_timer.obj",
+".\Objects\bsp_uart.obj",
+".\Objects\key.obj",
+".\Objects\key_port.obj",
+".\Objects\bsp_pushrod_direction.obj",
+".\Objects\voice_data.obj",
+".\Objects\TimeOut.obj" 
+TO ".\Objects\Coco3_1" 
+PRINT(".\Listings\Coco3_1.m51") RAMSIZE(256) 

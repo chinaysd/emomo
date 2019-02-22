@@ -1,0 +1,1 @@
+"..\bsp\bsp_led.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..\user;..\bsp\key) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_led.lst) OBJECT(.\Objects\bsp_led.obj)
