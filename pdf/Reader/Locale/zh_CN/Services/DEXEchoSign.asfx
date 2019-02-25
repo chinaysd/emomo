@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?><asf locale="zh_CN" version="1.0" xmlns="http://ns.adobe.com/asf">
+
+<!-- EchoSign FillSignature UI Strings -->
+		
+<str name="avLabelFillSignAccordionHeader" translate="yes"><val>填写和签名工具</val></str>
+<str name="avLabelFillSignTitle" translate="yes"><val>填写并签名</val></str>
+<str name="avLabelSendForSignatureAccordionHeader" translate="yes"><val>发送和收集签名</val></str>
+<str name="avLabelSendForSignatureSubTitle" translate="yes"><val>要其他人签名此文档吗？</val></str>
+<str name="avLabelSendForSignatureDesc" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>使用 Adobe Sign 快速签名文档。追踪进度并在文档签名后收到通知。</val></str>
+<str name="avButtonAddText" translate="yes"><val>添加文本</val></str>
+<str name="avButtonAddCheckmark" translate="yes"><val>添加勾形</val></str>
+<str name="avButtonAddFilledCircle" translate="yes"><val>添加实心圆形</val></str>
+<str name="avButtonPlaceSignature" translate="yes"><val>放置签名</val></str>
+<str name="avButtonPlaceInitials" translate="yes"><val>放置缩写签名</val></str>
+<str name="avButtonChangeSignature" translate="yes"><val>更改保存的签名</val></str>
+<str name="avButtonClearSignature" translate="yes"><val>清除保存的签名</val></str>
+<str name="avButtonChangeInitials" translate="yes"><val>更改保存的缩写签名</val></str>
+<str name="avButtonClearInitials" translate="yes"><val>清除保存的缩写签名</val></str>
+<str name="avLabelExamineDocPerms" translate="yes"><val>检查和确认文档权限。</val></str>
+<str name="avButtonFinalizeChanges" translate="yes"><val>完成签名</val></str>
+<str name="avLabelSaveFile" translate="yes"><val>完成后保存文件。</val></str>
+<str name="avLabelSignDocumentByOthers" translate="yes"><val>要其他人签名此文档吗？</val></str>
+<str name="avButtonSendSignedDocument" translate="yes"><val>发送已签名的文档</val></str>
+<str name="avButtonSendForSignature" translate="yes"><val>发送以供签名</val></str>
+<str name="avRichTextESignMktText" translate="no"><desc>BUG#4130392. Launch the Reader,select Fill Sign pane and then select Send and Collect Signatures . dev shrbansa</desc><val>&lt;i&gt;Powered by &lt;a href="%link%"&gt;Adobe Sign&lt;/a&gt;&lt;/i&gt;</val></str>
+<str name="avButtonProceedToSend" translate="yes"><val>已签名。可以开始发送</val></str>
+<str name="avToolTipProceedToSend" translate="yes"><val>文档已签名。可以开始传送选项。</val></str>
+<str name="avToolTipAddText" translate="yes"><val>添加或编辑文本</val></str>
+<str name="avToolTipCheckmark" translate="yes"><val>添加勾形以指明您的选择</val></str>
+<str name="avToolTipPlaceSignature" translate="yes"><val>添加或创建签名</val></str>
+<str name="avToolTipPlaceInitials" translate="yes"><val>添加或创建缩写签名</val></str>
+<str name="avToolTipFinalizeChanges" translate="yes"><val>完成更改并将更改合并到文档中</val></str>
+<str name="avToolTipGetDocumentSigned" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>使用 Adobe Sign 轻松发送、追踪和管理签名过程</val></str>
+<str name="avToolTipSendSignedDocument" translate="yes"><val>将已签名的文档发送至收件人</val></str>
+<str name="avMenuItemAddToQuickTools" translate="yes"><val>添加至快速工具</val></str>
+<!-- <str name="avToolTipSendSigned"><val>Send your signed document</val></str>
+<str name="avButtonSendSigned"><val>Send Signed Document</val></str> -->
+
+<!-- Send signed document strings -->
+<str name="avLabelDeliveryOptionsTitle" translate="yes"><val>跟踪进度并在文档得到签名时获取通知。</val></str>	
+<str name="avButtonSaveACopy" translate="yes"><val>保存副本</val></str>
+<str name="avButtonSendViaEmail" translate="yes"><val>通过电子邮件或传真发送</val></str>
+<str name="avButtonSendViaFax" translate="yes"><val>通过传真发送</val></str>
+<str name="avButtonGetOthersToSign" translate="yes"><val>要求其他人签名</val></str>
+<str name="avButtonBackToFillSign" translate="yes"><val>返回到“填写并签名”</val></str>
+<str name="avToolTipSaveACopy" translate="yes"><val>保存本文档的副本</val></str>
+<str name="avToolTipSendViaEmail" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>通过 Adobe Sign 服务传送副本。收件人可以通过电子邮件或传真接收副本。</val></str>
+<str name="avToolTipSendViaFax" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>通过 Adobe Sign 服务传送副本。收件人可以通过传真接收副本。</val></str>
+<str name="avToolTipGetOthersToSign" translate="yes"><val>要求其他人在文档中签名</val></str>
+<str name="avToolTipBackToFillSign" translate="yes"><val>返回到上一步进行更改</val></str>
+
+<str name="avEchoSignFileUploadCompletedMessage" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>&lt;b&gt;完成文件上载&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;您的文档已成功上载至 Adobe Sign。请使用 Adobe Sign 网站完成相应的步骤并传送您的文档。</val></str>
+
+<!-- Certificate Signature UI Strings -->
+<str name="avLabelCertSignAccordionHeader" translate="yes"><val>使用证书</val></str>
+<str name="avButtonCertSignDocument" translate="yes"><val>使用证书进行签名</val></str>
+<str name="avButtonCertTimeStampDocument" translate="yes"><val>为文档添加时间戳</val></str>
+<str name="avButtonCertValidateSignatures" translate="yes"><val>验证所有签名</val></str>
+<str name="avButtonCertifyVisibleSignature" translate="yes"><val>验证（可见）</val></str>
+<str name="avButtonCertifyNoVisibleSignature" translate="yes"><val>验证（不可见）</val></str>
+<str name="avToolTipCertSignDocument" translate="yes"><val>数字签名文档</val></str>
+<str name="avToolTipTimeStampDocument" translate="yes"><val>时间戳文档</val></str>
+<str name="avToolTipCertValidateSignatures" translate="yes"><val>验证所有数字签名</val></str>
+<str name="avToolTipCertifyVisibleSignature" translate="yes"><val>验证并添加可见签名</val></str>
+<str name="avToolTipCertifyNoVisibleSignature" translate="yes"><val>验证但不添加可见签名</val></str>
+
+<str name="avButtonCaptionOK" translate="yes"><val>确定</val></str>
+<str name="avButtonCaptionSaveCopy" translate="yes"><val>保存副本</val></str>	
+<str name="avButtonCaptionCancel" translate="yes"><val>取消</val></str>	
+<str name="avMessageDocumentSaveCopy" translate="yes"><val>要对此文档进行电子签名或放置缩写签名，请将文档副本保存到桌面。</val></str>					
+<str name="avDocumentNoSignPermission" translate="yes"><val>此文档上的安全性设置禁止从 Adobe Reader 添加文本和/或将签名放在此文档上。要填写和签名此文档，您需要将其打印出来。</val></str>
+	
+
+	<!-- Strings for the items in the gateway -->
+<str name="avLabelGTSignPDF" translate="yes"><val>将文档签名</val></str> 
+
+<!-- Strings for the Menu items. -->
+<str name="avCaptionMenuItemSPDF" translate="yes"><val>将文档签名...</val></str>
+
+<!-- Strings for the Toolbar items. -->
+<str name="avTooltipToolbarItemSPDF" translate="yes"><val>签名、添加文本或发送文档以供签名</val></str>
+<str name="avCaptionToolbarItemSPDF" translate="yes"><val>添加文本或签名</val></str>
+
+ <!-- Send For Signature Strings-->
+<str name="avEchoSignSendProgress" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>正在将文档上载至 Adobe Sign...</val></str>
+<str name="avEchoSignSendSuccess" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>文档已上载至 Adobe Sign。</val></str>
+<str name="avEchoSignGoURLLinkCaption" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>进入 Adobe Sign 并继续</val></str>
+<str name="avEchoSignSendFailure" translate="yes"><val>尝试上载此文档时出错。</val></str>
+<str name="avEchoSignSendClientError" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>文件大小过大或页面过多，无法通过 Adobe Sign 发送并签名。请通过替代机制发送文件。</val></str>
+
+<!-- Send Signed Document -->
+<str name="avEchoSignSendSignedDocumentError" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>文件大小过大或页面过多，无法通过 Adobe Sign 发送。请通过替代机制发送文件。</val></str>
+
+<!-- Go URLs -->
+
+<!-- When there is NULL Document Or Send For Signature Error -->
+<str name="avEchoSignGoURLReader" translate="yes"><val>http://www.adobe.com/go/reader_signpane_sendforsignature_cn</val></str>
+
+<!-- Help Icon infront of Fill Signature Component-->
+<str name="avGoURLFillSignature" translate="yes"><val>http://www.adobe.com/go/reader_signpane_signinreader_cn</val></str>
+
+<!-- Help Icon infront of Send For Signature -->
+<str name="avGoURLSendForSignature" translate="yes"><val>http://www.adobe.com/go/reader_signpane_echosignforreaderuser_cn</val></str>
+
+<str name="avGoURLPoweredByEchoSign" translate="yes"><val>http://www.adobe.com/go/reader_signpane_abtechosign_cn</val></str>
+
+<!-- Go URLs for EchoSign -->
+<str name="avGoURL_INeedToSignInfoIconRdr" translate="yes"><val>http://www.adobe.com/go/reader_echosign1_11_0_7</val></str>
+<str name="avGoURL_INeedToSignInfoIconAcro" translate="yes"><val>http://www.adobe.com/go/acro_echosign1_11_0_7_cn</val></str>
+<str name="avGoURL_INeedToSignEchoSignRdr" translate="yes"><val>http://www.adobe.com/go/reader_echosign2_11_0_7_cn</val></str>
+<str name="avGoURL_INeedToSignEchoSignAcro" translate="yes"><val>http://www.adobe.com/go/acro_echosign2_11_0_7_cn</val></str>
+<str name="avGoURL_GetOthersSignInfoIconRdr" translate="yes"><val>http://www.adobe.com/go/reader_echosign4_11_0_7_cn</val></str>
+<str name="avGoURL_GetOthersSignInfoIconAcro" translate="yes"><val>http://www.adobe.com/go/acro_echosign4_11_0_7_cn</val></str>
+<str name="avGoURL_GetOthersSignEchoSignRdr" translate="yes"><val>http://www.adobe.com/go/reader_echosign5_11_0_7_cn</val></str>
+<str name="avGoURL_GetOthersSignEchoSignAcro" translate="yes"><val>http://www.adobe.com/go/acro_echosign5_11_0_7_cn</val></str>
+
+<!-- Dialog Button Captions-->
+<str name="avEchoSignDialogCancel" translate="yes"><val>取消</val></str>
+<str name="avPluginDescription" translate="yes"><val>通过将其他文本和电子签名放在文档中并与其他人共享文档中由 Adobe Sign 支持的电子签名工作流，DEX Adobe Sign 增效工具可帮助您通过“签名”窗格与文档进行交互。</val></str>
+  
+<str name="avSignatureDetectionMessage" translate="yes"><val>Adobe Reader 检测到此文档中存在签名字段。下面的工具可以指导您填写、签名并发送文档，或者获取其他人的签名。</val></str>
+
+<str name="avTermsOfUseContinueButton" translate="yes"><val>继续</val></str>
+
+<str name="avTermsOfUseEchoSign" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>继续下一步，即表示您同意 Adobe Sign &lt;a href="%link%"&gt;使用条款&lt;/a&gt;。</val></str>
+
+<str name="avEchoSignUnverifiedEmail" translate="yes"><val>您的帐户存在问题。请访问 echosign.adobe.com 以重置密码，或者联系支持人员以获取其他帮助。</val></str>
+
+<str name="avEchoSignSystemError" translate="yes"><val>存在系统错误。请稍后再试。</val></str>
+
+<str name="avEchoSignSecurityError" translate="yes"><desc>branding changes BUG#4130392  dev shrbansa</desc><val>您需要验证您的电子邮件地址才能激活您的 Adobe Sign 帐户。请检查您的电子邮件。</val></str>
+
+<!-- FSS App View Strings -->
+<str name="avLabelFSSAlertTitle" translate="yes"><val/></str>
+<str name="avLabelFSSAlertContent" translate="yes"><val>目前不支持您选择的 PDF 文件，不过，您可以探索一下 Acrobat.com 上的服务。</val></str>
+<str name="avLabelFSSAlertAccept" translate="yes"><val>继续</val></str>
+<str name="avGoURLFSSAlertReject" translate="yes"><val>取消</val></str>
+
+<!-- FSS Progress bar Strings -->
+<str name="avFSSProgressBarString" translate="yes"><val>正在将文件上载到 Acrobat.com 联机服务…</val></str>
+
+<!-- FSS Error Handling Strings -->
+<str name="avFSSTooManyPages" translate="yes"><val>我们目前只支持页数不超过 %X% 页的文件。</val></str>
+<str name="avFSSFileSize" translate="yes"><val>我们目前只支持大小不超过 %X%MB 的文件。</val></str>
+<str name="avFSSUnsupportedFileType" translate="yes"><val>目前不支持您选择的文件类型。</val></str>
+<str name="avFSSUnsupportedPDFType" translate="yes"><val>目前不支持您选择的 PDF 文件。</val></str>
+<str name="avFSSUnsupportedPDFTypeEditRestricted" translate="yes"><val>由于作者应用了防止进行编辑的限制，我们无法处理此文件。</val></str>
+<str name="avFSSUnsupportedPDFTypeEncrypted" translate="yes"><val>由于作者采用加密的方式保护了该文件，我们无法处理此文件。</val></str>
+<str name="avFSSUnsupportedPDFTypeInvalid" translate="yes"><val>您选择的文件似乎已损坏。</val></str>
+<str name="avFSScpdf_general" translate="yes"><val>我们在处理此文件时遇到困难。再次选择此文件之前，请尝试将其转换为 PDF 格式。</val></str>
+<str name="avFSSUnknown" translate="yes"><val>出现意外错误。</val></str>
+<str name="avFSSAccessControlVoilation" translate="yes"><val>尝试访问服务时出现错误</val></str>
+<str name="avQuotaExceeded" translate="yes"><val>您的总存储量超过了您的订阅所允许的最大容量。</val></str>
+<str name="UploadIsEmpty" translate="yes"><val>转换失败，因为文件为空</val></str>
+<str name="avUploadTooLarge" translate="yes"><val>转换失败，因为文件过大</val></str>
+
+</asf>

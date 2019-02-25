@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?><asf locale="zh_CN" version="1.0" xmlns="http://ns.adobe.com/asf">
+
+<!-- Share Accordion Header Strings -->
+<str name="avCaptionShareAccordionHeader" translate="yes"><val>发送文件</val></str>
+<str name="avCaptionCPDFAccordionHeader" translate="yes"><val>创建 PDF</val></str>
+<str name="avCaptionEditPDFAccordionHeader" translate="yes"><val>编辑 PDF</val></str>
+<str name="avCaptionCombinePDFAccordionHeader" translate="yes"><desc> String for app name "combinepdf" . Jira Id: ADC-23271. Launch the reader and you can see combinepdf in tools pane. Dev :shrbansa </desc><val>合并 PDF</val></str>
+
+<!-- UI items -->
+
+<str name="avCaptionMenuItemShare" translate="yes"><val>在线发送并跟踪文件(&amp;D)</val></str>
+<str name="avCaptionMenuItemCPDF" translate="yes"><val>联机创建 PDF(&amp;R)...</val></str>
+<str name="avCaptionMenuItemEPDF" translate="yes"><val>Word 或 Excel 联机服务...</val></str>
+<str name="avGoUrlMenuItemEPDF" translate="yes"><val>http://www.adobe.com/go/ipmreaderepdf3_10_1_1_cn</val></str>
+<str name="avTooltipToolbarItemCPDF" translate="yes"><val>联机将文件转换为 PDF...</val></str>
+<str name="avTooltipToolbarItemEPDF" translate="yes"><val>将 PDF 文件联机转换为 Word 或 Excel...</val></str>
+<str name="avCaptionToolbarItemCPDF[flags=W]" translate="yes"><val>创建 PDF</val></str>
+<str name="avCaptionToolbarItemCPDF[flags=M]" translate="yes"><val>创建 PDF(&amp;C)</val></str>
+<str name="avCaptionToolbarItemEPDF" translate="yes"><val>将 PDF 联机转换为 Word 或 Excel</val></str>
+<str name="avGoUrlToolbarItemEPDF" translate="yes"><val>http://www.adobe.com/go/ipmreaderepdf2_10_1_1_cn</val></str>
+
+<!-- Strings for the Credentials Widget Component-->
+<str name="avCaptionSignOut" translate="yes"><val>注销</val></str>
+<str name="avCaptionMyAccount" translate="yes"><val>我的帐户...</val></str>
+<str name="avCaptionGoToSendNow" translate="yes"><val>转至 Adobe Send...</val></str>
+<str name="avCaptionGoToCPDF" translate="yes"><val>跳至 CreatePDF...</val></str>
+
+<!-- Strings for the Sign In Component-->
+<str name="avLabelCaptionAlreadyHaveID" translate="yes"><val>使用您的 Adobe 身份证登录</val></str>
+<str name="avLabelCaptionUsername" translate="yes"><val>电子邮件地址：</val></str>
+<str name="avLabelCaptionPassword" translate="yes"><val>口令：</val></str>
+<str name="avButtonCaptionSignIn" translate="yes"><val>登录</val></str>
+<str name="avLabelCaptionRememberMe" translate="yes"><val>保持登录</val></str>
+<str name="avButtonCaptionSignUp" translate="yes"><val>注册</val></str>
+<str name="avSignInSignUpButtonCaption" translate="yes"><val>注册</val></str>
+<str name="avLabelCaptionSharedComputer" translate="yes"><val>（如果在共享计算机上，请取消选中）</val></str>
+
+<str name="avLabelCaptionNewToADC" translate="yes"><val>需要 Adobe 身份证吗？</val></str>
+<str name="avMessageSignInNotEligible" translate="yes"><val>根据&lt;a href="%link%"&gt;服务资格要求&lt;/a&gt;，您不具有使用 Adobe 联机服务的资格</val></str>
+
+
+<!-- Strings for the Sign Up Options Dialog-->
+
+
+
+<!-- Strings for the Sign Up Component-->
+<str name="avLabelCaptionFreeAccountSignUp" translate="yes"><val>创建 Adobe 身份证以继续</val></str>
+<str name="avLabelCaptionConfirm" translate="yes"><val>确认：</val></str>
+<str name="avLabelCaptionFirstName" translate="yes"><val>名：</val></str>
+<str name="avLabelCaptionSignUpFirstName" translate="yes"><val>名/姓：</val></str>
+<str name="avLabelCaptionLastName" translate="yes"><val>姓：</val></str>
+<str name="avLabelCaptionBirthday" translate="yes"><val>生日：</val></str>
+<str name="avBirthdayMonth" translate="yes"><val>月</val></str>
+<str name="avBirthdayDay" translate="yes"><val>日</val></str>
+<str name="avBirthdayYear" translate="yes"><val>年</val></str>
+<str name="avBirthdayYearBackground" translate="yes"><val>YYYY</val></str>
+
+<str name="avLabelCaptionCountry" translate="yes"><val>国家/地区：</val></str>
+<str name="avRichTextSendmktText" translate="yes"><val>我想收到有关 Adobe 及其产品和服务的信息，包括产品发布、产品升级、研讨会、活动、调查、培训和优惠，而 Adobe 及其代理可以依照 &lt;a href="%link%"&gt;Adobe 联机隐私策略&lt;/a&gt;使用我提供的数据</val></str>
+<str name="avRichTextSendmktHyperlink" translate="yes"><val>我提供的数据</val></str>
+
+<str name="avMessageSignUpNotEligible" translate="yes"><val>根据&lt;a href="%link%"&gt;服务资格要求&lt;/a&gt;，您不具有使用 Adobe 联机服务的资格</val></str>
+<str name="avLabelAlreadyHaveAdobeID" translate="yes"><val>已拥有 Adobe 身份证？</val></str>
+
+<str name="avBirthdayMonthJan" translate="yes"><val>一月</val></str>
+<str name="avBirthdayMonthFeb" translate="yes"><val>二月</val></str>
+<str name="avBirthdayMonthMar" translate="yes"><val>三月</val></str>
+<str name="avBirthdayMonthApr" translate="yes"><val>四月</val></str>
+<str name="avBirthdayMonthMay" translate="yes"><val>五月</val></str>
+<str name="avBirthdayMonthJun" translate="yes"><val>六月</val></str>
+<str name="avBirthdayMonthJul" translate="yes"><val>七月</val></str>
+<str name="avBirthdayMonthAug" translate="yes"><val>八月</val></str>
+<str name="avBirthdayMonthSep" translate="yes"><val>九月</val></str>
+<str name="avBirthdayMonthOct" translate="yes"><val>十月</val></str>
+<str name="avBirthdayMonthNov" translate="yes"><val>十一月</val></str>
+<str name="avBirthdayMonthDec" translate="yes"><val>十二月</val></str>
+
+
+<!-- Strings for the Update Your Profile Component-->
+<str name="avLabelCaptionUpdateProfile" translate="yes"><val>完成您的配置文件以继续</val></str>
+
+<!-- String for Sign Up Help and Errors -->
+<str name="avCmbCountryHelp" translate="yes"><val>选择国家或地区</val></str>
+<str name="avConfirmHelp" translate="yes"><val>重新输入以确认</val></str>
+<str name="avInvalidPassword" translate="yes"><val>口令必须为 6 到 12 个字符</val></str>
+<str name="avPasswordMismatch" translate="yes"><val>口令不匹配</val></str>
+<str name="avInvalidEmail" translate="yes"><val>请使用格式：name@xyz.com</val></str>
+
+<str name="avDuplicateEmail" translate="yes"><val>使用此电子邮件地址的帐户已存在。使用此帐户&lt;a&gt;登录&lt;/a&gt;，或选择其它电子邮件地址。</val></str>
+<str name="avBirthdayInvalidError" translate="yes"><val>输入有效的生日</val></str>
+<str name="avPasswordHint" translate="yes"><val>6-12 个字符</val></str>
+<str name="avEmptyEmailAddress" translate="yes"><val>输入电子邮件地址</val></str>
+<str name="avEmptyPassword" translate="yes"><val>输入口令</val></str>
+<str name="avEmptyConfirmPassword" translate="yes"><val>确认口令</val></str>
+<str name="avEmptyFirstName" translate="yes"><val>输入名</val></str>
+<str name="avEmptyLastName" translate="yes"><val>输入姓</val></str>
+<str name="avEmptyBirthday" translate="yes"><val>输入生日</val></str>
+<str name="avSelectCountry" translate="yes"><val>选择国家或地区</val></str>
+<str name="avInformationRequired" translate="yes"><val>此信息为必填项</val></str>
+
+<str name="avFirstNameCharsExceeded" translate="yes"><val>姓名必须为 1 到 255 个字符</val></str>
+<str name="avLastNameCharsExceeded" translate="yes"><val>姓名必须为 1 到 255 个字符</val></str>
+<str name="avInvalidNameCharacters" translate="yes"><val>姓名不可包含以下字符：)&lt;\@;/&gt;(</val></str>
+<str name="avInvalidYear" translate="yes"><val>输入有效年份</val></str>
+
+<!-- Strings for the Verify Email Dialog-->
+<str name="avLabelCaptionVerifyEmailHead" translate="yes"><val>验证电子邮件地址</val></str>
+<str name="avLabelCaptionVerifyEmailText1" translate="yes"><val>需要经过验证的电子邮件地址才能使用此服务。已将验证电子邮件发送至：</val></str>
+<str name="avLabelCaptionVerifyEmailText2" translate="yes"><val>请单击电子邮件中的链接以验证您的电子邮件地址。</val></str>
+<str name="avLabelCaptionVerifyEmailText3" translate="yes"><val>没有接收到电子邮件？</val></str>
+<str name="avLabelCaptionVerifyEmailResendSignUp" translate="yes"><val>重新发送电子邮件</val></str>
+<str name="avLabelCaptionVerifyEmailResend" translate="yes"><val>重新发送验证电子邮件</val></str>
+<str name="avTextEmailVerificationExpiredSignUpError" translate="yes"><val>必须验证您的电子邮件地址才能继续。</val></str>
+<str name="avTextEmailVerificationExpiredSignInError" translate="yes"><val>您的电子邮件地址尚未经过验证。要激活帐户，请单击以前发送给您的验证电子邮件中的链接。</val></str>  
+
+
+<str name="avButtonCaptionVerifyEmailContinue" translate="yes"><val>继续</val></str>
+
+<!-- Strings for the Upsell Widget-->
+
+<str name="avCaptionLearnMore" translate="yes"><val>更多信息</val></str>
+
+<!-- Strings for the file list and its label -->
+
+<str name="avLabelBrowseWindowTitleSingleFile" translate="yes"><val>选择文件</val></str>
+<str name="avLabelBrowseWindowTitleMultipleFiles" translate="yes"><val>选择文件</val></str>
+<str name="avLabelBrowseButton" translate="yes"><val>添加</val></str>
+<str name="avLabelFileFilterDescription" translate="yes"><val>所有支持的文件</val></str>
+<str name="avFileNumberSuffix0" translate="yes"><val/></str>
+<str name="avFileNumberSuffix1" translate="yes"><val>文件</val></str>
+<str name="avFileNumberSuffix2" translate="yes"><val>文件</val></str>
+<str name="avFileNumberPrefix0" translate="yes"><val/></str>
+<str name="avFileNumberPrefix1" translate="yes"><val/></str>
+<str name="avFileNumberPrefix2" translate="yes"><val/></str>
+<str name="avFileSizeSuffix0" translate="yes"><val>字节</val></str>
+<str name="avFileSizeSuffix1" translate="yes"><val>KB</val></str>
+<str name="avFileSizeSuffix2" translate="yes"><val>MB</val></str>
+<str name="avFileSizeSuffix3" translate="yes"><val>GB</val></str>
+<str name="avFileSizeSuffix4" translate="yes"><val>TB</val></str>
+<str name="avFileSizePrefix0" translate="yes"><val/></str>
+<str name="avFileSizePrefix1" translate="yes"><val/></str>
+<str name="avFileSizePrefix2" translate="yes"><val/></str>
+<str name="avFileSizePrefix3" translate="yes"><val/></str>
+<str name="avFileSizePrefix4" translate="yes"><val/></str>
+
+<str name="avButtonCaptionOK" translate="yes"><val>确定</val></str>
+<str name="avButtonCaptionRetry" translate="yes"><val>重试</val></str>
+<str name="avButtonCaptionBHRetry" translate="yes"><val>重试</val></str>
+<str name="avButtonCaptionReplace" translate="yes"><val>替换</val></str>
+<str name="avButtonCaptionCancel" translate="yes"><val>取消</val></str>
+<str name="avButtonCaptionYes" translate="yes"><val>是</val></str>
+<str name="avButtonCaptionNo" translate="yes"><val>否</val></str>
+<str name="avButtonCaptionForgotPassword" translate="yes"><val>忘记了口令？</val></str>
+<str name="avButtonCaptionSaveToBlueHeron" translate="yes"><val>保存至 %{AdobeBlueHeron}%</val></str>
+<str name="avButtonBHSave" translate="yes"><val>保存</val></str>
+<str name="avButtonCaptionUpload" translate="yes"><val>上载</val></str>
+
+
+<!-- Tool tips for file list item renderer -->
+<str name="avRemoveFileToolTip" translate="yes"><val>删除文件</val></str>
+<str name="avUploadingFileToolTip" translate="yes"><val>正在上载...</val></str>
+<str name="avUploadedFileToolTip" translate="yes"><val>上载成功</val></str>
+<str name="avUploadedFailedToolTip" translate="yes"><val>上载失败</val></str>
+<str name="avFileTypeToolTip" translate="yes"><val>%ext% 文件</val></str>
+
+<!-- Strings for the Share Components -->
+<str name="avStaticSendFile" translate="yes"><val>发送文件:</val></str>
+<str name="avButtonBrowse" translate="yes"><val>+ 添加文件</val></str>
+<str name="avButtonCaptionTo" translate="yes"><val>收件人...</val></str>
+<str name="avButtonCaptionAddressBook" translate="yes"><val>通讯簿</val></str>
+<str name="avButtonCaptionViewSharedFiles" translate="yes"><val>查看所有已发送的文件</val></str>
+<str name="avButtonCaptionViewSharedFilesURL" translate="yes"><val>http://www.adobe.com/go/ipmreaderepdf3_10_1_1_cn</val></str>
+<str name="avTextAreaToDefaultText" translate="yes"><val>输入电子邮件地址</val></str>
+<str name="avLabelCaptionSubject" translate="yes"><val>主题：</val></str>
+<str name="avLabelCaptionMessage" translate="yes"><val>内容：</val></str>
+<str name="avLabelToHelp" translate="yes"><val>输入电子邮件地址</val></str>
+<str name="avLabelLoginRequired" translate="yes"><val>需要登录才能访问文件</val></str>
+<str name="avLabelDeliveryReceipt" translate="yes"><val>获取送达回执</val></str>
+<str name="avLabelSetDueDate" translate="yes"><val>下载的截止日期</val></str>
+<str name="avLabelSetDueDateDays" translate="yes"><val>天</val></str>
+<str name="avLabelSetDueDateFreeUser" translate="yes"><val>文件下载限制为</val></str>
+<str name="avLabelSetDueDateDaysError" translate="yes"><val>输入有效的天数</val></str>
+
+<str name="avSendNowAttachAddSingle" translate="yes"><val>选择文件：</val></str>
+<str name="avSendNowAddMultiple" translate="yes"><val>选择文件：</val></str>
+
+<!-- Strings for previous workflows -->
+<str name="avMessageCheckingWorkflows" translate="yes"><val>正在检索当前会话状态...</val></str>
+
+<!-- Strings for the Upload Workflow Component -->
+<str name="avLabelCaptionUploadFilesHeader" translate="yes"><val>选择任何类型的文件：</val></str>
+<str name="avLabelUploadFilesInfo" translate="yes"><val>%num% %size%</val></str>
+
+
+
+
+<str name="avButtonCaptionBHUpload" translate="yes"><val>保存</val></str>
+<str name="avButtonCaptionShare" translate="yes"><val>继续</val></str>
+<str name="avInvalidEmailsMessage" translate="yes"><val>一个或多个电子邮件地址无效</val></str>
+<str name="avMessageAlreadyRunning" translate="yes"><val>多个工作流不能同时处于活动状态。单击“确认”以查看上次启动的工作流的进度。</val></str>
+
+  <!-- Strings for the Create PDF Workflow Component -->
+<str name="avLabelCPDFStaticInfo" translate="yes"><val>Adobe CreatePDF</val></str>
+<str name="avLabelCaptionCreatePDFFilesHeaderFreeUser" translate="yes"><val>文件：</val></str>
+
+<str name="avButtonCaptionCreatePDF" translate="yes"><val>转换</val></str>
+<str name="avLabelCreatePDFFilesInfo" translate="yes"><val>%num% %size%</val></str>
+<str name="avButtonCaptionCreatePDFBrowseFreeUser" translate="yes"><val>选择要转换为 PDF 的文件：</val></str>  
+<str name="avButtonCaptionCreatePDFSelectFile" translate="yes"><val>选择文件</val></str>
+
+<str name="avLabelBrowseWindowTitleCPDFFree" translate="yes"><val>选择文件</val></str>
+<str name="avCPDFIconTooltip" translate="yes"><val>在 createpdf.acrobat.com 中查看已转换的文件</val></str>
+  
+
+<!-- Strings for the Attach to email Workflow Component -->
+
+
+<str name="avLabelAttachFilesInfo" translate="yes"><val>%num% %size%</val></str>
+
+<str name="avButtonCaptionAttach" translate="yes"><val>附加</val></str>
+<str name="avMessageAttaching" translate="yes"><val>正在启动电子邮件应用程序...</val></str>
+<str name="avMessageLargeFileAttach" translate="yes"><val>该文件大小为 %size%，可能超出了电子邮件附件的限制。要使用 Adobe Send 将其作为链接发送吗?</val></str>
+
+<str name="avMessageAttachFailed" translate="yes"><val>%product% 无法启动电子邮件应用程序</val></str>
+
+<!-- Strings for OOB experiments -->
+<str name="avLabelEditPDFStaticInfo" translate="yes"><val>Adobe Acrobat Pro</val></str>
+<str name="avEditPDFContent" translate="yes"><val>轻松编辑 PDF 文档中的文本和图像</val></str>
+<str name="avEditPDFLearnMoreURL" translate="yes"><val>http://www.adobe.com/go/reader_edit_11_0_9_cn</val></str>
+<str name="avButtonCaptionEditPDF" translate="yes"><val>立即启动</val></str>
+
+<!-- Extra Strings required for Combine PDF experiment  -->
+<str name="avLabelCombinePDFStaticInfo" translate="yes"><desc> static info for combine. Jira Id: ADC-23271. Launch the reader. In tools pane , select combine pdf.  dev :shrbansa </desc><val>Adobe Acrobat Pro</val></str>
+<str name="avCombinePDFContent" translate="yes"><desc> description for combinepdf. Jira Id: ADC-23271. Launch the reader. In tools pane , select combine pdf. dev :shrbansa </desc><val>删除、插入、提取或旋转页面</val></str>
+<str name="avCombinePDFLearnMoreURL" translate="yes"><desc> goURL for combinepdf. Jira Id: ADC-23271. Launch the reader. In tools pane , select combine pdf and click on Start now.dev :shrbansa </desc><val>http://www.adobe.com/go/reader_combine_11_0_12_cn</val></str>
+<str name="avButtonCaptionCombinePDF" translate="yes"><desc> Learn more string for combinepdf.Jira Id: ADC-23271. Launch the reader. In tools pane , select combine pdf,you can see "Start now" button. dev :shrbansa </desc><val>立即开始</val></str>
+
+<!-- Strings for DocCtrWorkflow -->
+<str name="avMessageSigningIn" translate="yes"><val>正在登录到联机服务...</val></str>
+<str name="avMessageSigningUp" translate="yes"><val>正在创建 Adobe 身份证...</val></str>
+
+<!-- Strings for UploadShareWorkflow -->
+<str name="avMessageUploadingSingleFile" translate="yes"><val>正在将文件上载到 Acrobat.com</val></str>
+<str name="avMessageUploadingMultipleFiles" translate="yes"><val>正在将文件上载到 Acrobat.com</val></str>
+<str name="avMessageCancelling" translate="yes"><val>正在取消...</val></str>
+<str name="avMessageAdobeSend" translate="yes"><val>Adobe Send</val></str>
+<str name="avAddressbookTooltip" translate="yes"><val>从本地通讯簿中添加电子邮件地址</val></str>
+
+<!-- Strings for CreatePDFWorkflow -->
+<str name="avMessageVirusScanning" translate="yes"><val>正在扫描病毒...</val></str>
+<str name="avMessageConvertingPDF" translate="yes"><val>正在使用&lt;br/&gt;Adobe CreatePDF 联机服务将文件转换为 PDF</val></str>
+<str name="avMessageCreatePDFUploadingSingleFile" translate="yes"><val>正在将文件上载到&lt;br/&gt;Adobe CreatePDF 联机服务…</val></str>
+  
+<!-- Strings for DownloadWorkflow -->
+<str name="avMessageDownloading" translate="yes"><val>正在从&lt;br/&gt;Adobe CreatePDF 联机服务下载 PDF 文件…</val></str>
+
+<!-- Strings for the Workflow Container -->
+<str name="avWrkFlwEntryUpload" translate="yes"><val>使用 Adobe Send</val></str>
+<str name="avWrkFlwEntryAttach" translate="yes"><val>附加到电子邮件</val></str>
+
+<!-- URLs -->
+<str name="avURLADCReader" translate="yes"><val>http://www.adobe.com/go/reader_adc_cn</val></str>
+<str name="avURLADCAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_adc_cn</val></str>
+<str name="avURLAboutADCSharingReader" translate="yes"><val>http://www.adobe.com/go/reader_adc_sharing_cn</val></str>
+<str name="avURLAboutADCSharingAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_adc_sharing_cn</val></str>
+<str name="avURLAboutADCCPDFReader" translate="yes"><val>http://www.adobe.com/go/reader_adc_cpdf_cn</val></str>
+<str name="avURLAboutADCCPDFAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_adc_cpdf_cn</val></str>
+<str name="avURLSubscribeReader" translate="yes"><val>http://www.adobe.com/go/reader_adc_subscribe_cn</val></str>
+<str name="avURLSubscribeAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_adc_subscribe_cn</val></str>
+<str name="avURLPrivacyPolicyReader" translate="yes"><val>http://www.adobe.com/go/privacy_cn/</val></str>
+<str name="avURLPrivacyPolicyAcrobat" translate="yes"><val>http://www.adobe.com/go/privacy_cn/</val></str>
+<str name="avURLForgotPasswordReader" translate="yes"><val>http://www.adobe.com/go/reader_password_cn/</val></str>
+<str name="avURLForgotPasswordAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_password_cn/</val></str>
+<str name="avURLAdobeTOUReader" translate="yes"><val>http://www.adobe.com/go/terms_cn/</val></str>
+<str name="avURLAdobeTOUAcrobat" translate="yes"><val>http://www.adobe.com/go/terms_cn/</val></str>
+<str name="avURLSendNowReader" translate="yes"><val>http://www.adobe.com/go/reader_sendnow_11_0_7_cn</val></str>
+<str name="avURLSendNowAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_sendnow_11_0_07_cn</val></str>
+<str name="avURLCreatePDFReader" translate="no"><val>http://www.adobe.com/go/reader_createpdf_11_0_6</val></str>
+<str name="avURLCreatePDFAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_createpdf_cn/</val></str>
+<str name="avURLAboutAdobeIDReader" translate="yes"><val>http://www.adobe.com/go/reader_aboutadobeid_cn/</val></str>
+<str name="avURLAboutAdobeIDAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_aboutadobeid_cn/</val></str>
+<str name="avURLCreatePDFErrorReader" translate="yes"><val>http://www.adobe.com/go/reader_createpdferror_cn/</val></str>
+<str name="avURLCreatePDFErrorAcrobat" translate="yes"><val>http://www.adobe.com/go/acrobat_createpdferror_cn/</val></str>
+
+<str name="avURLBlueHeron" translate="yes"><val>http://www.adobe.com/go/blueheron_11_0_cn/</val></str>
+
+<!-- Attachment Error messages -->
+<str name="avMessageEmailDisallowedFiles" translate="yes"><val>您的电子邮件应用程序不允许发送这些类型的文件</val></str>
+
+
+<!-- Acrobat.com error messages -->
+<str name="avTextServerNotFound" translate="yes"><val>%product% 无法联系服务器以完成请求</val></str>
+<str name="avTextUnknownSignInError" translate="yes"><val>登录时发生错误</val></str>
+<str name="avTextUnknownSignUpError" translate="yes"><val>注册时发生错误</val></str>
+<str name="avTextNoTOUSignInError" translate="yes"><val>您必须接受“使用条款”才能继续</val></str>
+<str name="avTextNotVerifiedSignInError" translate="yes"><val>您尚未验证电子邮件地址</val></str>
+<str name="avTextInvalidLoginSignInError" translate="yes"><val>无效的电子邮件地址或口令。如果尚未拥有帐户，请单击“注册”。</val></str>
+<str name="avTextUnsupportedCountry" translate="yes"><val>选定的国家或地区当前不支持创建新帐户</val></str>
+<str name="avTextInvalidCharsInEmail" translate="yes"><val>电子邮件地址中不能有特殊字符</val></str>
+<str name="avTextMaxCharsExceeded" translate="yes"><val>某个域长度超过了最大字符数</val></str>
+<str name="avTextLoginDeniedSignInError" translate="yes"><val>错误的登录尝试次数过多。请验证 Adobe 身份证和口令，然后几分钟后重试。</val></str>
+<str name="avTextLoginCommunicationErrorSignInError" translate="yes"><val>尝试登录时出现网络错误</val></str>
+
+
+<!-- Acrobat.com Common API error messages -->
+<str name="avAcrobat" translate="yes"><val>Acrobat</val></str>
+<str name="avReader" translate="yes"><val>Reader</val></str>
+<str name="avAccessControlVoilation" translate="yes"><val>尝试访问服务时出现错误</val></str>
+<str name="avTextServiceRequiredError" translate="yes"><val>%product% 无法访问此服务</val></str>
+<str name="avTextSpeedLimitExceededError" translate="yes"><val>服务从此计算机收到的请求过多。请几秒钟后重试。</val></str>
+<str name="avFileAccessDenied" translate="yes"><val>%product% 无法访问：&lt;br/&gt;%filename%&lt;br/&gt;&lt;br/&gt;当文件在另一个应用程序中打开时，就会发生这种情况。此外，请确保文件位于指定的位置。</val></str>
+
+  
+<!-- CPDF Error messages -->
+<str name="avMessageCPDFDisallowedFiles" translate="yes"><val>Adobe CreatePDF 联机服务不支持此类型的文件</val></str>  
+<str name="avMessageCPDFCorruptSingleFile" translate="yes"><val>转换失败，因为文件已损坏</val></str>
+<str name="avMessageCPDFCorruptMultipleFiles" translate="yes"><val>这些文件已损坏，因此无法转换为 PDF</val></str>
+<str name="avMessageCPDFQuotaExceeded" translate="yes"><val>您的帐户中没有剩余的免费试用转换</val></str>
+<str name="avUploadTooLargeCreatePDFSingleFile" translate="yes"><val>此文件超出了 100 MB</val></str>
+<str name="avMessageCPDFFileEncrypted" translate="yes"><val>转换失败，因为文件是受口令保护</val></str>
+<str name="avMessageCPDFTimeOut" translate="yes"><val>转换失败，因为处理文件时间超时</val></str>
+
+  
+<!-- SendNow Error Messages -->
+<str name="avMessageADCDisallowedFile" translate="yes"><val>订阅 Adobe Send 以发送此类型的文件:</val></str>
+<str name="avMessageADCDisallowedFiles" translate="yes"><val>订阅 Adobe Send 以发送此类型的文件:</val></str>
+<str name="avMessageADCDisallowedFileNew" translate="yes"><val>Adobe Send 当前不支持附件中的文件类型。&lt;a href="%link%"&gt;了解更多信息。&lt;/a&gt;</val></str>
+<str name="avFileIncorrectMimeTypeSendNow" translate="yes"><val>Adobe Send 不支持发送这些类型的文件</val></str>
+<str name="avFileVirusDetectedSendNowSingle" translate="yes"><val>无法发送此文件，因为文件中包含病毒</val></str>
+<str name="avFileVirusDetectedSendNowMultiple" translate="yes"><val>无法发送这些文件，因为一个或多个文件包含病毒</val></str>
+<str name="avInvalidEmailAddressFormatSingle" translate="yes"><val>无法发送此文件，因为一个或多个电子邮件地址的格式不正确</val></str>
+<str name="avInvalidEmailAddressFormatMultiple" translate="yes"><val>无法发送这些文件，因为一个或多个电子邮件地址的格式不正确</val></str>
+<str name="avInvalidInviteeSingle" translate="yes"><val>无法发送此文件，因为一个或多个电子邮件地址无效</val></str>
+<str name="avInvalidInviteeMultiple" translate="yes"><val>无法发送这些文件，因为一个或多个电子邮件地址无效</val></str>
+<str name="avStorageQuotaExceededPaidSendNowSingleFile" translate="yes"><val>无法发送此文件，因为已超出文件存储配额</val></str>
+<str name="avStorageQuotaExceededPaidSendNowMultipleFiles" translate="yes"><val>无法发送这些文件，因为已超出文件存储配额</val></str>
+<str name="avRecipientCountLimitExceeded" translate="yes"><val>电子邮件地址数超出了最大限值 %X%。请删除一些电子邮件地址以继续</val></str>
+<str name="avFileCountLimitExceededSendNow" translate="yes"><val>选定文件的数量超出了最大限值 %X%。请删除一些文件以继续。</val></str>
+<str name="avUploadTooLargePaidSendNowSingleFile" translate="yes"><val>此文件超出了服务所支持的最大文件大小 %X%。</val></str>
+<str name="avUploadTooLargePaidSendNowMultipleFiles" translate="yes"><val>一个或多个文件超出了服务所支持的最大文件大小 %X%。</val></str>
+<str name="avSendTransactionLimitExceeded" translate="yes"><val>您已超出 Adobe Send 事务数量的限制。</val></str>
+<str name="avSendNowBHUploadFailure" translate="yes"><val>上载文件时出现错误。</val></str>
+<str name="avSendNowBHUploadMultipleFailure" translate="yes"><val>上载文件时出现错误。</val></str>
+
+
+<!-- Progress dialog, notfications, etc. messages -->
+<str name="avChkboxCaptionShowDetails" translate="yes"><val>显示详细信息</val></str>
+<str name="avChkboxCaptionHideDetails" translate="yes"><val>隐藏详细信息</val></str>
+<str name="avMessageNoOfWorkflowsComplete" translate="yes"><val>已完成 %num% 个文件（共 %total% 个）</val></str>  
+  
+<str name="avMessageOneFileShareSuccess" translate="yes"><val>&lt;b&gt;已准备发送文件&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;已将您的文件上载到 acrobat.com&lt;br/&gt;&lt;br/&gt;请在打开的窗口中完成该过程。</val></str>
+<str name="avMessageOneFileShareFailure" translate="yes"><val>&lt;br/&gt;文件发送失败，请重试。</val></str>
+<str name="avMessageMultipleFileShareSuccess" translate="yes"><val>&lt;b&gt;已准备发送文件&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;已在 SendNow.Adobe.com 上通过电子邮件向收件人发送了一个指向文件的链接</val></str>  
+
+
+<str name="avMessageOneFileCreatePDFSuccess" translate="yes"><val>&lt;b&gt;已完成&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;文件已转换为 PDF 并联机保存到 Adobe CreatePDF</val></str>
+<str name="avMessageOneFileCreatePDFFailure" translate="yes"><val>使用 Adobe CreatePDF 联机服务转换文件失败</val></str>    
+<str name="avMessageOneFileDownloadSuccess" translate="yes"><val>&lt;b&gt;完成&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;文件已成功转换为 PDF 并已保存至&lt;br/&gt;您的联机帐户中</val></str>  
+<str name="avMessageOneFileDownloadFailed" translate="yes"><val>转换已成功，但是将 PDF 下载到您的计算机失败</val></str>
+<str name="avMessageNetworkFailure" translate="yes"><val>尝试访问服务时出现错误。请检查您的网络连接</val></str>
+
+
+<str name="avMessageOneFileLinkMessage" translate="yes"><val>重新打开“发送”窗口</val></str>
+<str name="avMessageMultipleFileLinkMessage" translate="yes"><val>查看和追踪已发送的文件</val></str>
+
+<str name="avMessageCreatePDFOneFileSaveMessage" translate="yes"><val>使用 Reader 查看 PDF 文件</val></str>
+<str name="avMessageCreatePDFOneFileLinkMessage" translate="yes"><val>联机查看 PDF 文件</val></str>
+<str name="avMessageCreatePDFDownloadOneFileLinkMessage" translate="yes"><val>在 Reader 中查看 PDF 文件</val></str>
+
+	
+<!-- System tray notification messages -->
+<str name="avMessageTrayShowDetails" translate="yes"><val>单击此处查看详细信息</val></str>
+<str name="avTitleTrayShareProgressSingleFile" translate="yes"><val>正在使用 Adobe Send 发送文件...</val></str>
+<str name="avTitleTrayShareProgressMultipleFiles" translate="yes"><val>正在使用 Adobe Send 发送文件...</val></str>
+<str name="avTitleTrayShareSucessSingleFile" translate="yes"><val>已成功使用 Adobe Send 发送文件</val></str>
+<str name="avTitleTrayShareSucessMultipleFiles" translate="yes"><val>已成功使用 Adobe Send 发送 %num% 个文件</val></str>
+<str name="avTitleTrayShareFailSingleFile" translate="yes"><val>使用 Adobe Send 发送文件时出现错误</val></str>
+<str name="avTitleTrayShareFailMultipleFiles" translate="yes"><val>使用 Adobe Send 发送文件时出现错误</val></str>
+
+
+
+<!-- Create PDF system tray notification messages -->
+<str name="avTitleTrayCreatePDFProgressSingleFile" translate="yes"><val>正在将文件上载到 Adobe CreatePDF 联机服务并转换为 PDF...</val></str>
+<str name="avTitleTrayCreatePDFProgressMultipleFiles" translate="yes"><val>正在将文件上载到 Adobe CreatePDF 联机服务并转换为 PDF...</val></str>
+<str name="avTitleTrayCreatePDFSucessSingleFile" translate="yes"><val>已成功使用 Adobe CreatePDF 联机服务将文件转换为 PDF</val></str>
+<str name="avTitleTrayCreatePDFSucessMultipleFiles" translate="yes"><val>已成功使用 Adobe CreatePDF 联机服务将 %num% 个文件转换为 PDF</val></str>
+<str name="avTitleTrayCreatePDFFailSingleFile" translate="yes"><val>使用 Adobe CreatePDF 联机服务将文件转换为 PDF 时发生错误</val></str>
+<str name="avTitleTrayCreatePDFFailMultipleFiles" translate="yes"><val>使用 Adobe CreatePDF 联机服务将文件转换为 PDF 时发生错误</val></str>
+ 
+
+<!-- Download system tray notification messages -->
+<str name="avTitleTrayDownloadProgress" translate="yes"><val>正在将文件上载到 Adobe CreatePDF 联机服务并转换为 PDF</val></str>
+<str name="avTitleTrayDownloadSucessSingleFile" translate="yes"><val>已成功使用 Adobe CreatePDF 联机服务将文件转换为 PDF</val></str>
+<str name="avTitleTrayDownloadFail" translate="yes"><val>已成功使用 Adobe CreatePDF 联机服务将文件转换为 PDF</val></str>
+
+<!-- Strings for the items in the gateway -->
+<str name="avLabelGTCreatePDF" translate="yes"><val>创建 PDF</val></str>
+<str name="avLabelGTShare" translate="yes"><val>在线发送并跟踪文件</val></str> 
+<str name="avLabelGTExportPDF" translate="yes"><val>将 PDF 转换为 Word 或 Excel</val></str> 
+<str name="avGoUrlGTExportPDF" translate="yes"><val>http://www.adobe.com/go/ipmreaderepdf1_10_1_1_cn</val></str> 
+
+<!-- Strings for ExportPDFWorkflow -->	
+  
+<str name="avCaptionGoToEPDF" translate="yes"><val>转至 ExportPDF...</val></str>
+<str name="avURLExportPDFReader" translate="no"><val>http://www.adobe.com/go/reader_exportpdf_11_0_6</val></str>
+<str name="avLabelBrowseWindowTitleExportPDFFree" translate="yes"><val>选择文件</val></str>
+
+<str name="avMessageExportPDFWord_doc" translate="yes"><val>Word</val></str>
+<str name="avMessageExportPDFRich_text" translate="yes"><val>RTF 格式</val></str>
+<str name="avMessageExportPDFWord" translate="yes"><val>Word</val></str>
+<str name="avMessageExportPDFExcel" translate="yes"><val>Excel</val></str>
+<str name="avMessageExportPDFPowerpoint" translate="yes"><val>PowerPoint</val></str>
+<str name="avMessageExportingPDF" translate="yes"><val>正在使用&lt;br/&gt;Adobe ExportPDF 联机服务将文件转换为 %type%...</val></str>
+<str name="avMessageExportPDFUploadingSingleFile" translate="yes"><val>正在将文件上载至&lt;br/&gt;Adobe ExportPDF 联机服务...</val></str>
+<str name="avMessageExportPDFDownloadingSingleFile" translate="yes"><val>正在从&lt;br/&gt;Adobe ExportPDF 联机服务下载文件...</val></str>
+<str name="avMessageExportPDFOneFileSaveMessage" translate="yes"><val>下载已转换的文件</val></str>
+					
+<str name="avButtonCaptionExportPDF" translate="yes"><val>转换</val></str>
+<str name="avLabelConvertToExportPDF" translate="yes"><val>转换为：</val></str>
+<str name="avExportPDFConvertToWord" translate="yes"><val>Microsoft Word (*.docx)</val></str>
+<str name="avExportPDFConvertToPowerpoint" translate="yes"><val>Microsoft PowerPoint (*.pptx)</val></str>
+<str name="avExportPDFConvertToExcel" translate="yes"><val>Microsoft Excel (*.xlsx)</val></str>
+<str name="avExportPDFConvertToWord_doc" translate="yes"><val>Microsoft Word (*.doc)</val></str>
+<str name="avExportPDFConvertToRich_text" translate="no"><val>Rich Text Format (*.rtf)</val></str>
+
+<str name="avLabelExportPDFRecognizeText" translate="yes"><val>识别语言为%lang%的文本</val></str>
+<str name="avLabelExportPDFChange" translate="yes"><val>更改</val></str>
+<str name="avLabelExportPDFDonNotRecognizeText" translate="yes"><val>不识别文本</val></str>
+				
+<str name="avExportPDFLangOCREnglishUK" translate="no"><val>English(U.K.)</val></str>
+<str name="avExportPDFLangOCREnglishUS" translate="no"><val>English(U.S.)</val></str>
+<str name="avExportPDFLangOCREnglishUKNew" translate="no"><val>English (U.K.)</val></str>
+<str name="avExportPDFLangOCREnglishUSNew" translate="no"><val>English (U.S.)</val></str>
+<str name="avExportPDFLangOCRFrench" translate="no"><val>Français</val></str>
+<str name="avExportPDFLangOCRSpanish" translate="no"><val>Español</val></str>
+<str name="avExportPDFLangOCRGerman" translate="no"><val>Deutsch</val></str>
+<str name="avExportPDFLangOCRItalian" translate="no"><val>Italiano</val></str>
+<str name="avExportPDFLangOCRJapanese" translate="no"><val>日本語</val></str>
+								
+<str name="avExportPDFAddSingleFile" translate="yes"><val>选择 PDF 文件：</val></str>
+<str name="avLabelExportPDFFilesInfo" translate="yes"><val>%num% %size%</val></str>
+<str name="avCaptionExportPDFAccordionHeader" translate="yes"><val>导出 PDF </val></str>
+				
+<!-- ExportPDF Error messages-->
+<str name="avMessageExportPDFDisallowedFiles" translate="yes"><val>Adobe ExportPDF 联机服务不支持此类型的文件</val></str>  
+<str name="avMessageExportPDFCorruptSingleFile" translate="yes"><val>转换失败，因为文件已损坏</val></str>
+<str name="avMessageExportPDFQuotaExceeded" translate="yes"><val>您的帐户还可以免费试用转换功能 0 次</val></str>
+<str name="avUploadTooLargeExportPDFSingleFile" translate="yes"><val>此文件超出了 100 MB</val></str>
+<str name="avMessageExportPDFFileEncrypted" translate="yes"><val>转换失败，因为文件是受口令保护</val></str>
+<str name="avMessageExportPDFTimeOut" translate="yes"><val>转换失败，因为处理文件时间超时</val></str>
+<str name="avMessageExportPDFPortfolioFile" translate="yes"><val>转换失败，因为此文件是 PDF 包</val></str>
+<str name="avFilePortfolioDisallowed" translate="yes"><val>无法转换此文件，因为此文件是 PDF 包</val></str>
+<str name="avMessageExportPDFNoTables" translate="yes"><val>无法将此文件转换为 Excel，因为此文件中不包含表</val></str>
+<str name="avFilePasswordProtected" translate="yes"><val>无法转换此文件，因为此文件受口令保护</val></str>
+<str name="avFileCopyProtected" translate="yes"><val>无法转换此文件，因为此文件不允许文本提取</val></str>
+<str name="avFileCertificateProtected" translate="yes"><val>无法转换此文件，因为此文件已加密</val></str>
+<str name="avFilePolicyProtected" translate="yes"><val>无法转换此文件，因为此文件受策略保护</val></str>
+<str name="avSingleFileSelectionAllowed" translate="yes"><val>此功能目前支持单一文件转换</val></str>
+				
+<!-- CPDF2 errors -->
+<str name="avPDFIsEncryptedOrForm" translate="yes"><val>转换失败，因为文件已加密或为表单</val></str>
+<str name="avPDFPolicyProtected" translate="yes"><val>转换失败，因为文件受策略保护</val></str>
+<str name="avQuotaExceeded" translate="yes"><val>您的总存储容量超过了订阅允许的最大容量。</val></str>
+<str name="avQuotaExceededLink" translate="yes"><val>联机查看和管理您的文件</val></str>
+<str name="UploadIsEmpty" translate="yes"><val>转换失败，因为文件为空</val></str>
+<str name="avUploadTooLarge" translate="yes"><val>转换失败，因为文件过大</val></str>
+<str name="avVirusDetected" translate="yes"><val>转换失败，因为文件已损坏</val></str>
+				
+<!-- ExportPDF Workflow Progress Strings-->
+<str name="avMessageOneFileExportPDFSuccess" translate="yes"><val>&lt;b&gt;已完成&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;已成功使用 Adobe ExportPDF 联机服务将文件转换为 %type%</val></str>
+<str name="avMessageOneFileExportPDFFailure" translate="yes"><val>使用 Adobe ExportPDF 联机服务转换文件失败</val></str>    
+<str name="avMessageOneFileExportPDFDownloadSuccess" translate="yes"><val>&lt;b&gt;完成&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;文件已成功转换为 %type% 并已保存至&lt;br/&gt;您的联机帐户中</val></str>  
+<str name="avMessageOneFileExportPDFDownloadFailed" translate="yes"><val>将转换的文件下载到您的计算机失败</val></str>
+				
+<!-- Export PDF system tray notification messages -->
+<str name="avTitleTrayExportPDFProgressSingleFile" translate="yes"><val>正在将文件上载至 Adobe ExportPDF 联机服务并转换文档...</val></str>
+<str name="avTitleTrayExportPDFSucessSingleFile" translate="yes"><val>已成功使用 Adobe ExportPDF 联机服务转换文件</val></str>
+<str name="avTitleTrayExportPDFFailSingleFile" translate="yes"><val>使用 Adobe ExportPDF 联机服务转换文件时出错</val></str>
+				 
+<!-- Export PDF Download system tray notification messages -->
+<str name="avTitleTrayExportPDFDownloadProgressSingleFile" translate="yes"><val>正在将文件上载至 Adobe ExportPDF 联机服务并转换文档...</val></str>
+<str name="avTitleTrayExportPDFDownloadSucessSingleFile" translate="yes"><val>已成功使用 Adobe ExportPDF 联机服务转换文件</val></str>
+<str name="avTitleTrayExportPDFDownloadFailSingleFile" translate="yes"><val>使用 Adobe ExportPDF 联机服务转换文件时出错</val></str>
+
+<str name="avPluginDescription" translate="yes"><val>Adobe DEX 共享增效工具允许用户与 Adobe 联机服务进行交互。</val></str>
+
+<!-- Common Sign In Error Strings -->
+<str name="avMessageGeneralError" translate="yes"><val>出现错误</val></str>
+<str name="avBlueHeronError_NetworkDisconnected_Open" translate="yes"><val>无法打开文件。请确保已连接到 Internet，然后重试。</val></str>
+<str name="avBlueHeronError_NetworkDisconnected_Save" translate="yes"><val>无法联机保存文件。请确保已连接到 Internet，然后重试。</val></str>
+<str name="avBlueHeronError_NetworkDisconnected_Generic" translate="yes"><val>%product% 无法访问网络。请检验计算机的网络连接，然后重试。</val></str>
+
+
+<!-- Blue Heron Strings -->
+<str name="avCaptionGoToBH" translate="yes"><val>转到 %{AdobeBlueHeron}%...</val></str>
+<str name="avCaptionBlueHeronAccordionHeader_old" translate="yes"><val>联机存储</val></str>
+<str name="avCaptionBlueHeronAccordionHeader" translate="yes"><val>存储文件</val></str>
+<str name="avMessageBlueHeronUploadingSingleFile" translate="yes"><val>保存至 &lt;br/&gt; %{AdobeBlueHeron}%...</val></str>
+<str name="avMessageBHProcessingDocument" translate="yes"><val>正在处理文档...</val></str>
+<str name="avMessageBHUploadSuccess" translate="yes"><val>文档已成功保存至 &lt;br/&gt; %{AdobeBlueHeron}%。</val></str>
+<str name="avMessageBHUploadSuccessful" translate="yes"><val>上载成功！</val></str>
+<str name="avMessageBHSavedSuccessfully" translate="yes"><val>保存成功</val></str>
+
+<!-- BlueHeron Recent Files Strings -->
+<str name="avBHRecentFilesWidgetLabel" translate="yes"><val>最近打开的 %{AdobeBlueHeron}% 文件</val></str>
+<str name="avBHRecentFileListLabel" translate="yes"><val>最近打开的云文件</val></str>
+<str name="avRecentFilesWidgetLabel" translate="yes"><val>最近打开的文件</val></str>
+<str name="avBHRecentOnlineFiles" translate="yes"><val>最近打开的联机文件</val></str>
+<str name="avBHViewAllFiles" translate="yes"><val>打开 Acrobat.com 文件</val></str>
+<str name="avBlueHeronLatestFiles" translate="yes"><val>最新文件</val></str>
+<str name="avBlueHeronLatestBHFiles" translate="yes"><val>最新的 %{AdobeBlueHeron}% 文件</val></str>
+<str name="avBlueHeronLastAccessedFiles" translate="yes"><val>上次访问的文件</val></str>
+<str name="avBlueHeronLastAccessedBHFiles" translate="yes"><val>上次访问的 %{AdobeBlueHeron}% 文件</val></str>
+<str name="avBlueHeronYourLastAccessedBHFiles" translate="yes"><val>您上次访问的 %{AdobeBlueHeron}% 文件</val></str>
+
+
+<!-- BlueHeron Workflow Error Strings-->
+<str name="avMessageBHUploadFailed" translate="yes"><val>上载到 %{AdobeBlueHeron}% 失败</val></str>
+<str name="avMessageBHDisallowedFile" translate="yes"><val>%{AdobeBlueHeron}% 不支持此文件类型</val></str>
+<str name="avMessageDisallowedFile" translate="yes"><val>不支持此文件类型</val></str>
+<str name="avMessageErrorOpeningFile" translate="yes"><val>无法打开文件</val></str>
+<str name="avMessageBHMoreInfoUri" translate="yes"><val>单击以获取更多信息</val></str>
+<str name="avMessageBHDownloadFailed" translate="yes"><val>下载时出错。请重试。</val></str>
+<str name="avMessageBHOverwriteError" translate="yes"><val>您正在尝试保存本文档的更高版本。单击“替换”以继续。</val></str>
+<str name="avMessageBHOverwriteErrorNew" translate="yes"><val>自您上次在 %cProductVariant% 中访问该文件之后，服务器上已更新该文件。是否要覆盖服务器上的文件？</val></str>
+<str name="avBlueHeronVirusDetectedInFileSave" translate="yes"><val>文件无法保存，因为检测到了病毒。</val></str>
+
+<str name="avMessageSignInIPMSubscribeAlert" translate="yes"><val>要使用新的订阅，请登录。</val></str>
+
+<str name="avMessageSignInIPMSubscribeAlertnew" translate="yes"><val>请登录以使用新的订阅。</val></str>
+<str name="avBlueHeronBrandName" translate="no"><val>Acrobat.com</val></str>
+<str name="avAdobeBlueHeronBrandName" translate="no"><val>Acrobat.com</val></str>
+<str name="avAdobeSendBHFolder" translate="yes"><val>来自 Adobe Send 的文件</val></str>
+
+</asf>

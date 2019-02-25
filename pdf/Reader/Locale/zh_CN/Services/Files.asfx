@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?><asf locale="zh_CN" version="1.0" xmlns="http://ns.adobe.com/asf">
+
+<str name="avPluginDescription" translate="yes"><val>Adobe Recent Files Everywhere 扩展功能允许用户通过多台计算机和设备访问最近打开的文件。</val></str>
+
+<!-- Toolbuttons -->
+<str name="avLabelMyFilesButton" translate="yes"><val>打开</val></str>
+<str name="avTooltipToolbarItemMyFiles" translate="yes"><val>访问您的所有文件。</val></str>
+<str name="avTooltipToolbarItemMyFilesIcon" translate="yes"><val>访问您最近打开的文件。</val></str>
+<str name="avRecentFilesMenuText" translate="yes"><val>查看所有最近打开的文件(&amp;W)...</val></str>
+</asf>

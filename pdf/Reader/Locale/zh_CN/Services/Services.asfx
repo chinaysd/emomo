@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?><asf locale="zh_CN" version="1.0" xmlns="http://ns.adobe.com/asf">
+
+  <!-- pane strings -->
+  <str name="ShareLabel" translate="yes"><val>共享</val></str>
+  <str name="ShareTooltip" translate="yes"><val>显示共享窗格</val></str>
+  <str name="ToolsLabel" translate="yes"><val>工具</val></str>
+  <str name="ToolsTooltip" translate="yes"><val>显示工具窗格</val></str>
+  <str name="EchoSignLabel" translate="yes"><val>填写和签名</val></str>
+  <str name="EchoSignTooltip" translate="yes"><val>签名文档</val></str>
+
+  <!-- Bezel strings can be overridden as necessary -->
+  <str name="NoteAcrobat[enableAllLockdownServices=SignPane][flags=C]" translate="yes"><val>单击“工具”、“签名”和“注释”可访问其它功能。</val></str>
+  <str name="NoteReader[enableAllLockdownServices=SignPane][flags=C]" translate="yes"><val>单击“签名”可添加文本并将签名放在 PDF 文件上。</val></str>
+  <str name="NoteExtended[enableAllLockdownServices=SignPane][flags=C]" translate="yes"><val>单击“签名”可添加文本并将签名放在 PDF 文件上。</val></str>
+
+  <!-- Bezel Strings when locale is English and Sign Pane is disabled -->
+  
+  <str name="NoteAcrobat[disableAllLockdownServices=SignPane][flags=C]" translate="yes"><val>单击“工具”和“注释”可创建、发送和标记 PDF 文件。</val></str>
+  <str name="NoteReader[disableAllLockdownServices=SignPane][flags=C]" translate="yes"><val>单击“工具”和“注释”可创建、发送和标记 PDF 文件。</val></str>
+  <str name="NoteExtended[disableAllLockdownServices=SignPane][flags=C]" translate="yes"><val>单击“工具”、“注释”和“扩展功能”可使用其它功能。</val></str>
+
+  <!-- Bezel Strings before ExportPDF accordion under Tools pane gets opened.-->
+  <str name="EPDFToolsPaneBezel[locales=en_US,fr_FR,it_IT,es_ES,de_DE][flags=C]" translate="yes"><val>单击“工具”可将 PDF 文档转换为 Word 或 Excel。</val></str>
+  <!-- update strings -->
+  <str name="UpdateTitle" translate="yes"><val>更新可用</val></str>
+  <str name="UpdateCancel" translate="yes"><val>取消</val></str>
+  <str name="UpdateUpdate" translate="yes"><val>立即使用</val></str>
+  <str name="UpdateDefault" translate="yes"><val>&lt;p&gt;“%PANE_NAME%”窗格具有可用的新增强功能lt;/p&gt;</val></str>
+
+</asf>
