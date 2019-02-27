@@ -1,0 +1,2 @@
+1、使用git stash 之前要git add .一遍，这样就不会有git status出现红色字体；
+2、使用git merge 合并之后，还要git push origin master一遍才能合并；
